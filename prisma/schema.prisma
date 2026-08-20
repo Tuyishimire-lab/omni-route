@@ -1,0 +1,66 @@
+// This is your Prisma schema file.
+// When moving to Supabase: change provider to "postgresql"
+// and set DATABASE_URL to your Supabase connection string.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// Every unique domain ever scanned
+model Domain {
+  id                       String      @id @default(cuid())
+  domain                   String      @unique
+  url                      String?
+  firstScanned             DateTime    @default(now())
+  lastScanned              DateTime    @updatedAt
+  latestGeoScore           Int         @default(0)
+  latestCitationRate       Int         @default(0)
+  latestZeroClickResilience Int        @default(0)
+  latestInfoGainScore      Int         @default(0)
+  latestEntityScore        Int         @default(0)
+  latestVectorReadiness    Int         @default(0)
+  category                 String      @default("General")
+  scanCount                Int         @default(1)
+  status                   String      @default("MODERATE") // OPTIMAL | MODERATE | AT_RISK
+  trendDelta               Int         @default(0)
+  trend                    String      @default("flat") // up | down | flat
+
+  scanEvents               ScanEvent[]
+
+  @@index([latestGeoScore])
+  @@index([domain])
+}
+
+// One row per individual scan — powers sparklines and history
+model ScanEvent {
+  id                  String   @id @default(cuid())
+  domain              String
+  scannedAt           DateTime @default(now())
+  geoScore            Int
+  zeroClickResilience Int      @default(0)
+  citationRate        Int      @default(0)
+  infoGainScore       Int      @default(0)
+  entityScore         Int      @default(0)
+  vectorReadiness     Int      @default(0)
+  status              String   @default("MODERATE")
+  sessionId           String?  // anonymous browser session
+  isLiveScan          Boolean  @default(false)
+  rawReport           String?  // JSON blob of full GeoAuditReport
+
+  domainRef            Domain?  @relation(fields: [domainId], references: [id])
+  domainId             String?
+
+  @@index([domain])
+  @@index([scannedAt])
+}
+
+// Anonymous browser sessions — each session has its own watchlist
+model Session {
+  id          String   @id  // nanoid from browser
+  createdAt   DateTime @default(now())
+  watchlist   String   @default("[]") // JSON array of domain strings
+}

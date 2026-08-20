@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   OMNIROUTE COLOR SYSTEM
+   Primary:    #05AD98  (teal)
+   Light Gray: #BBBFBF  (secondary text / borders)
+   Mid Gray:   #878787  (muted text)
+   White:      #FFFFFF  (primary text)
+   Background: #0A0E0E  (near-black with teal undertone)
+   Surface:    #111514  (card / panel surface)
+   Surface2:   #1A2020  (elevated surface)
+   Border:     rgba(5, 173, 152, 0.15) (teal-tinted border)
+   ============================================================ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg:        #0A0E0E;
+    --surface:   #111514;
+    --surface2:  #1A2020;
+    --border:    rgba(5, 173, 152, 0.18);
+    --border-sub: rgba(187, 191, 191, 0.10);
+
+    --primary:   #05AD98;
+    --primary-dim: rgba(5, 173, 152, 0.15);
+    --primary-glow: rgba(5, 173, 152, 0.25);
+
+    --text:      #FFFFFF;
+    --text-sec:  #BBBFBF;
+    --text-mute: #878787;
+
+    /* Status colors — kept minimal */
+    --success:   #05AD98;
+    --warn:      #B8A04A;
+    --danger:    #A04040;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
+
+/* ---- Panels ---- */
+.glass-panel {
+  background: rgba(17, 21, 20, 0.80);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-sub);
+}
+
+.glass-panel-glow {
+  background: rgba(17, 21, 20, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  box-shadow: 0 0 32px rgba(5, 173, 152, 0.08);
+}
+
+.glass-card {
+  background: rgba(26, 32, 32, 0.60);
+  border: 1px solid var(--border-sub);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--border);
+  box-shadow: 0 6px 28px rgba(5, 173, 152, 0.10);
+  transform: translateY(-2px);
+}
+
+/* ---- Primary gradient (buttons, CTAs) ---- */
+.btn-primary {
+  background: linear-gradient(135deg, #05AD98 0%, #038a79 100%);
+  color: #ffffff;
+  transition: opacity 0.2s ease, transform 0.15s ease;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.98); }
+
+/* ---- Text gradient ---- */
+.text-gradient {
+  background: linear-gradient(135deg, #05AD98 0%, #BBBFBF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #05AD98 0%, #BBBFBF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---- Glows ---- */
+.glow-primary {
+  box-shadow: 0 0 32px -6px rgba(5, 173, 152, 0.35);
+}
+
+/* ---- Background mesh ---- */
+.bg-omni-mesh {
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 20%, rgba(5, 173, 152, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 85% 75%, rgba(5, 173, 152, 0.04) 0%, transparent 60%);
+}
+
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(187, 191, 191, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.radial-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(5, 173, 152, 0.10) 0%, transparent 65%);
+}
+
+/* ---- Animations ---- */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.8; }
+  50%  { transform: scale(1.05); opacity: 0.4; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+.animate-pulse-ring { animation: pulse-ring 3s infinite ease-in-out; }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #1A2020; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* ---- Selection ---- */
+::selection { background: rgba(5, 173, 152, 0.3); color: #ffffff; }
