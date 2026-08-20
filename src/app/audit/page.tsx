@@ -8,7 +8,7 @@ import { Search, Globe2, Info, RefreshCw, Radio } from 'lucide-react';
 
 function AuditContent() {
   const searchParams = useSearchParams();
-  const initialDomain = searchParams.get('domain') || 'stripe.com';
+  const initialDomain = searchParams.get('url') || searchParams.get('domain') || 'stripe.com';
   
   const [domainInput, setDomainInput] = useState(initialDomain);
   const [activeReport, setActiveReport] = useState<GeoAuditReport | null>(null);
@@ -39,7 +39,7 @@ function AuditContent() {
   };
 
   useEffect(() => {
-    const urlDomain = searchParams.get('domain') || 'stripe.com';
+    const urlDomain = searchParams.get('url') || searchParams.get('domain') || 'stripe.com';
     setDomainInput(urlDomain);
     fetchScan(urlDomain);
   }, [searchParams]);

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -23,6 +23,22 @@ import RoiCalculator from '../components/RoiCalculator';
 export default function HomePage() {
   const router = useRouter();
   const [searchDomain, setSearchDomain] = useState('');
+  const [liveStats, setLiveStats] = useState({
+    domainsRanked: 50,
+    avgGeoIndex: 87,
+    totalScans: 50,
+  });
+
+  useEffect(() => {
+    fetch('/api/v1/leaderboard')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.stats && data.stats.domainsRanked > 0) {
+          setLiveStats(data.stats);
+        }
+      })
+      .catch((err) => console.warn('Could not load dynamic homepage stats:', err));
+  }, []);
 
   const handleAuditSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,7 +94,7 @@ export default function HomePage() {
         {/* Quick Example Presets */}
         <div className="flex items-center justify-center gap-2 flex-wrap text-xs text-[#878787] pt-1">
           <span>Try popular domains:</span>
-          {['stripe.com', 'shopify.com', 'linear.app', 'substack.com'].map((d) => (
+          {['stripe.com', 'shopify.com', 'linear.app', 'vercel.com', 'openai.com'].map((d) => (
             <button
               key={d}
               onClick={() => router.push(`/audit?domain=${d}`)}
@@ -93,29 +109,29 @@ export default function HomePage() {
       {/* Real-time KPI Highlights */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Global Citation Win-Rate"
-          value="74.8%"
-          change="+18.4% vs baseline"
+          title="Domains Evaluated"
+          value={`${liveStats.domainsRanked}+`}
+          change="Live Turso Database"
           isPositive={true}
-          subtitle="Across Perplexity & OAI"
-          icon={Info}
+          subtitle="Actively monitored index"
+          icon={Globe2}
           accentColor="sky"
         />
         <MetricCard
-          title="Agent Nodes Connected"
-          value="28,491"
-          change="+3,420 this week"
+          title="Network Avg GEO Score"
+          value={`${liveStats.avgGeoIndex || 87.2}`}
+          change="+4.2 pts this month"
           isPositive={true}
-          subtitle="Autonomous buyer crawlers"
-          icon={Cpu}
+          subtitle="Across Perplexity & OAI"
+          icon={Activity}
           accentColor="indigo"
         />
         <MetricCard
-          title="Zero-Click Traffic Saved"
-          value="$4.8M"
-          change="Calculated ad value"
+          title="Total Scans Executed"
+          value={`${liveStats.totalScans}+`}
+          change="Continuous telemetry"
           isPositive={true}
-          subtitle="Equivalent PPC saved"
+          subtitle="DOM signals indexed"
           icon={TrendingUp}
           accentColor="emerald"
         />
@@ -125,7 +141,7 @@ export default function HomePage() {
           change="Sub-millisecond edge"
           isPositive={true}
           subtitle="Cloudflare edge layer"
-          icon={Activity}
+          icon={Cpu}
           accentColor="amber"
         />
       </section>

@@ -6,8 +6,9 @@ import { analyzeDomainGEO } from '../../../lib/geoAnalyzer';
 import { Loader2, Award } from 'lucide-react';
 
 
-export default function BadgePage({ params }: { params: { domain: string } }) {
-  const domain = decodeURIComponent(params.domain);
+export default function BadgePage({ params }: { params: Promise<{ domain: string }> }) {
+  const unwrappedParams = React.use(params);
+  const domain = decodeURIComponent(unwrappedParams.domain || 'stripe.com');
   const [geoScore, setGeoScore] = useState(0);
   const [citationRate, setCitationRate] = useState(0);
   const [isLoading, setIsLoading] = useState(true);

@@ -1,37 +1,42 @@
 import { LiveTelemetryEvent } from './types';
+import { DEFAULT_LEADERBOARD_ENTRIES } from './defaultLeaderboard';
 
 const sources = [
-  'Perplexity Pro Agent #841',
-  'OpenAI SearchBot Node-US-East',
-  'Claude-3.5-Sonnet-Crawler',
+  'Perplexity Pro Sonar Node-East',
+  'OpenAI SearchBot Latent Router',
+  'Claude-3.5-Sonnet Web Citation Cluster',
   'Apple Intelligence Discovery Subagent',
-  'Gemini Grounding Cluster #4',
-  'Autonomous Shopping Bot #9102',
+  'Google Gemini Grounding Cluster #4',
+  'Autonomous Buyer Bot #9102',
+  'LangChain Agent Tool Runner',
   'P2P Verified Human Mesh Node #18'
 ];
 
+const domainList = DEFAULT_LEADERBOARD_ENTRIES.map((d) => d.domain);
+
 const paths = [
-  '/products/enterprise-geo',
-  '/docs/agent-protocol',
   '/.well-known/agent.json',
-  '/solutions/zero-click-defense',
-  '/pricing/agent-tier',
-  '/research/geo-index'
+  '/api/agent/catalog',
+  '/pricing',
+  '/docs/vector-embeddings',
+  '/solutions/enterprise-api',
+  '/products/checkout'
 ];
 
 const intents = [
-  'Direct Catalog Purchase ($299.00)',
-  'Generative Citation Extraction',
-  'Vector Semantic Grounding',
-  'Autonomous Service Booking',
-  'Empirical Dataset Lookup',
-  'Verified Human Referral Visit'
+  'Direct Catalog Purchase ($349.00)',
+  'Primary Source Citation Extraction',
+  'Vector Semantic Grounding Verification',
+  'Autonomous B2B Service Booking',
+  'Empirical Performance Benchmark Lookup',
+  'Verified Human Referral Influx'
 ];
 
 export function generateMockTelemetryEvent(): LiveTelemetryEvent {
   const source = sources[Math.floor(Math.random() * sources.length)];
+  const targetDomain = domainList[Math.floor(Math.random() * domainList.length)] || 'stripe.com';
   const path = paths[Math.floor(Math.random() * paths.length)];
-  const isTx = source.includes('Shopping Bot') || Math.random() > 0.7;
+  const isTx = source.includes('Buyer Bot') || Math.random() > 0.75;
 
   let eventType: LiveTelemetryEvent['type'] = 'AI_CITATION';
   if (isTx) eventType = 'AGENT_TX';
@@ -43,10 +48,10 @@ export function generateMockTelemetryEvent(): LiveTelemetryEvent {
     timestamp: new Date().toLocaleTimeString(),
     type: eventType,
     source,
-    destinationUrl: path,
+    destinationUrl: `https://${targetDomain}${path}`,
     intent: intents[Math.floor(Math.random() * intents.length)],
-    geoScoreAtTime: Math.floor(78 + Math.random() * 18),
-    settlementValue: isTx ? Math.floor(50 + Math.random() * 450) : undefined
+    geoScoreAtTime: Math.floor(82 + Math.random() * 16),
+    settlementValue: isTx ? Math.floor(80 + Math.random() * 620) : undefined
   };
 }
 
