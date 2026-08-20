@@ -217,20 +217,21 @@ export async function getGlobalStats() {
 
 export async function getAnalyticsSummary() {
   try {
+    const db = prisma as any;
     const [totalEvents, txEvents, sumGmv, domainCount, eventsList] = await Promise.all([
-      prisma.telemetryEvent.count(),
-      prisma.telemetryEvent.count({ where: { type: 'AGENT_TX' } }),
-      prisma.telemetryEvent.aggregate({ _sum: { settlementValue: true } }),
+      db.telemetryEvent.count(),
+      db.telemetryEvent.count({ where: { type: 'AGENT_TX' } }),
+      db.telemetryEvent.aggregate({ _sum: { settlementValue: true } }),
       prisma.domain.count(),
-      prisma.telemetryEvent.findMany({
+      db.telemetryEvent.findMany({
         take: 30,
         orderBy: { timestamp: 'desc' },
       }),
     ]);
 
-    const totalCount = Math.max(1, totalEvents);
-    const txCount = txEvents;
-    const gmv = Math.round(sumGmv._sum.settlementValue ?? 0);
+    const totalCount = Math.max(1, totalEvents || 0);
+    const txCount = txEvents || 0;
+    const gmv = Math.round(sumGmv?._sum?.settlementValue ?? 0);
     const convRate = totalEvents > 0 ? ((txCount / totalCount) * 100).toFixed(1) : '0.0';
     const avgOrderValue = txCount > 0 ? Math.round(gmv / txCount) : 0;
 
@@ -243,8 +244,8 @@ export async function getAnalyticsSummary() {
       'Claude & Gemini Knowledge Grounding': 0,
     };
 
-    eventsList.forEach((ev) => {
-      const src = ev.source.toLowerCase();
+    (eventsList || []).forEach((ev: any) => {
+      const src = (ev.source || '').toLowerCase();
       if (src.includes('perplexity')) {
         channelCounts['Perplexity Pro & Sonar Answers']++;
       } else if (src.includes('openai')) {
@@ -258,25 +259,26 @@ export async function getAnalyticsSummary() {
       }
     });
 
+    const listLen = eventsList?.length || 0;
     const channels = Object.entries(channelCounts).map(([name, count]) => {
-      const pct = eventsList.length > 0 ? Math.round((count / eventsList.length) * 100) : 0;
+      const pct = listLen > 0 ? Math.round((count / listLen) * 100) : 0;
       return { name, count, percentage: pct };
     });
 
     return {
-      totalReferrals: totalEvents,
+      totalReferrals: totalEvents || 0,
       txCount,
       directGmv: gmv,
       avgOrderValue,
-      monitoredDomains: domainCount,
+      monitoredDomains: domainCount || 0,
       conversionRate: `${convRate}%`,
       fraudBlocked: '100.0%',
       effectiveCac: '$4.18',
       agentLtv: avgOrderValue > 0 ? `$${avgOrderValue * 3}` : '$1,240',
       channels,
-      events: eventsList.map((e) => ({
+      events: (eventsList || []).map((e: any) => ({
         id: e.id,
-        timestamp: e.timestamp.toLocaleTimeString(),
+        timestamp: e.timestamp instanceof Date ? e.timestamp.toLocaleTimeString() : new Date(e.timestamp).toLocaleTimeString(),
         type: e.type,
         source: e.source,
         domain: e.domain,
@@ -291,4 +293,5 @@ export async function getAnalyticsSummary() {
     return null;
   }
 }
+
 
