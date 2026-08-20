@@ -1,50 +1,28 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { BarChart2, TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown, RefreshCw, Sparkles } from 'lucide-react';
 
-interface LeaderboardEntry {
+export interface LeaderboardEntry {
   rank: number;
   domain: string;
   category: string;
   geoScore: number;
   citationWinRate: number;
   zeroClickResilience: number;
-  agentNodes: number;
   trend: 'up' | 'down' | 'flat';
   trendDelta: number;
+  scanCount: number;
+  lastScanned?: string;
 }
 
-const LEADERBOARD_DATA: LeaderboardEntry[] = [
-  { rank: 1, domain: 'openai.com', category: 'AI/Tech', geoScore: 97, citationWinRate: 96, zeroClickResilience: 94, agentNodes: 4820, trend: 'up', trendDelta: 3 },
-  { rank: 2, domain: 'stripe.com', category: 'Fintech', geoScore: 91, citationWinRate: 92, zeroClickResilience: 88, agentNodes: 3210, trend: 'up', trendDelta: 2 },
-  { rank: 3, domain: 'vercel.com', category: 'SaaS/Infra', geoScore: 89, citationWinRate: 87, zeroClickResilience: 85, agentNodes: 2940, trend: 'up', trendDelta: 5 },
-  { rank: 4, domain: 'anthropic.com', category: 'AI/Tech', geoScore: 88, citationWinRate: 91, zeroClickResilience: 86, agentNodes: 2760, trend: 'flat', trendDelta: 0 },
-  { rank: 5, domain: 'linear.app', category: 'SaaS/Tools', geoScore: 85, citationWinRate: 84, zeroClickResilience: 82, agentNodes: 2200, trend: 'up', trendDelta: 4 },
-  { rank: 6, domain: 'notion.so', category: 'SaaS/Tools', geoScore: 83, citationWinRate: 82, zeroClickResilience: 79, agentNodes: 2050, trend: 'down', trendDelta: -2 },
-  { rank: 7, domain: 'github.com', category: 'Developer', geoScore: 82, citationWinRate: 85, zeroClickResilience: 80, agentNodes: 1980, trend: 'flat', trendDelta: 0 },
-  { rank: 8, domain: 'shopify.com', category: 'E-Commerce', geoScore: 80, citationWinRate: 79, zeroClickResilience: 76, agentNodes: 1820, trend: 'down', trendDelta: -1 },
-  { rank: 9, domain: 'figma.com', category: 'SaaS/Design', geoScore: 79, citationWinRate: 78, zeroClickResilience: 75, agentNodes: 1640, trend: 'up', trendDelta: 2 },
-  { rank: 10, domain: 'brex.com', category: 'Fintech', geoScore: 77, citationWinRate: 76, zeroClickResilience: 73, agentNodes: 1520, trend: 'up', trendDelta: 6 },
-  { rank: 11, domain: 'airtable.com', category: 'SaaS/Tools', geoScore: 74, citationWinRate: 73, zeroClickResilience: 70, agentNodes: 1310, trend: 'flat', trendDelta: 0 },
-  { rank: 12, domain: 'framer.com', category: 'SaaS/Design', geoScore: 72, citationWinRate: 71, zeroClickResilience: 68, agentNodes: 1180, trend: 'up', trendDelta: 3 },
-  { rank: 13, domain: 'mercury.com', category: 'Fintech', geoScore: 70, citationWinRate: 69, zeroClickResilience: 67, agentNodes: 1060, trend: 'down', trendDelta: -2 },
-  { rank: 14, domain: 'supabase.com', category: 'Developer', geoScore: 69, citationWinRate: 70, zeroClickResilience: 65, agentNodes: 990, trend: 'up', trendDelta: 7 },
-  { rank: 15, domain: 'webflow.com', category: 'SaaS/Design', geoScore: 67, citationWinRate: 66, zeroClickResilience: 63, agentNodes: 870, trend: 'flat', trendDelta: 0 },
-  { rank: 16, domain: 'loom.com', category: 'SaaS/Tools', geoScore: 64, citationWinRate: 62, zeroClickResilience: 60, agentNodes: 740, trend: 'down', trendDelta: -3 },
-  { rank: 17, domain: 'intercom.com', category: 'SaaS/Tools', geoScore: 62, citationWinRate: 61, zeroClickResilience: 59, agentNodes: 680, trend: 'up', trendDelta: 1 },
-  { rank: 18, domain: 'klaviyo.com', category: 'E-Commerce', geoScore: 60, citationWinRate: 59, zeroClickResilience: 57, agentNodes: 610, trend: 'flat', trendDelta: 0 },
-  { rank: 19, domain: 'cal.com', category: 'Developer', geoScore: 57, citationWinRate: 56, zeroClickResilience: 53, agentNodes: 490, trend: 'up', trendDelta: 4 },
-  { rank: 20, domain: 'dub.co', category: 'Developer', geoScore: 54, citationWinRate: 53, zeroClickResilience: 50, agentNodes: 380, trend: 'up', trendDelta: 8 }
-];
-
-const CATEGORIES = ['All', 'AI/Tech', 'Fintech', 'SaaS/Tools', 'SaaS/Infra', 'SaaS/Design', 'Developer', 'E-Commerce'];
+const CATEGORIES = ['All', 'AI/Tech', 'Fintech', 'SaaS/Tools', 'SaaS/Design', 'Developer', 'E-Commerce'];
 
 function getScoreBarColor(score: number) {
-  if (score >= 85) return 'from-[#05AD98] to-emerald-400';
-  if (score >= 70) return 'from-[#05AD98] to-[#05AD98]';
-  if (score >= 55) return 'from-amber-500 to-amber-400';
+  if (score >= 90) return 'from-[#05AD98] to-emerald-400';
+  if (score >= 75) return 'from-[#05AD98] to-[#05AD98]';
+  if (score >= 60) return 'from-amber-500 to-amber-400';
   return 'from-rose-500 to-rose-400';
 }
 
@@ -55,30 +33,80 @@ function getRankStyle(rank: number) {
   return 'text-[#878787] font-bold';
 }
 
-export default function LeaderboardTable() {
-  const [activeCategory, setActiveCategory] = React.useState('All');
+export default function LeaderboardTable({
+  initialEntries = [],
+  onStatsUpdate
+}: {
+  initialEntries?: LeaderboardEntry[];
+  onStatsUpdate?: (stats: { domainsRanked: number; avgGeoIndex: number; totalScans: number }) => void;
+}) {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [entries, setEntries] = useState<LeaderboardEntry[]>(initialEntries);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filtered = activeCategory === 'All'
-    ? LEADERBOARD_DATA
-    : LEADERBOARD_DATA.filter(e => e.category === activeCategory);
+  // Fetch live from Turso database via /api/v1/leaderboard
+  useEffect(() => {
+    async function loadData() {
+      setIsLoading(true);
+      try {
+        const res = await fetch(`/api/v1/leaderboard?category=${encodeURIComponent(activeCategory)}`);
+        if (res.ok) {
+          const json = await res.json();
+          if (json.entries && Array.isArray(json.entries)) {
+            setEntries(json.entries);
+          }
+          if (json.stats && onStatsUpdate) {
+            onStatsUpdate(json.stats);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not fetch dynamic leaderboard, using fallback:', e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadData();
+  }, [activeCategory, onStatsUpdate]);
+
+  const filtered = entries.filter((e) => {
+    const matchesCategory = activeCategory === 'All' || e.category === activeCategory;
+    const matchesSearch = !searchQuery || e.domain.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="space-y-6">
-      {/* Category Filter */}
-      <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
-              activeCategory === cat
-                ? 'bg-[rgba(5,173,152,0.20)] text-[#05AD98] border-[rgba(5,173,152,0.4)]'
-                : 'bg-[#111514] text-[#878787] border-[rgba(187,191,191,0.10)] hover:text-white hover:border-slate-600'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Search & Category Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                activeCategory === cat
+                  ? 'bg-[rgba(5,173,152,0.20)] text-[#05AD98] border-[rgba(5,173,152,0.4)] shadow-sm'
+                  : 'bg-[#111514] text-[#878787] border-[rgba(187,191,191,0.10)] hover:text-white hover:border-slate-600'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Live Search Input */}
+        <div className="relative w-full sm:w-64">
+          <Search className="w-4 h-4 text-[#878787] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search domain..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#111514] border border-[rgba(187,191,191,0.15)] rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-[#878787] focus:outline-none focus:border-[#05AD98]"
+          />
+        </div>
       </div>
 
       {/* Table */}
@@ -89,34 +117,60 @@ export default function LeaderboardTable() {
           <span>Domain</span>
           <span className="text-center">GEO Score</span>
           <span className="text-center hidden sm:block">Score Bar</span>
-          <span className="text-center hidden sm:block">Citation %</span>
+          <span className="text-center hidden sm:block">Citation Win</span>
           <span className="text-center">Trend</span>
         </div>
 
+        {/* Loading Spinner */}
+        {isLoading && (
+          <div className="p-8 text-center text-[#878787] flex items-center justify-center gap-2 text-xs">
+            <RefreshCw className="w-4 h-4 animate-spin text-[#05AD98]" />
+            Loading live verified rankings...
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && filtered.length === 0 && (
+          <div className="p-8 text-center text-[#878787] text-xs space-y-2">
+            <p>No domains found matching your criteria.</p>
+            <Link href="/audit" className="text-[#05AD98] hover:underline font-semibold">Scan and add a new domain →</Link>
+          </div>
+        )}
+
         {/* Rows */}
-        {filtered.map((entry) => (
+        {!isLoading && filtered.map((entry, idx) => (
           <div
             key={entry.domain}
-            className="grid grid-cols-[48px_1fr_80px_80px] sm:grid-cols-[56px_1fr_96px_160px_80px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center"
+            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_160px_80px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
           >
             {/* Rank */}
             <div className="text-center">
-              {entry.rank <= 3 ? (
-                <Crown className={`w-4 h-4 mx-auto ${entry.rank === 1 ? 'text-[#B8A04A]' : entry.rank === 2 ? 'text-[#BBBFBF]' : 'text-amber-600'}`} />
+              {idx < 3 ? (
+                <Crown className={`w-4 h-4 mx-auto ${idx === 0 ? 'text-[#B8A04A]' : idx === 1 ? 'text-[#BBBFBF]' : 'text-amber-600'}`} />
               ) : (
-                <span className={`text-sm font-mono ${getRankStyle(entry.rank)}`}>{entry.rank}</span>
+                <span className={`text-sm font-mono ${getRankStyle(idx + 1)}`}>{idx + 1}</span>
               )}
             </div>
 
             {/* Domain Info */}
-            <div className="min-w-0">
-              <p className="text-sm font-bold text-white font-mono truncate">{entry.domain}</p>
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1A2020] text-[#878787] border border-[rgba(187,191,191,0.12)] font-medium">{entry.category}</span>
+            <div className="min-w-0 flex items-center justify-between pr-2">
+              <div className="truncate">
+                <Link
+                  href={`/audit?url=${encodeURIComponent(entry.domain)}`}
+                  className="text-sm font-bold text-white font-mono truncate hover:text-[#05AD98] transition-colors flex items-center gap-1.5"
+                >
+                  {entry.domain}
+                  <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-[#05AD98]" />
+                </Link>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1A2020] text-[#878787] border border-[rgba(187,191,191,0.12)] font-medium">
+                  {entry.category}
+                </span>
+              </div>
             </div>
 
             {/* GEO Score */}
             <div className="text-center">
-              <span className={`text-base font-extrabold font-mono ${entry.geoScore >= 85 ? 'text-[#05AD98]' : entry.geoScore >= 70 ? 'text-[#05AD98]' : 'text-[#B8A04A]'}`}>
+              <span className={`text-base font-extrabold font-mono ${entry.geoScore >= 90 ? 'text-[#05AD98]' : entry.geoScore >= 75 ? 'text-[#05AD98]' : 'text-[#B8A04A]'}`}>
                 {entry.geoScore}
               </span>
             </div>
@@ -140,17 +194,17 @@ export default function LeaderboardTable() {
             {/* Trend */}
             <div className="flex items-center justify-center gap-1">
               {entry.trend === 'up' && (
-                <span className="flex items-center gap-0.5 text-[#05AD98] text-[11px] font-bold">
-                  <TrendingUp className="w-3.5 h-3.5" />+{entry.trendDelta}
+                <span className="flex items-center gap-0.5 text-[#05AD98] text-[11px] font-bold font-mono">
+                  <TrendingUp className="w-3.5 h-3.5" />+{entry.trendDelta || 1}
                 </span>
               )}
               {entry.trend === 'down' && (
-                <span className="flex items-center gap-0.5 text-rose-400 text-[11px] font-bold">
-                  <TrendingDown className="w-3.5 h-3.5" />{entry.trendDelta}
+                <span className="flex items-center gap-0.5 text-rose-400 text-[11px] font-bold font-mono">
+                  <TrendingDown className="w-3.5 h-3.5" />{entry.trendDelta || -1}
                 </span>
               )}
               {entry.trend === 'flat' && (
-                <span className="flex items-center gap-0.5 text-[#878787] text-[11px]">
+                <span className="flex items-center gap-0.5 text-[#878787] text-[11px] font-mono">
                   <Minus className="w-3 h-3" />
                 </span>
               )}
@@ -159,13 +213,14 @@ export default function LeaderboardTable() {
         ))}
       </div>
 
-      {/* CTA */}
-      <div className="text-center">
+      {/* CTA Bottom Bar */}
+      <div className="text-center space-y-3">
         <Link
           href="/audit"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-all"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all transform hover:-translate-y-0.5"
         >
-          <Search className="w-4 h-4" /> Submit My Domain for Ranking
+          <Sparkles className="w-4 h-4 text-emerald-300" />
+          Audit & Add My Domain to Leaderboard
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
