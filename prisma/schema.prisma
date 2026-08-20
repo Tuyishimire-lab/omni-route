@@ -64,3 +64,21 @@ model Session {
   createdAt   DateTime @default(now())
   watchlist   String   @default("[]") // JSON array of domain strings
 }
+
+// Live machine-to-machine traffic & citation events
+model TelemetryEvent {
+  id              String   @id @default(cuid())
+  timestamp       DateTime @default(now())
+  type            String   // AI_CITATION | AGENT_TX | P2P_MESH_CLICK | GEO_INDEX_PING
+  source          String   // e.g. Perplexity Pro Sonar, OpenAI SearchBot
+  domain          String   // e.g. stripe.com
+  destinationUrl  String   // e.g. https://stripe.com/.well-known/agent.json
+  intent          String   // Action or reasoning intent
+  geoScoreAtTime  Int      @default(80)
+  settlementValue Float?   // Monetary escrow value for direct purchases
+
+  @@index([timestamp])
+  @@index([domain])
+  @@index([type])
+}
+
