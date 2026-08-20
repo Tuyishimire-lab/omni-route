@@ -80,12 +80,192 @@ export const defaultSampleManifest: AgentManifest = {
   }
 };
 
+export const INDUSTRY_TEMPLATES: Record<string, { label: string; description: string; manifest: AgentManifest }> = {
+  saas: {
+    label: 'B2B SaaS / Developer API',
+    description: 'Optimized for developer platforms, cloud infra, and subscription SaaS products.',
+    manifest: {
+      version: '1.2.0',
+      siteName: 'DevPlatform Cloud',
+      domain: 'devplatform.io',
+      description: 'Developer infrastructure, programmatic API tokens, and automated deployment pipelines.',
+      organization: {
+        legalName: 'DevPlatform Inc.',
+        foundedYear: 2024,
+        headquarters: 'San Francisco, CA',
+        contactEmail: 'agents@devplatform.io'
+      },
+      capabilities: ['direct-agent-checkout', 'semantic-api-query', 'automated-provisioning'],
+      endpoints: [
+        {
+          id: 'ep-saas-1',
+          name: 'API Key Provisioning',
+          path: '/api/v1/agent/keys',
+          method: 'POST',
+          description: 'Allows autonomous agents to generate scoped API keys programmatically.',
+          authRequired: true,
+          pricingType: 'subscription'
+        },
+        {
+          id: 'ep-saas-2',
+          name: 'Documentation Semantic Search',
+          path: '/api/v1/docs/search',
+          method: 'POST',
+          description: 'Vector-grounded technical documentation queries for LLM reasoning loops.',
+          authRequired: false,
+          pricingType: 'free'
+        }
+      ],
+      products: [
+        {
+          id: 'prod-saas-1',
+          name: 'Pro Developer Seat (Monthly)',
+          sku: 'DEV-PRO-M',
+          price: 49.00,
+          currency: 'USD',
+          category: 'Software Subscription',
+          inStock: true,
+          directAgentCheckoutUrl: 'https://devplatform.io/checkout?plan=pro&agent=true'
+        }
+      ],
+      semanticVectors: {
+        embeddingsUrl: 'https://devplatform.io/.well-known/vectors.parquet',
+        contextSizeTokens: 32768,
+        lastUpdated: new Date().toISOString()
+      },
+      accessPolicy: {
+        allowAgentCrawlers: true,
+        allowDirectTransactions: true,
+        rateLimitPerMin: 1200
+      }
+    }
+  },
+  ecommerce: {
+    label: 'E-Commerce & Digital Store',
+    description: 'Designed for retail shops, digital merchandise, and immediate zero-click checkout.',
+    manifest: {
+      version: '1.2.0',
+      siteName: 'HyperStore Retail',
+      domain: 'hyperstore.shop',
+      description: 'Next-generation commerce platform with direct autonomous buyer agent fulfillment.',
+      organization: {
+        legalName: 'HyperStore Commerce LLC',
+        foundedYear: 2025,
+        headquarters: 'New York, NY',
+        contactEmail: 'buyer-agents@hyperstore.shop'
+      },
+      capabilities: ['direct-agent-checkout', 'realtime-inventory-lookup', 'escrow-settlement'],
+      endpoints: [
+        {
+          id: 'ep-ecom-1',
+          name: 'Live Catalog & Inventory Feed',
+          path: '/api/agent/catalog',
+          method: 'GET',
+          description: 'Streams real-time stock levels, pricing, and variant availability.',
+          authRequired: false,
+          pricingType: 'free'
+        },
+        {
+          id: 'ep-ecom-2',
+          name: 'Instant Order Execution',
+          path: '/api/agent/orders/create',
+          method: 'POST',
+          description: 'Executes direct purchases on behalf of verified human principals.',
+          authRequired: true,
+          pricingType: 'checkout'
+        }
+      ],
+      products: [
+        {
+          id: 'prod-ecom-1',
+          name: 'Wireless Studio Headphones X1',
+          sku: 'HDPH-X1-BLK',
+          price: 249.99,
+          currency: 'USD',
+          category: 'Electronics',
+          inStock: true,
+          directAgentCheckoutUrl: 'https://hyperstore.shop/agent-pay?sku=HDPH-X1-BLK'
+        },
+        {
+          id: 'prod-ecom-2',
+          name: 'Minimalist Aluminum Laptop Stand',
+          sku: 'STND-AL-01',
+          price: 79.00,
+          currency: 'USD',
+          category: 'Accessories',
+          inStock: true,
+          directAgentCheckoutUrl: 'https://hyperstore.shop/agent-pay?sku=STND-AL-01'
+        }
+      ],
+      semanticVectors: {
+        embeddingsUrl: 'https://hyperstore.shop/.well-known/catalog.parquet',
+        contextSizeTokens: 16384,
+        lastUpdated: new Date().toISOString()
+      },
+      accessPolicy: {
+        allowAgentCrawlers: true,
+        allowDirectTransactions: true,
+        rateLimitPerMin: 800
+      }
+    }
+  },
+  ai_rag: {
+    label: 'AI & Knowledge Provider',
+    description: 'Engineered for research labs, data brokers, and empirical benchmark feeds.',
+    manifest: {
+      version: '1.2.0',
+      siteName: 'Synthetix Research',
+      domain: 'synthetix.ai',
+      description: 'Primary empirical benchmarks, research datasets, and verified semantic vectors.',
+      organization: {
+        legalName: 'Synthetix Intelligence Inc.',
+        foundedYear: 2026,
+        headquarters: 'Boston, MA',
+        contactEmail: 'research@synthetix.ai'
+      },
+      capabilities: ['vector-citation-exchange', 'dataset-licensing', 'semantic-grounding'],
+      endpoints: [
+        {
+          id: 'ep-rag-1',
+          name: 'Empirical Datasets Stream',
+          path: '/api/v1/datasets/query',
+          method: 'POST',
+          description: 'High-density tabular research matrices formatted for LLM answer engines.',
+          authRequired: false,
+          pricingType: 'free'
+        }
+      ],
+      products: [
+        {
+          id: 'prod-rag-1',
+          name: 'Enterprise Citation License',
+          sku: 'LIC-ENTERPRISE-2026',
+          price: 1200.00,
+          currency: 'USD',
+          category: 'Data & Licensing',
+          inStock: true,
+          directAgentCheckoutUrl: 'https://synthetix.ai/checkout?sku=LIC-ENTERPRISE-2026'
+        }
+      ],
+      semanticVectors: {
+        embeddingsUrl: 'https://synthetix.ai/.well-known/research-vectors.parquet',
+        contextSizeTokens: 65536,
+        lastUpdated: new Date().toISOString()
+      },
+      accessPolicy: {
+        allowAgentCrawlers: true,
+        allowDirectTransactions: true,
+        rateLimitPerMin: 2000
+      }
+    }
+  }
+};
+
 export function generateCloudflareWorkerScript(manifest: AgentManifest): string {
   const jsonString = JSON.stringify(manifest, null, 2);
   return `/**
  * OmniRoute Edge Agent Manifest & Gateway Worker
- * Deploy this on Cloudflare Workers / Fastly Compute to automatically serve
- * the machine-readable /.well-known/agent.json protocol on your domain.
+ * Deploy on Cloudflare Workers to serve /.well-known/agent.json globally.
  */
 
 const AGENT_MANIFEST = ${jsonString};
@@ -107,9 +287,52 @@ export default {
       });
     }
 
-    // Pass through all other web traffic to original origin server
+    // Pass through all other web traffic to origin
     return fetch(request);
   }
-};
+};`;
+}
+
+export function generateNextJsRouteHandler(manifest: AgentManifest): string {
+  const jsonString = JSON.stringify(manifest, null, 2);
+  return `// app/.well-known/agent.json/route.ts (Next.js 14 / 15 / 16 App Router)
+import { NextResponse } from 'next/server';
+
+const AGENT_MANIFEST = ${jsonString};
+
+export const dynamic = 'force-static';
+export const revalidate = 86400; // 24 hours
+
+export async function GET() {
+  return NextResponse.json(AGENT_MANIFEST, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+      'X-OmniRoute-Protocol': 'agent-v1.2',
+    },
+  });
+}`;
+}
+
+export function generateFastApiSnippet(manifest: AgentManifest): string {
+  const jsonString = JSON.stringify(manifest, null, 2);
+  return `# main.py (FastAPI / Python)
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+
+app = FastAPI()
+
+AGENT_MANIFEST = ${jsonString}
+
+@app.get("/.well-known/agent.json")
+def get_agent_manifest():
+    return JSONResponse(
+        content=AGENT_MANIFEST,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "public, max-age=3600",
+            "X-OmniRoute-Protocol": "agent-v1.2"
+        }
+    )
 `;
 }

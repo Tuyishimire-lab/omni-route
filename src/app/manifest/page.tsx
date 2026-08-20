@@ -52,7 +52,9 @@ export default function ManifestPage() {
       </div>
 
       {/* Editor Component */}
-      <AgentJsonEditor />
+      <React.Suspense fallback={<div className="p-8 text-center text-xs text-[#878787]">Loading Protocol Studio...</div>}>
+        <AgentJsonEditor />
+      </React.Suspense>
     </div>
   );
 }
