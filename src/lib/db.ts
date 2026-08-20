@@ -95,7 +95,7 @@ export async function getLeaderboard(category?: string) {
     trend: d.trend as 'up' | 'down' | 'flat',
     trendDelta: d.trendDelta,
     scanCount: d.scanCount,
-    lastScanned: d.lastScanned,
+    lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
   }));
 }
 

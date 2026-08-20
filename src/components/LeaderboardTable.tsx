@@ -45,13 +45,22 @@ export default function LeaderboardTable({
   const [entries, setEntries] = useState<LeaderboardEntry[]>(initialEntries);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Sync initialEntries if provided
+  useEffect(() => {
+    if (initialEntries && initialEntries.length > 0 && entries.length === 0) {
+      setEntries(initialEntries);
+    }
+  }, [initialEntries, entries.length]);
+
   // Fetch live from Turso database via /api/v1/leaderboard
   useEffect(() => {
+    let isMounted = true;
+
     async function loadData() {
       setIsLoading(true);
       try {
         const res = await fetch(`/api/v1/leaderboard?category=${encodeURIComponent(activeCategory)}`);
-        if (res.ok) {
+        if (res.ok && isMounted) {
           const json = await res.json();
           if (json.entries && Array.isArray(json.entries)) {
             setEntries(json.entries);
@@ -61,19 +70,19 @@ export default function LeaderboardTable({
           }
         }
       } catch (e) {
-        console.warn('Could not fetch dynamic leaderboard, using fallback:', e);
+        console.warn('Could not fetch dynamic leaderboard:', e);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     }
 
     loadData();
+    return () => { isMounted = false; };
   }, [activeCategory, onStatsUpdate]);
 
   const filtered = entries.filter((e) => {
-    const matchesCategory = activeCategory === 'All' || e.category === activeCategory;
     const matchesSearch = !searchQuery || e.domain.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   return (
