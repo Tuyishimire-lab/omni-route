@@ -74,29 +74,46 @@ export async function saveScanToDB(
   return domain;
 }
 
+import { DEFAULT_LEADERBOARD_ENTRIES } from './defaultLeaderboard';
+
 // ─── Leaderboard ──────────────────────────────────────────────────────────────
 
 export async function getLeaderboard(category?: string) {
-  const where = category && category !== 'All' ? { category } : {};
+  try {
+    const where = category && category !== 'All' ? { category } : {};
 
-  const domains = await prisma.domain.findMany({
-    where: { ...where, scanCount: { gte: 1 } },
-    orderBy: { latestGeoScore: 'desc' },
-    take: 50,
-  });
+    const domains = await prisma.domain.findMany({
+      where: { ...where, scanCount: { gte: 1 } },
+      orderBy: { latestGeoScore: 'desc' },
+      take: 50,
+    });
 
-  return domains.map((d, i) => ({
-    rank: i + 1,
-    domain: d.domain,
-    category: d.category,
-    geoScore: d.latestGeoScore,
-    citationWinRate: d.latestCitationRate,
-    zeroClickResilience: d.latestZeroClickResilience,
-    trend: d.trend as 'up' | 'down' | 'flat',
-    trendDelta: d.trendDelta,
-    scanCount: d.scanCount,
-    lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
-  }));
+    if (domains && domains.length > 0) {
+      return domains.map((d, i) => ({
+        rank: i + 1,
+        domain: d.domain,
+        category: d.category,
+        geoScore: d.latestGeoScore,
+        citationWinRate: d.latestCitationRate,
+        zeroClickResilience: d.latestZeroClickResilience,
+        trend: d.trend as 'up' | 'down' | 'flat',
+        trendDelta: d.trendDelta,
+        scanCount: d.scanCount,
+        lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
+      }));
+    }
+  } catch (e) {
+    console.warn('[getLeaderboard] DB query fallback to defaults:', e);
+  }
+
+  // Resilient fallback to comprehensive pre-seeded directory
+  if (category && category !== 'All') {
+    return DEFAULT_LEADERBOARD_ENTRIES.filter((e) => e.category === category).map((e, i) => ({
+      ...e,
+      rank: i + 1,
+    }));
+  }
+  return DEFAULT_LEADERBOARD_ENTRIES;
 }
 
 // ─── Scan History (for sparklines) ───────────────────────────────────────────

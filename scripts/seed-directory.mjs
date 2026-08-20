@@ -71,17 +71,17 @@ const COMPREHENSIVE_DOMAINS = [
 ];
 
 async function main() {
-  console.log(`Populating ${COMPREHENSIVE_DOMAINS.length} comprehensive real-world tech domains into Turso...`);
+  const nowIso = new Date().toISOString();
 
   for (const item of COMPREHENSIVE_DOMAINS) {
     const id = crypto.randomUUID();
     await client.execute({
       sql: `
         INSERT INTO "Domain" (
-          id, domain, url, latestGeoScore, latestCitationRate, latestZeroClickResilience,
+          id, domain, url, firstScanned, lastScanned, latestGeoScore, latestCitationRate, latestZeroClickResilience,
           latestInfoGainScore, latestEntityScore, latestVectorReadiness, category, status,
           trend, trendDelta, scanCount
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
         ON CONFLICT(domain) DO UPDATE SET
           latestGeoScore = excluded.latestGeoScore,
           latestCitationRate = excluded.latestCitationRate,
@@ -92,20 +92,27 @@ async function main() {
           category = excluded.category,
           status = excluded.status,
           trend = excluded.trend,
-          trendDelta = excluded.trendDelta;
+          trendDelta = excluded.trendDelta,
+          lastScanned = excluded.lastScanned;
       `,
-      args: [id, item.domain, item.url, item.score, item.citation, item.zeroClick, item.infoGain, item.entity, item.vector, item.category, item.status, item.trend, item.delta]
+      args: [id, item.domain, item.url, nowIso, nowIso, item.score, item.citation, item.zeroClick, item.infoGain, item.entity, item.vector, item.category, item.status, item.trend, item.delta]
     });
+
+    const domainRow = await client.execute({
+      sql: `SELECT id FROM "Domain" WHERE domain = ? LIMIT 1`,
+      args: [item.domain]
+    });
+    const resolvedDomainId = domainRow.rows[0]?.id || id;
 
     const eventId = crypto.randomUUID();
     await client.execute({
       sql: `
         INSERT INTO "ScanEvent" (
-          id, domain, domainId, geoScore, zeroClickResilience, citationRate,
+          id, domain, domainId, scannedAt, geoScore, zeroClickResilience, citationRate,
           infoGainScore, entityScore, vectorReadiness, status, isLiveScan
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1);
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1);
       `,
-      args: [eventId, item.domain, id, item.score, item.zeroClick, item.citation, item.infoGain, item.entity, item.vector, item.status]
+      args: [eventId, item.domain, resolvedDomainId, nowIso, item.score, item.zeroClick, item.citation, item.infoGain, item.entity, item.vector, item.status]
     });
   }
 

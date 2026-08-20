@@ -4,18 +4,9 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown, RefreshCw, Sparkles } from 'lucide-react';
 
-export interface LeaderboardEntry {
-  rank: number;
-  domain: string;
-  category: string;
-  geoScore: number;
-  citationWinRate: number;
-  zeroClickResilience: number;
-  trend: 'up' | 'down' | 'flat';
-  trendDelta: number;
-  scanCount: number;
-  lastScanned?: string;
-}
+import { DEFAULT_LEADERBOARD_ENTRIES, LeaderboardEntry } from '../lib/defaultLeaderboard';
+
+export type { LeaderboardEntry };
 
 const CATEGORIES = ['All', 'AI/Tech', 'Fintech', 'SaaS/Tools', 'SaaS/Design', 'Developer', 'E-Commerce'];
 
@@ -42,7 +33,9 @@ export default function LeaderboardTable({
 }) {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [entries, setEntries] = useState<LeaderboardEntry[]>(initialEntries);
+  const [entries, setEntries] = useState<LeaderboardEntry[]>(
+    initialEntries && initialEntries.length > 0 ? initialEntries : DEFAULT_LEADERBOARD_ENTRIES
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   // Sync initialEntries if provided
