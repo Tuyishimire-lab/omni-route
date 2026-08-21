@@ -25,9 +25,22 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 // ─── JWT Session Management ─────────────────────────────────────────────────
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || process.env.ADMIN_SECRET || 'omniroute-dev-secret-change-in-prod'
-);
+// P0: Never fall back to a hardcoded secret in production — an attacker who
+// finds this repo could forge valid session tokens.
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('[auth] JWT_SECRET environment variable is not set. Cannot start in production without it.');
+    }
+    // Dev-only fallback — safe because NODE_ENV !== 'production'
+    console.warn('[auth] WARNING: JWT_SECRET is not set. Using insecure dev fallback. Set JWT_SECRET in .env.local.');
+    return new TextEncoder().encode('omniroute-dev-secret-DO-NOT-USE-IN-PROD');
+  }
+  return new TextEncoder().encode(secret);
+}
+
+const JWT_SECRET = getJwtSecret();
 const SESSION_COOKIE = 'omniroute_session';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 

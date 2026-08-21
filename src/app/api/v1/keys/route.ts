@@ -4,23 +4,17 @@ import { getSession } from '../../../../lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-// Admin authorization: session-based (role=admin) OR x-admin-secret header
-async function isAdminAuthorized(req: NextRequest): Promise<boolean> {
-  // 1. Check session cookie — logged-in admin user
+// Admin authorization: session-based only (role=admin).
+// P0: The ADMIN_SECRET header backdoor has been removed — a leaked secret
+// would give full admin access to anyone. Session auth is sufficient.
+async function isAdminAuthorized(): Promise<boolean> {
   const session = await getSession();
-  if (session?.role === 'admin') return true;
-
-  // 2. Fallback: check x-admin-secret header (API / legacy)
-  const adminSecret = process.env.ADMIN_SECRET;
-  if (!adminSecret) return false;
-  
-  const authHeader = req.headers.get('x-admin-secret') || req.headers.get('authorization');
-  return authHeader === adminSecret || authHeader === `Bearer ${adminSecret}`;
+  return session?.role === 'admin';
 }
 
 // GET /api/v1/keys — List all API keys + stats
 export async function GET(req: NextRequest) {
-  if (!await isAdminAuthorized(req)) {
+  if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
   }
 
@@ -49,7 +43,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/v1/keys — Create a new API key
 export async function POST(req: NextRequest) {
-  if (!await isAdminAuthorized(req)) {
+  if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
   }
 
@@ -89,7 +83,7 @@ export async function POST(req: NextRequest) {
 
 // PATCH /api/v1/keys — Toggle API key active/inactive
 export async function PATCH(req: NextRequest) {
-  if (!await isAdminAuthorized(req)) {
+  if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
   }
 
@@ -114,7 +108,7 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE /api/v1/keys — Delete an API key
 export async function DELETE(req: NextRequest) {
-  if (!await isAdminAuthorized(req)) {
+  if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
   }
 

@@ -124,3 +124,18 @@ model User {
   @@index([email])
   @@index([provider, providerId])
 }
+
+// Persistent rate limiting — survives serverless cold starts unlike in-memory Maps.
+// Rows are cheap and auto-expired by the cleanup cron.
+model RateLimitRecord {
+  id          String   @id @default(cuid())
+  identifier  String   // IP address or "email:<email>"
+  action      String   // "scan" | "login" | "register"
+  windowStart DateTime // Start of the current window
+  count       Int      @default(1)
+  updatedAt   DateTime @updatedAt
+
+  @@unique([identifier, action])
+  @@index([identifier, action])
+  @@index([windowStart])
+}
