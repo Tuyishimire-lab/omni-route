@@ -7,8 +7,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=no_code', req.url));
   }
 
-  const clientId = process.env.GOOGLE_CLIENT_ID!;
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    console.error('[Google OAuth] Missing GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET env vars');
+    return NextResponse.redirect(new URL('/login?error=missing_env', req.url));
+  }
+
   // Always derive the base URL from the incoming request to avoid mismatches
   const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
   const redirectUri = `${baseUrl}/api/auth/google/callback`;
@@ -43,7 +49,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=no_email', req.url));
     }
 
-    // Upsert user and set session
     const result = await upsertOAuthUser({
       email: profile.email,
       name: profile.name || profile.email.split('@')[0],
@@ -53,12 +58,14 @@ export async function GET(req: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(result.error || 'unknown')}`, req.url));
+      console.error('[Google OAuth] upsertOAuthUser failed:', result.error);
+      return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
     }
 
     return NextResponse.redirect(new URL('/', req.url));
   } catch (err) {
-    console.error('[Google OAuth] Callback error:', err);
+    // Log server-side only — never expose error details in the redirect URL
+    console.error('[Google OAuth] Callback error:', err instanceof Error ? err.message : err);
     return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
   }
 }

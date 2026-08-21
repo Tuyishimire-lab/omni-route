@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertOAuthUser } from '../../../../../lib/auth';
-import { prisma } from '../../../../../lib/prisma';
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
@@ -14,12 +13,6 @@ export async function GET(req: NextRequest) {
   if (!clientId || !clientSecret) {
     console.error('[GitHub OAuth] Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET env vars');
     return NextResponse.redirect(new URL('/login?error=missing_env', req.url));
-  }
-
-  // Diagnostic: check if prisma.user model is available
-  if (!prisma.user) {
-    console.error('[GitHub OAuth] prisma.user is undefined — Prisma client not generated with User model');
-    return NextResponse.redirect(new URL('/login?error=prisma_no_user', req.url));
   }
 
   try {
@@ -40,7 +33,7 @@ export async function GET(req: NextRequest) {
     const tokens = await tokenRes.json();
     if (!tokens.access_token) {
       console.error('[GitHub OAuth] Token exchange failed:', tokens);
-      return NextResponse.redirect(new URL(`/login?error=token_failed&detail=${encodeURIComponent(tokens.error || 'no_token')}`, req.url));
+      return NextResponse.redirect(new URL('/login?error=token_failed', req.url));
     }
 
     // Get user profile
@@ -49,14 +42,16 @@ export async function GET(req: NextRequest) {
     });
     const profile = await profileRes.json();
 
-    // Get primary email (may not be public)
+    // Get primary email (may not be public on the profile)
     let email = profile.email;
     if (!email) {
       const emailsRes = await fetch('https://api.github.com/user/emails', {
         headers: { Authorization: `Bearer ${tokens.access_token}` },
       });
       const emails = await emailsRes.json();
-      const primary = emails.find((e: { primary: boolean; verified: boolean; email: string }) => e.primary && e.verified);
+      const primary = emails.find(
+        (e: { primary: boolean; verified: boolean; email: string }) => e.primary && e.verified
+      );
       email = primary?.email;
     }
 
@@ -73,13 +68,14 @@ export async function GET(req: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(result.error || 'unknown')}`, req.url));
+      console.error('[GitHub OAuth] upsertOAuthUser failed:', result.error);
+      return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
     }
 
     return NextResponse.redirect(new URL('/', req.url));
   } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error('[GitHub OAuth] Callback error:', msg);
-    return NextResponse.redirect(new URL(`/login?error=oauth_failed&detail=${encodeURIComponent(msg.slice(0, 120))}`, req.url));
+    // Log server-side only — never expose error details in the redirect URL
+    console.error('[GitHub OAuth] Callback error:', err instanceof Error ? err.message : err);
+    return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
   }
 }
