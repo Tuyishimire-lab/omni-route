@@ -1,10 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Network, Menu, X, Key } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Network, Menu, X, Key, LogIn, LogOut, Shield, ChevronDown, User } from 'lucide-react';
 import ApiSettingsModal from './ApiSettingsModal';
+
+interface UserSession {
+  userId: string;
+  email: string;
+  name: string;
+  role: string;
+  tier: string;
+  avatarUrl?: string | null;
+}
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -13,14 +22,55 @@ const navItems = [
   { name: 'Benchmark', href: '/benchmark' },
   { name: 'Leaderboard', href: '/leaderboard' },
   { name: 'agent.json', href: '/manifest' },
-  { name: 'Sandbox', href: '/simulator' },
   { name: 'Analytics', href: '/analytics' },
+  { name: 'Docs', href: '/docs' },
+  { name: 'Pricing', href: '/pricing' },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [user, setUser] = useState<UserSession | null>(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Fetch session on mount
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((data) => setUser(data.user || null))
+      .catch(() => setUser(null));
+  }, [pathname]); // re-check on route change
+
+  // Close user menu on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    setUser(null);
+    setIsUserMenuOpen(false);
+    router.push('/');
+    router.refresh();
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <>
@@ -74,13 +124,93 @@ export default function Navbar() {
               <Key className="w-4 h-4" />
             </button>
 
-            <Link
-              href="/audit"
-              className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-opacity"
-              style={{ background: 'linear-gradient(135deg, #05AD98, #038a79)', color: '#ffffff', boxShadow: '0 2px 12px rgba(5,173,152,0.2)' }}
-            >
-              Audit Site
-            </Link>
+            {/* Auth-aware section */}
+            {user ? (
+              <div className="relative" ref={userMenuRef}>
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all hover:bg-[rgba(187,191,191,0.06)]"
+                >
+                  {/* Avatar */}
+                  {user.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.name}
+                      className="w-7 h-7 rounded-full border border-[rgba(5,173,152,0.3)]"
+                    />
+                  ) : (
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#05AD98] to-[#038a79] flex items-center justify-center text-[10px] font-bold text-white">
+                      {getInitials(user.name)}
+                    </div>
+                  )}
+                  <span className="hidden sm:block text-xs text-[#BBBFBF] font-medium max-w-[80px] truncate">
+                    {user.name.split(' ')[0]}
+                  </span>
+                  <ChevronDown className="w-3 h-3 text-[#878787]" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div
+                    className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-[rgba(187,191,191,0.12)] overflow-hidden z-50"
+                    style={{ background: '#111514', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
+                  >
+                    {/* User info header */}
+                    <div className="px-4 py-3 border-b border-[rgba(187,191,191,0.08)]">
+                      <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                      <p className="text-[10px] text-[#878787] font-mono truncate">{user.email}</p>
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[rgba(5,173,152,0.10)] text-[#05AD98] border border-[rgba(5,173,152,0.25)]">
+                          {user.tier.toUpperCase()}
+                        </span>
+                        {user.role === 'admin' && (
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[rgba(184,160,74,0.10)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)]">
+                            ADMIN
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="py-1">
+                      {user.role === 'admin' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-white hover:bg-[rgba(187,191,191,0.06)] transition-colors"
+                        >
+                          <Shield className="w-3.5 h-3.5 text-[#B8A04A]" />
+                          Admin Dashboard
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-rose-400 hover:bg-[rgba(244,63,94,0.06)] transition-colors w-full text-left"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center gap-2">
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#BBBFBF] hover:text-white transition-colors"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-opacity"
+                  style={{ background: 'linear-gradient(135deg, #05AD98, #038a79)', color: '#ffffff', boxShadow: '0 2px 12px rgba(5,173,152,0.2)' }}
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -118,14 +248,60 @@ export default function Navbar() {
               >
                 <Key className="w-3.5 h-3.5" style={{ color: '#05AD98' }} /> Configure API Keys
               </button>
-              <Link
-                href="/audit"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center justify-center py-2.5 rounded-xl text-sm font-semibold"
-                style={{ background: 'linear-gradient(135deg, #05AD98, #038a79)', color: '#ffffff' }}
-              >
-                Audit Site
-              </Link>
+
+              {user ? (
+                <>
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    {user.avatarUrl ? (
+                      <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full border border-[rgba(5,173,152,0.3)]" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#05AD98] to-[#038a79] flex items-center justify-center text-xs font-bold text-white">
+                        {getInitials(user.name)}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-bold text-white">{user.name}</p>
+                      <p className="text-[10px] text-[#878787] font-mono">{user.email}</p>
+                    </div>
+                  </div>
+                  {user.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium"
+                      style={{ color: '#B8A04A', background: 'rgba(184,160,74,0.08)', border: '1px solid rgba(184,160,74,0.20)' }}
+                    >
+                      <Shield className="w-3.5 h-3.5" /> Admin Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-rose-400"
+                    style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.20)' }}
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium"
+                    style={{ color: '#BBBFBF', background: '#1A2020', border: '1px solid rgba(187,191,191,0.12)' }}
+                  >
+                    <LogIn className="w-3.5 h-3.5" /> Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-center py-2.5 rounded-xl text-sm font-semibold"
+                    style={{ background: 'linear-gradient(135deg, #05AD98, #038a79)', color: '#ffffff' }}
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

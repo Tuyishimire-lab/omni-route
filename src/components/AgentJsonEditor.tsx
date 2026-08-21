@@ -8,7 +8,8 @@ import {
   INDUSTRY_TEMPLATES,
   generateCloudflareWorkerScript,
   generateNextJsRouteHandler,
-  generateFastApiSnippet
+  generateFastApiSnippet,
+  generateEdgeWorkerWithBotDetection
 } from '../lib/agentProtocol';
 import {
   Cpu,
@@ -30,7 +31,7 @@ export default function AgentJsonEditor() {
   const searchParams = useSearchParams();
   const [manifest, setManifest] = useState<AgentManifest>(defaultSampleManifest);
   const [activeTab, setActiveTab] = useState<'visual' | 'json' | 'deploy'>('visual');
-  const [deployPlatform, setDeployPlatform] = useState<'nextjs' | 'cloudflare' | 'fastapi'>('nextjs');
+  const [deployPlatform, setDeployPlatform] = useState<'nextjs' | 'cloudflare' | 'fastapi' | 'edgeworker'>('nextjs');
   const [copiedText, setCopiedText] = useState<string | null>(null);
 
   // Auto-populate if domain query param is passed from audit/leaderboard
@@ -132,6 +133,8 @@ export default function AgentJsonEditor() {
         return generateCloudflareWorkerScript(manifest);
       case 'fastapi':
         return generateFastApiSnippet(manifest);
+      case 'edgeworker':
+        return generateEdgeWorkerWithBotDetection(manifest);
     }
   };
 
@@ -465,7 +468,8 @@ export default function AgentJsonEditor() {
               {[
                 { id: 'nextjs', label: 'Next.js (Vercel)' },
                 { id: 'cloudflare', label: 'Cloudflare Worker' },
-                { id: 'fastapi', label: 'FastAPI (Python)' }
+                { id: 'fastapi', label: 'FastAPI (Python)' },
+                { id: 'edgeworker', label: '⚡ Edge + Bot Detection' }
               ].map((p) => (
                 <button
                   key={p.id}
@@ -487,6 +491,7 @@ export default function AgentJsonEditor() {
               {deployPlatform === 'nextjs' && 'Create file at app/.well-known/agent.json/route.ts in your Next.js project:'}
               {deployPlatform === 'cloudflare' && 'Paste into Cloudflare Workers / Edge Gateway:'}
               {deployPlatform === 'fastapi' && 'Add route to your FastAPI / Python backend:'}
+              {deployPlatform === 'edgeworker' && 'Full Cloudflare Worker with AI bot detection + telemetry reporting to OmniRoute:'}
             </span>
             <button
               onClick={() => handleCopy(getDeployCode(), 'deploy')}

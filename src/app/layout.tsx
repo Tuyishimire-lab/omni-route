@@ -35,10 +35,9 @@ export default function RootLayout({
               <span>The Autonomous Traffic & GEO Standard</span>
             </div>
             <div className="flex items-center gap-6 text-[#878787]">
-              <span>Zero-Click Defense</span>
-              <span>agent.json Standard</span>
-              <span>Empirical Citations</span>
-              <span>P2P Liquidity Mesh</span>
+              <a href="/docs" className="hover:text-[#05AD98] transition-colors">Docs</a>
+              <a href="/pricing" className="hover:text-[#05AD98] transition-colors">Pricing</a>
+              <a href="/about" className="hover:text-[#05AD98] transition-colors">About</a>
             </div>
             <p className="text-[#878787]">© 2026 OmniRoute Protocol. All rights reserved.</p>
           </div>

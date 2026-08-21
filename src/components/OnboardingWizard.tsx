@@ -45,8 +45,8 @@ const STEPS = [
     iconBg: 'from-[rgba(5,173,152,0.15)] to-[rgba(3,138,121,0.08)] border-[rgba(5,173,152,0.25)]',
     badge: 'Step 3 of 3',
     title: 'Your GEO Operating System',
-    body: 'OmniRoute is a complete platform with 6 modules: Command Center, GEO Scanner, Domain Watchlist, Benchmark Arena, Prompt Sandbox, and Traffic Analytics.',
-    detail: 'Use the Benchmark Arena to compare your domain vs. competitors. Use the Watchlist to track your GEO score over time. Use the Prompt Sandbox to see exactly how AI engines answer questions about your brand.'
+    body: 'OmniRoute is a complete platform with 5 modules: Command Center, GEO Scanner, Domain Watchlist, Benchmark Arena, and Traffic Analytics.',
+    detail: 'Use the Benchmark Arena to compare your domain vs. competitors. Use the Watchlist to track your GEO score over time. Use the Analytics dashboard to monitor real AI bot traffic to your site.'
   }
 ];
 

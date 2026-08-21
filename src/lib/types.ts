@@ -123,29 +123,7 @@ export interface AgentManifest {
   };
 }
 
-export interface SimulationQuery {
-  id: string;
-  query: string;
-  category: string;
-  intent: 'Purchase' | 'Research' | 'Comparison' | 'How-to';
-  difficultyScore: number;
-}
 
-export interface SimulationResult {
-  query: string;
-  model: string;
-  generatedAnswer: string;
-  citedSources: {
-    title: string;
-    url: string;
-    domain: string;
-    isTargetDomain: boolean;
-    rank: number;
-    citationContext: string;
-  }[];
-  targetDomainShareOfVoice: number;
-  estimatedClickYieldMonthly: number;
-}
 
 export interface LiveTelemetryEvent {
   id: string;

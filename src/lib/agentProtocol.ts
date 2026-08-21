@@ -336,3 +336,115 @@ def get_agent_manifest():
     )
 `;
 }
+
+// ─── Edge Worker with Bot Detection & Telemetry ──────────────────────────────
+
+export function generateEdgeWorkerWithBotDetection(
+  manifest: AgentManifest,
+  omnirouteApiKey: string = 'YOUR_OMNIROUTE_API_KEY'
+): string {
+  const jsonString = JSON.stringify(manifest, null, 2);
+  const domain = manifest.domain || 'example.com';
+
+  return `// Cloudflare Worker — Bot Detection + agent.json + OmniRoute Telemetry
+// Deploy via: wrangler deploy
+
+const AGENT_MANIFEST = ${jsonString};
+
+// Known AI bot User-Agent signatures
+const AI_BOT_PATTERNS = [
+  { pattern: /PerplexityBot/i,      name: 'Perplexity Pro Sonar',       type: 'AI_CITATION' },
+  { pattern: /GPTBot/i,             name: 'OpenAI GPTBot',              type: 'AI_CITATION' },
+  { pattern: /OAI-SearchBot/i,      name: 'OpenAI SearchBot',           type: 'AI_CITATION' },
+  { pattern: /ChatGPT-User/i,       name: 'ChatGPT Browse',             type: 'AI_CITATION' },
+  { pattern: /ClaudeBot/i,          name: 'Anthropic ClaudeBot',         type: 'AI_CITATION' },
+  { pattern: /anthropic-ai/i,       name: 'Anthropic Crawler',           type: 'AI_CITATION' },
+  { pattern: /Google-Extended/i,    name: 'Google Gemini Extended',      type: 'AI_CITATION' },
+  { pattern: /GoogleOther/i,        name: 'Google Other Crawler',        type: 'GEO_INDEX_PING' },
+  { pattern: /Applebot-Extended/i,  name: 'Apple Intelligence Bot',      type: 'AI_CITATION' },
+  { pattern: /cohere-ai/i,          name: 'Cohere Crawler',              type: 'AI_CITATION' },
+  { pattern: /Bytespider/i,         name: 'ByteDance Crawler',           type: 'GEO_INDEX_PING' },
+  { pattern: /CCBot/i,              name: 'Common Crawl (AI Training)',   type: 'GEO_INDEX_PING' },
+  { pattern: /meta-externalagent/i, name: 'Meta AI Agent',               type: 'AGENT_TX' },
+];
+
+const OMNIROUTE_TELEMETRY_URL = 'https://omniroute.vercel.app/api/v1/analytics';
+const OMNIROUTE_API_KEY = '${omnirouteApiKey}';
+const DOMAIN = '${domain}';
+
+function detectBot(userAgent) {
+  for (const bot of AI_BOT_PATTERNS) {
+    if (bot.pattern.test(userAgent)) {
+      return { name: bot.name, type: bot.type };
+    }
+  }
+  return null;
+}
+
+async function reportToOmniRoute(event) {
+  try {
+    await fetch(OMNIROUTE_TELEMETRY_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': \`Bearer \${OMNIROUTE_API_KEY}\`,
+      },
+      body: JSON.stringify(event),
+    });
+  } catch (e) {
+    // Fire-and-forget — don't block the response
+    console.error('[OmniRoute Telemetry] Failed to report:', e);
+  }
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const userAgent = request.headers.get('user-agent') || '';
+
+    // 1. Serve agent.json at well-known path
+    if (url.pathname === '/.well-known/agent.json') {
+      // Always report agent.json requests as telemetry
+      const bot = detectBot(userAgent);
+      if (bot) {
+        reportToOmniRoute({
+          type: bot.type,
+          source: bot.name,
+          domain: DOMAIN,
+          destinationUrl: url.toString(),
+          intent: 'agent.json protocol discovery',
+          geoScoreAtTime: 85,
+          userAgent: userAgent.slice(0, 200),
+        });
+      }
+
+      return new Response(JSON.stringify(AGENT_MANIFEST, null, 2), {
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+          'X-OmniRoute-Protocol': 'agent-v1.2',
+          'X-Bot-Detected': bot ? bot.name : 'none',
+        },
+      });
+    }
+
+    // 2. Detect AI bots on ANY page and report telemetry
+    const bot = detectBot(userAgent);
+    if (bot) {
+      reportToOmniRoute({
+        type: bot.type,
+        source: bot.name,
+        domain: DOMAIN,
+        destinationUrl: url.toString(),
+        intent: \`Page crawl: \${url.pathname}\`,
+        geoScoreAtTime: 85,
+        userAgent: userAgent.slice(0, 200),
+      });
+    }
+
+    // 3. Pass through all traffic to origin
+    return fetch(request);
+  },
+};`;
+}

@@ -82,3 +82,45 @@ model TelemetryEvent {
   @@index([type])
 }
 
+// API keys for authenticated access and rate limiting
+model ApiKey {
+  id          String    @id @default(cuid())
+  key         String    @unique       // or-live_xxxx / or-test_xxxx
+  name        String                  // "My Production Key"
+  domain      String?                 // optional: restrict to a specific domain
+  tier        String    @default("free") // free | pro | enterprise
+  rateLimit   Int       @default(100) // requests per hour
+  usageCount  Int       @default(0)
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  isActive    Boolean   @default(true)
+  userId      String?                 // optional: link to owner
+
+  owner       User?     @relation(fields: [userId], references: [id])
+
+  @@index([key])
+  @@index([tier])
+  @@index([userId])
+}
+
+// Registered users
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String?                    // null for OAuth-only users
+  role          String    @default("user") // user | admin
+  tier          String    @default("free") // free | pro | enterprise
+  watchlist     String    @default("[]")   // JSON array of domain strings
+  avatarUrl     String?
+  provider      String    @default("email") // email | google | github
+  providerId    String?                     // OAuth provider user ID
+  createdAt     DateTime  @default(now())
+  lastLoginAt   DateTime?
+  isActive      Boolean   @default(true)
+
+  apiKeys       ApiKey[]
+
+  @@index([email])
+  @@index([provider, providerId])
+}

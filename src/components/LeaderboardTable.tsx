@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown, RefreshCw, Sparkles } from 'lucide-react';
+import Sparkline from './Sparkline';
 
 import { DEFAULT_LEADERBOARD_ENTRIES, LeaderboardEntry } from '../lib/defaultLeaderboard';
 
@@ -37,6 +38,7 @@ export default function LeaderboardTable({
     initialEntries && initialEntries.length > 0 ? initialEntries : DEFAULT_LEADERBOARD_ENTRIES
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [historyMap, setHistoryMap] = useState<Record<string, { date: string; score: number }[]>>({});
 
   // Sync initialEntries if provided
   useEffect(() => {
@@ -57,6 +59,16 @@ export default function LeaderboardTable({
           const json = await res.json();
           if (json.entries && Array.isArray(json.entries)) {
             setEntries(json.entries);
+            // Fetch sparkline history for all domains in the result
+            const domainList = json.entries.map((e: LeaderboardEntry) => e.domain).slice(0, 20);
+            if (domainList.length > 0) {
+              fetch(`/api/v1/leaderboard/history?domains=${domainList.join(',')}&days=14`)
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                  if (data?.history && isMounted) setHistoryMap(data.history);
+                })
+                .catch(() => {});
+            }
           }
           if (json.stats && onStatsUpdate) {
             onStatsUpdate(json.stats);
@@ -114,12 +126,13 @@ export default function LeaderboardTable({
       {/* Table */}
       <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
         {/* Table Head */}
-        <div className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_160px_80px_80px] gap-x-2 px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
+        <div className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px] gap-x-2 px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
           <span className="text-center">#</span>
           <span>Domain</span>
           <span className="text-center">GEO Score</span>
           <span className="text-center hidden sm:block">Score Bar</span>
           <span className="text-center hidden sm:block">Citation Win</span>
+          <span className="text-center hidden sm:block">History</span>
           <span className="text-center">Trend</span>
         </div>
 
@@ -143,7 +156,7 @@ export default function LeaderboardTable({
         {!isLoading && filtered.map((entry, idx) => (
           <div
             key={entry.domain}
-            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_160px_80px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
+            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
           >
             {/* Rank */}
             <div className="text-center">
@@ -191,6 +204,16 @@ export default function LeaderboardTable({
             {/* Citation % (hidden on mobile) */}
             <div className="hidden sm:block text-center">
               <span className="text-sm text-[#05AD98] font-mono font-semibold">{entry.citationWinRate}%</span>
+            </div>
+
+            {/* Sparkline History (hidden on mobile) */}
+            <div className="hidden sm:flex items-center justify-center">
+              <Sparkline
+                data={historyMap[entry.domain] || []}
+                width={110}
+                height={28}
+                showDots={true}
+              />
             </div>
 
             {/* Trend */}
