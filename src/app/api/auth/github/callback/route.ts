@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { upsertOAuthUser } from '../../../../../lib/auth';
+import { prisma } from '../../../../../lib/prisma';
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
@@ -7,8 +8,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=no_code', req.url));
   }
 
-  const clientId = process.env.GITHUB_CLIENT_ID!;
-  const clientSecret = process.env.GITHUB_CLIENT_SECRET!;
+  const clientId = process.env.GITHUB_CLIENT_ID;
+  const clientSecret = process.env.GITHUB_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    console.error('[GitHub OAuth] Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET env vars');
+    return NextResponse.redirect(new URL('/login?error=missing_env', req.url));
+  }
+
+  // Diagnostic: check if prisma.user model is available
+  if (!prisma.user) {
+    console.error('[GitHub OAuth] prisma.user is undefined — Prisma client not generated with User model');
+    return NextResponse.redirect(new URL('/login?error=prisma_no_user', req.url));
+  }
 
   try {
     // Exchange code for access token
@@ -28,7 +40,7 @@ export async function GET(req: NextRequest) {
     const tokens = await tokenRes.json();
     if (!tokens.access_token) {
       console.error('[GitHub OAuth] Token exchange failed:', tokens);
-      return NextResponse.redirect(new URL('/login?error=token_failed', req.url));
+      return NextResponse.redirect(new URL(`/login?error=token_failed&detail=${encodeURIComponent(tokens.error || 'no_token')}`, req.url));
     }
 
     // Get user profile
@@ -66,7 +78,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(new URL('/', req.url));
   } catch (err) {
-    console.error('[GitHub OAuth] Callback error:', err);
-    return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('[GitHub OAuth] Callback error:', msg);
+    return NextResponse.redirect(new URL(`/login?error=oauth_failed&detail=${encodeURIComponent(msg.slice(0, 120))}`, req.url));
   }
 }
