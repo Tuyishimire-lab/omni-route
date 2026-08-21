@@ -7,7 +7,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Google OAuth is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.' }, { status: 501 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
+  // Always derive the base URL from the incoming request to avoid mismatches
+  const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
   const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
   const params = new URLSearchParams({

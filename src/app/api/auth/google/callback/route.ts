@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
 
   const clientId = process.env.GOOGLE_CLIENT_ID!;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET!;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
+  // Always derive the base URL from the incoming request to avoid mismatches
+  const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
   const redirectUri = `${baseUrl}/api/auth/google/callback`;
 
   try {
