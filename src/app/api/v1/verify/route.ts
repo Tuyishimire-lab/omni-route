@@ -32,8 +32,10 @@ export async function GET(req: NextRequest) {
   }
 
   const checkedUrl = validation.normalizedUrl;
-  // Strip trailing slash — URL normalization adds one but ?site= values never have it
-  const cleanDomain = validation.domain.replace(/\/$/, '');
+  // Extract the raw hostname — do NOT use validation.domain which strips www.
+  // We need the exact hostname so ?site=www.uselocalpdf.com matches correctly.
+  const checkedHostname = new URL(checkedUrl).hostname; // e.g. "www.uselocalpdf.com"
+  const checkedHostnameNoWww = checkedHostname.replace(/^www\./, ''); // "uselocalpdf.com"
 
   let html = '';
   try {
@@ -113,9 +115,13 @@ export async function GET(req: NextRequest) {
   }
 
   const found = tagUrl !== null;
-  // Normalize both sides — strip trailing slashes before comparing
+  // Normalize site domain — strip trailing slash and compare against both
+  // the exact hostname (www.uselocalpdf.com) and the www-stripped form (uselocalpdf.com)
+  // so either value in ?site= is accepted as a valid match.
   const normSite = siteDomain?.replace(/\/$/, '') ?? null;
-  const domainMatch = method === 'query-param' ? normSite === cleanDomain : found;
+  const domainMatch = method === 'query-param'
+    ? normSite === checkedHostname || normSite === checkedHostnameNoWww
+    : found;
 
   return NextResponse.json<VerifyResult>({ found, method, siteDomain, domainMatch, tagUrl, checkedUrl });
 }
