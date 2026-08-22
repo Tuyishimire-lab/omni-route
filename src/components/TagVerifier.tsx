@@ -115,7 +115,7 @@ export default function TagVerifier() {
                 {result.tagUrl && <Detail label="Script src" value={result.tagUrl} mono />}
                 <div className="rounded-xl bg-amber-400/10 border border-amber-400/20 p-3 text-xs text-amber-200 leading-relaxed">
                   {result.method === 'query-param' && result.siteDomain
-                    ? <>The <code className="font-mono">?site={result.siteDomain}</code> parameter doesn{"'"}t match <code className="font-mono">{result.checkedUrl.replace('https://','')}</code>. Update it to match your actual domain so traffic is attributed correctly.</>
+                    ? <>The <code className="font-mono">?site={result.siteDomain}</code> parameter doesn{"'"}t match <code className="font-mono">{result.checkedUrl.replace('https://','').replace(/\/$/, '')}</code>. Update it to match your actual domain so traffic is attributed correctly.</>
                     : <>The tag is present but uses the Host header for domain attribution. Consider switching to the <code className="font-mono">?site=yourdomain.com</code> format for reliable attribution.</>}
                 </div>
               </>

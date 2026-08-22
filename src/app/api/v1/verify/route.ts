@@ -32,7 +32,8 @@ export async function GET(req: NextRequest) {
   }
 
   const checkedUrl = validation.normalizedUrl;
-  const cleanDomain = validation.domain;
+  // Strip trailing slash — URL normalization adds one but ?site= values never have it
+  const cleanDomain = validation.domain.replace(/\/$/, '');
 
   let html = '';
   try {
@@ -112,7 +113,9 @@ export async function GET(req: NextRequest) {
   }
 
   const found = tagUrl !== null;
-  const domainMatch = method === 'query-param' ? siteDomain === cleanDomain : found;
+  // Normalize both sides — strip trailing slashes before comparing
+  const normSite = siteDomain?.replace(/\/$/, '') ?? null;
+  const domainMatch = method === 'query-param' ? normSite === cleanDomain : found;
 
   return NextResponse.json<VerifyResult>({ found, method, siteDomain, domainMatch, tagUrl, checkedUrl });
 }
