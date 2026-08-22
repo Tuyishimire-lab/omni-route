@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Check, X, Zap, Shield, Crown, ArrowRight, HelpCircle, Code2, Database, Building2, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Pricing | OmniRoute â€” GEO Optimization & AI Traffic Plans',
+  title: 'Pricing | OmniRoute - GEO Optimization & AI Traffic Plans',
   description: 'Simple, transparent pricing for GEO optimization. Free to start, $79/mo for Pro, $249/mo for agencies. API access from $0.01/call. Data subscriptions for enterprise.',
 };
 
@@ -114,15 +114,15 @@ const FAQ_ITEMS = [
   },
   {
     q: 'How does the tracking tag work?',
-    a: 'You add one script tag to your site. Every time a visitor loads a page, the tag fires a lightweight beacon to OmniRoute. We classify the visitor\'s user-agent against 13+ known AI crawler signatures and log the event to your private analytics dashboard â€” no personal data collected.',
+    a: 'You add one script tag to your site. Every time a visitor loads a page, the tag fires a lightweight beacon to OmniRoute. We classify the visitor\'s user-agent against 13+ known AI crawler signatures and log the event to your private analytics dashboard - no personal data collected.',
   },
   {
     q: 'Why is Pro $79 instead of $29?',
-    a: 'The old $29 price didn\'t reflect the actual value: real AI traffic data, daily automated re-scans, and a verified tracking tag are infrastructure-level features. Comparable tools (Ahrefs, Semrush) charge $99â€“$449/mo. At $79 you get a data product, not just a dashboard.',
+    a: 'The old $29 price didn\'t reflect the actual value: real AI traffic data, daily automated re-scans, and a verified tracking tag are infrastructure-level features. Comparable tools (Ahrefs, Semrush) charge $99-$449/mo. At $79 you get a data product, not just a dashboard.',
   },
   {
     q: 'What does the API key unlock?',
-    a: 'The API lets you query GEO scores, verify agent.json files, and retrieve AI traffic data programmatically. Pro gets 500 req/day, Agency gets 10,000 req/day. Pricing is per-call for high-volume usage beyond these limits: $0.01â€“$0.05 per call depending on endpoint.',
+    a: 'The API lets you query GEO scores, verify agent.json files, and retrieve AI traffic data programmatically. Pro gets 500 req/day, Agency gets 10,000 req/day. Pricing is per-call for high-volume usage beyond these limits: $0.01-$0.05 per call depending on endpoint.',
   },
   {
     q: 'What are Data Subscriptions for Enterprise?',
@@ -130,7 +130,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Do I need a Cloudflare account?',
-    a: 'No. The tracking tag is a simple JavaScript snippet that works on any website â€” Next.js, WordPress, Webflow, or plain HTML. The optional Cloudflare Edge Worker adds server-side bot detection for sites that need it, but it\'s not required.',
+    a: 'No. The tracking tag is a simple JavaScript snippet that works on any website - Next.js, WordPress, Webflow, or plain HTML. The optional Cloudflare Edge Worker adds server-side bot detection for sites that need it, but it\'s not required.',
   },
 ];
 
@@ -237,7 +237,7 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { endpoint: '/api/v1/geo-score', price: '$0.02', unit: 'per call', desc: 'Full GEO audit of any domain â€” scores, citations, agent discoverability.' },
+            { endpoint: '/api/v1/geo-score', price: '$0.02', unit: 'per call', desc: 'Full GEO audit of any domain - scores, citations, agent discoverability.' },
             { endpoint: '/api/v1/verify', price: '$0.01', unit: 'per call', desc: 'Verify that a domain has a valid tracking tag or agent.json installed.' },
             { endpoint: '/api/v1/ai-traffic', price: '$0.05', unit: 'per call', desc: 'Return AI crawler visit volume and breakdown for a tracked domain.' },
           ].map((api) => (
@@ -267,7 +267,7 @@ export default function PricingPage() {
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[rgba(184,160,74,0.12)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)]">ENTERPRISE</span>
             </div>
             <p className="text-sm text-[#878787]">
-              The OmniRoute index is a unique ground-truth dataset â€” which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
+              The OmniRoute index is a unique ground-truth dataset - which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
             </p>
           </div>
           <Link href="mailto:enterprise@omniroute.network" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
@@ -277,7 +277,7 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { name: 'Vertical Leaderboard', price: '$500', period: '/month', desc: 'Private weekly ranking of AI citation leaders in your industry vertical â€” delivered as API or CSV.' },
+            { name: 'Vertical Leaderboard', price: '$500', period: '/month', desc: 'Private weekly ranking of AI citation leaders in your industry vertical - delivered as API or CSV.' },
             { name: 'Competitor Benchmarking', price: '$1,500', period: '/month', desc: 'Track how your GEO score and AI citation share trends vs. up to 20 named competitors over time.' },
             { name: 'Full Index Access', price: '$5,000', period: '/month', desc: 'Raw access to the full domain index, AI crawler visit data, and citation events via private API endpoint.' },
           ].map((product) => (

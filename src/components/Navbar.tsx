@@ -20,7 +20,7 @@ interface UserSession {
   avatarUrl?: string | null;
 }
 
-// â”€â”€ Nav structure â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Nav structure 
 interface NavItem  { name: string; href: string; icon: React.ReactNode; desc: string }
 interface NavGroup { label: string; items: NavItem[] }
 type NavEntry = { kind: 'link'; name: string; href: string }
@@ -62,7 +62,7 @@ const NAV: NavEntry[] = [
   { kind: 'link', name: 'Pricing', href: '/pricing' },
 ];
 
-// â”€â”€ NavLink â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  NavLink 
 function NavLink({ name, href, pathname }: { name: string; href: string; pathname: string }) {
   const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
   return (
@@ -78,7 +78,7 @@ function NavLink({ name, href, pathname }: { name: string; href: string; pathnam
   );
 }
 
-// â”€â”€ NavDropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  NavDropdown 
 function NavDropdown({ group, pathname }: { group: NavGroup; pathname: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -140,7 +140,7 @@ function NavDropdown({ group, pathname }: { group: NavGroup; pathname: string })
   );
 }
 
-// â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Main 
 export default function Navbar() {
   const pathname = usePathname();
   const router   = useRouter();
