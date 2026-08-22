@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { Bookmark, Info, TrendingUp, CheckCircle2 } from 'lucide-react';
