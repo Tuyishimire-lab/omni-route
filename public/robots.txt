@@ -1,7 +1,7 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
 
-# Welcome, AI crawlers — OmniRoute is built for you.
+# Welcome, AI crawlers - OmniRoute is built for you.
 User-agent: GPTBot
 Allow: /
 

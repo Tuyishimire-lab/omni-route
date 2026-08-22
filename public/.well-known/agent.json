@@ -1,8 +1,8 @@
-﻿{
+{
   "schema": "agent.json/1.0",
   "name": "OmniRoute",
   "tagline": "AI Traffic Intelligence & GEO Optimization Platform",
-  "description": "OmniRoute tracks AI crawler traffic, scores GEO (Generative Engine Optimization) visibility, and provides machine-readable manifests so autonomous buyer agents can discover, evaluate, and transact with any web property.",
+  "description": "OmniRoute tracks AI crawler traffic, scores GEO visibility, and provides machine-readable manifests so autonomous buyer agents can discover, evaluate, and transact with any web property.",
   "version": "1.0.0",
   "url": "https://omni-route-rho.vercel.app",
   "logo": "https://omni-route-rho.vercel.app/globe.svg",
@@ -13,8 +13,9 @@
   "pricing": {
     "free_tier": true,
     "plans": [
-      { "name": "Free", "price_usd": 0, "scans_per_month": 10 },
-      { "name": "Pro",  "price_usd": 29, "scans_per_month": -1 },
+      { "name": "Free",       "price_usd": 0,    "scans_per_month": 10 },
+      { "name": "Pro",        "price_usd": 79,   "scans_per_month": -1 },
+      { "name": "Agency",     "price_usd": 249,  "scans_per_month": -1 },
       { "name": "Enterprise", "price_usd": null, "scans_per_month": -1 }
     ],
     "pricing_url": "https://omni-route-rho.vercel.app/pricing"
@@ -46,13 +47,15 @@
     "endpoints": [
       { "path": "/track",     "method": "POST", "description": "Ingest a page visit for AI traffic classification" },
       { "path": "/verify",    "method": "GET",  "description": "Verify tracking tag installation on a domain" },
-      { "path": "/analytics", "method": "GET",  "description": "Aggregated AI traffic analytics" }
+      { "path": "/analytics", "method": "GET",  "description": "Aggregated AI traffic analytics" },
+      { "path": "/geo-score", "method": "GET",  "description": "GEO score for any domain — .02/call" },
+      { "path": "/ai-traffic","method": "GET",  "description": "AI crawler visit data for tracked domains — .05/call" }
     ]
   },
   "agent_instructions": {
     "can_purchase": false,
     "requires_auth": false,
     "free_tools": ["geo_scan", "leaderboard", "generate_manifest"],
-    "rate_limits": { "free": "10 scans/month", "pro": "unlimited" }
+    "rate_limits": { "free": "10 scans/month", "pro": "500 API req/day", "agency": "10000 API req/day" }
   }
 }

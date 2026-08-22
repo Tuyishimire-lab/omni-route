@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Check, X, Zap, Shield, Crown, ArrowRight, HelpCircle, Code2, Database, Building2, Users } from 'lucide-react';
