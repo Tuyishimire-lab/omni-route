@@ -32,7 +32,7 @@ const intents = [
   'Verified Human Referral Influx'
 ];
 
-export function generateMockTelemetryEvent(): LiveTelemetryEvent {
+export function generateMockTelemetryEvent(minutesAgo = 0): LiveTelemetryEvent {
   const source = sources[Math.floor(Math.random() * sources.length)];
   const targetDomain = domainList[Math.floor(Math.random() * domainList.length)] || 'stripe.com';
   const path = paths[Math.floor(Math.random() * paths.length)];
@@ -43,9 +43,15 @@ export function generateMockTelemetryEvent(): LiveTelemetryEvent {
   else if (source.includes('Human')) eventType = 'P2P_MESH_CLICK';
   else if (Math.random() > 0.5) eventType = 'GEO_INDEX_PING';
 
+  // Accept an optional past-offset (seconds) for initial seeding so events
+  // don't all carry the same timestamp.
+  const ts = minutesAgo > 0
+    ? new Date(Date.now() - minutesAgo * 60_000).toLocaleTimeString()
+    : new Date().toLocaleTimeString();
+
   return {
     id: 'evt-' + Math.random().toString(36).substring(2, 9),
-    timestamp: new Date().toLocaleTimeString(),
+    timestamp: ts,
     type: eventType,
     source,
     destinationUrl: `https://${targetDomain}${path}`,
@@ -56,5 +62,10 @@ export function generateMockTelemetryEvent(): LiveTelemetryEvent {
 }
 
 export function getInitialTelemetry(count: number = 7): LiveTelemetryEvent[] {
-  return Array.from({ length: count }, () => generateMockTelemetryEvent());
+  // Stagger timestamps: oldest event is ~count×3 minutes ago, newest is ~now.
+  // This makes the demo feed look like a realistic rolling stream, not a
+  // snapshot where every row shares the same second.
+  return Array.from({ length: count }, (_, i) =>
+    generateMockTelemetryEvent(Math.round((count - i) * 3 + Math.random() * 2))
+  );
 }

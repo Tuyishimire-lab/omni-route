@@ -24,9 +24,9 @@ export default function HomePage() {
   const router = useRouter();
   const [searchDomain, setSearchDomain] = useState('');
   const [liveStats, setLiveStats] = useState({
-    domainsRanked: 50,
-    avgGeoIndex: 87,
-    totalScans: 50,
+    domainsRanked: 8,
+    avgGeoIndex: 91,
+    totalScans: 48,
   });
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-base sm:text-lg text-[#BBBFBF] max-w-2xl mx-auto leading-relaxed">
-          Traditional SEO is dying to zero-click AI summaries. OmniRoute optimizes your semantic authority and deploys machine-readable <code className="text-[#05AD98] font-mono">agent.json</code> endpoints to guarantee top citations and direct transactions.
+          Traditional SEO is losing ground to zero-click AI summaries. OmniRoute measures your semantic authority and deploys machine-readable <code className="text-[#05AD98] font-mono">agent.json</code> endpoints to maximize citation probability and enable direct agent transactions.
         </p>
 
         {/* Live Domain Scanner Box */}
@@ -188,7 +188,7 @@ export default function HomePage() {
             </div>
             <h3 className="text-lg font-bold text-white">3. P2P Verified Traffic Liquidity</h3>
             <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              A decentralized syndication mesh with cryptographic click attestation. Bypasses the expensive Google/Meta ad duopolies with zero bot fraud and high-intent human referrals.
+              A decentralized syndication mesh with cryptographic click attestation. Reduces dependence on Google/Meta ad spend by routing verified, high-intent agent and human referrals directly to your endpoints.
             </p>
             <Link href="/analytics" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
               View Liquidity Stream <ArrowRight className="w-3.5 h-3.5" />

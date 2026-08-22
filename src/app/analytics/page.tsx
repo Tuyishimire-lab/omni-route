@@ -166,8 +166,8 @@ export default async function AnalyticsPage() {
           </div>
 
           <div className="p-4 bg-[rgba(5,173,152,0.10)] rounded-xl border border-[rgba(5,173,152,0.20)] text-xs text-emerald-200">
-            <span className="font-semibold block mb-1">OmniRoute Traffic Liquidity Guarantee:</span>
-            By serving machine-readable vectors and cryptographic click attestations, all inbound traffic carries a 0% bounce rate for automated API queries and a verified sub-200ms conversion funnel.
+            <span className="font-semibold block mb-1">How OmniRoute Traffic Scoring Works:</span>
+            By serving machine-readable semantic vectors and cryptographic click attestations, inbound traffic is classified by intent and source. This makes automated API queries and agentic referrals attributable and auditable — replacing opaque ad-click tracking with verifiable signals.
           </div>
         </div>
       </div>

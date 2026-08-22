@@ -116,6 +116,14 @@ export default function RoiCalculator() {
           >
             Run Free GEO Audit on Your Domain <ArrowRight className="w-4 h-4" />
           </Link>
+
+          {/* Model assumptions — shown to build trust with sophisticated buyers */}
+          <p className="text-[10px] text-[#878787] leading-relaxed pt-1 border-t border-[rgba(187,191,191,0.08)]">
+            <span className="font-semibold text-[#BBBFBF]">Model assumptions:</span>{' '}
+            38% of visits estimated to have agentic intent (Gartner 2024 AI search adoption estimate);
+            4.2% agentic conversion rate; $8 equivalent CPC savings per 100 agent visits.
+            Figures are illustrative projections — actual results depend on your domain, industry, and GEO readiness score.
+          </p>
         </div>
       </div>
     </div>
