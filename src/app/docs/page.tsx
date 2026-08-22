@@ -40,6 +40,23 @@ export default function DocsPage() {
           {' '}<code className="text-[#05AD98] font-mono">/.well-known/agent.json</code> that enables AI search engines and
           autonomous buyer agents to discover, query, and transact with your website — without human intermediary lag.
         </p>
+
+        {/* Quick install link */}
+        <div className="flex flex-wrap gap-3 pt-1">
+          <Link
+            href="/docs/install"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-all"
+          >
+            Install Tracking Snippet
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/manifest"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[rgba(187,191,191,0.15)] bg-[#111514] hover:border-[rgba(5,173,152,0.30)] text-white text-sm font-semibold transition-all"
+          >
+            agent.json Studio
+          </Link>
+        </div>
       </section>
 
       {/* Overview */}
