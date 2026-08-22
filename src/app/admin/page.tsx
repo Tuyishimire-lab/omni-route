@@ -440,9 +440,12 @@ function TrackedDomains() {
 
   React.useEffect(() => {
     fetch('/api/admin/tracked-sites')
-      .then(r => r.json())
-      .then(d => { if (Array.isArray(d)) setRows(d); else setError(d.error ?? 'Failed'); })
-      .catch(() => setError('Network error'))
+      .then(async r => {
+        const d = await r.json();
+        if (!r.ok) throw new Error(d.error ?? `HTTP ${r.status}`);
+        if (Array.isArray(d)) setRows(d); else throw new Error(d.error ?? 'Unexpected response');
+      })
+      .catch(e => setError(e instanceof Error ? e.message : 'Network error'))
       .finally(() => setLoading(false));
   }, []);
 
