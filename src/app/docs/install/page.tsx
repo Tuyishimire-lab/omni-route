@@ -32,40 +32,33 @@ const SNIPPETS: Record<string, { file: string; code: string; note: string }> = {
   },
   'nextjs-app': {
     file: 'app/layout.tsx',
-    note: 'strategy="afterInteractive" means the tag never blocks your page render.',
-    code: `import Script from 'next/script';
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+    note: 'Use a native <script> tag in <head> — NOT the Next.js <Script> component. The Script component injects via JS at runtime, so the tag won\'t appear in raw HTML and our verifier (and some crawlers) won\'t detect it.',
+    code: `export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        {children}
-
-        {/* OmniRoute Tag */}
-        <Script
-          src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"
-          strategy="afterInteractive"
-        />
-      </body>
+      <head>
+        {/* OmniRoute Tag — native script tag so it appears in raw HTML */}
+        <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com" />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }`,
   },
   'nextjs-pages': {
     file: 'pages/_app.tsx',
-    note: 'Adding it in _app.tsx loads it once across all page navigations.',
-    code: `import Script from 'next/script';
+    note: 'Use a native <script> tag — the Next.js <Script> component with afterInteractive injects via JS, hiding the tag from raw HTML. A native tag in <Head> is visible to crawlers and our verifier.',
+    code: `import Head from 'next/head';
 import type { AppProps } from 'next/app';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
+      <Head>
+        {/* OmniRoute Tag */}
+        <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com" />
+      </Head>
       <Component {...pageProps} />
-      {/* OmniRoute Tag */}
-      <Script
-        src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"
-        strategy="afterInteractive"
-      />
     </>
   );
 }`,
