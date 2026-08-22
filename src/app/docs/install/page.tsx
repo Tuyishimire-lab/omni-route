@@ -6,6 +6,7 @@ import {
   Copy, CheckCircle2, Code, Globe, Zap, Shield,
   ArrowRight, Terminal, AlertCircle, ChevronRight
 } from 'lucide-react';
+import TagVerifier from '../../../components/TagVerifier';
 
 const ENDPOINT = 'https://omni-route-rho.vercel.app';
 
@@ -218,6 +219,15 @@ export default function InstallPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Verify widget */}
+      <section className="glass-panel rounded-2xl p-6 sm:p-8 border border-[rgba(187,191,191,0.10)] space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-white">Verify your installation</h2>
+          <p className="text-xs text-[#878787] mt-1">Enter your domain and we&apos;ll check whether the OmniRoute Tag is live on your site.</p>
+        </div>
+        <TagVerifier />
       </section>
 
       {/* Framework tabs */}
