@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
       success: true,
       keys: keys.map(k => ({
         ...k,
-        // Mask key for display (show first 12 + last 4 chars)
-        maskedKey: k.key.slice(0, 12) + '...' + k.key.slice(-4),
+        // Only the display prefix is stored — full keys are never retrievable
+        maskedKey: k.keyPrefix + '…',
         lastUsedAt: k.lastUsedAt?.toISOString() ?? null,
         createdAt: k.createdAt.toISOString(),
       })),

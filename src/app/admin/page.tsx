@@ -11,6 +11,7 @@ interface ApiKeyRecord {
   id: string;
   key: string;
   maskedKey: string;
+  keyPrefix: string;
   name: string;
   tier: string;
   domain: string | null;
@@ -84,10 +85,12 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Auto-fetch keys when authenticated as admin
+  // Auto-fetch keys when authenticated as admin — deferred so the setState
+  // inside fetchKeys doesn't fire synchronously in the effect body.
   useEffect(() => {
     if (authChecked && user?.role === 'admin') {
-      fetchKeys();
+      const t = setTimeout(() => { fetchKeys(); }, 0);
+      return () => clearTimeout(t);
     }
   }, [authChecked, user, fetchKeys]);
 
@@ -362,12 +365,12 @@ export default function AdminPage() {
             <div className="min-w-0">
               <p className="text-sm font-bold text-white truncate">{k.name}</p>
               <div className="flex items-center gap-1.5 mt-0.5">
-                <code className="text-[10px] font-mono text-[#878787] truncate">{k.maskedKey}</code>
+                <code className="text-[10px] font-mono text-[#878787] truncate">{k.keyPrefix}…</code>
                 <button
-                  onClick={() => copyToClipboard(k.key)}
+                  onClick={() => copyToClipboard(k.keyPrefix)}
                   className="text-[#878787] hover:text-[#05AD98] transition-colors shrink-0"
                 >
-                  {copiedKey === k.key ? <Check className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
+                  {copiedKey === k.keyPrefix ? <Check className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
                 </button>
               </div>
               {k.domain && <span className="text-[9px] text-[#878787] font-mono">🔒 {k.domain}</span>}

@@ -1,5 +1,6 @@
 import { GeoAuditReport, LiveExtractionMetadata, EngineScore, EntityNode, Recommendation } from './types';
 import { validateAndSanitizeUrl, scanReportCache } from './security';
+import { getCachedScanReport } from './db';
 
 // Jina Reader API — converts any URL to clean LLM-ready markdown, no API key needed.
 // Docs: https://jina.ai/reader/
@@ -116,8 +117,12 @@ export async function crawlAndAnalyzeUrl(
   const fullUrl = validation.normalizedUrl;
   const cleanDomain = validation.domain;
 
-  // Check in-memory cache first (unless explicit cache bypass is requested)
+  // Check caches first (unless explicit bypass is requested).
+  // DB cache is authoritative across serverless instances; the in-memory
+  // cache is just a fast-path for warm instances.
   if (!options.bypassCache) {
+    const dbCached = await getCachedScanReport(cleanDomain).catch(() => null);
+    if (dbCached) return dbCached;
     const cached = scanReportCache.get(cleanDomain);
     if (cached) {
       return cached;

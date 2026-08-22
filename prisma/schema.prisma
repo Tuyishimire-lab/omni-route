@@ -85,7 +85,8 @@ model TelemetryEvent {
 // API keys for authenticated access and rate limiting
 model ApiKey {
   id          String    @id @default(cuid())
-  key         String    @unique       // or-live_xxxx / or-test_xxxx
+  keyHash     String    @unique       // sha256 of the full key — plaintext is NEVER stored
+  keyPrefix   String                  // display prefix, e.g. "or-live_ab12cd34"
   name        String                  // "My Production Key"
   domain      String?                 // optional: restrict to a specific domain
   tier        String    @default("free") // free | pro | enterprise
@@ -98,7 +99,8 @@ model ApiKey {
 
   owner       User?     @relation(fields: [userId], references: [id])
 
-  @@index([key])
+  @@index([keyHash])
+  @@index([keyPrefix])
   @@index([tier])
   @@index([userId])
 }

@@ -15,6 +15,19 @@ export function generateKeyString(prefix: 'live' | 'test' = 'live'): string {
   return `or-${prefix}_${random}`;
 }
 
+/**
+ * Hash an API key for at-rest storage. Keys are 48+ chars of CSPRNG entropy,
+ * so a fast sha256 is sufficient — no need for bcrypt here.
+ */
+export function hashApiKey(keyString: string): string {
+  return crypto.createHash('sha256').update(keyString).digest('hex');
+}
+
+/** Display prefix so users can identify keys without exposing the full secret. */
+export function keyDisplayPrefix(keyString: string): string {
+  return keyString.slice(0, 16);
+}
+
 export async function createApiKey(
   name: string,
   tier: 'free' | 'pro' | 'enterprise' = 'free',
@@ -25,7 +38,8 @@ export async function createApiKey(
 
   const apiKey = await prisma.apiKey.create({
     data: {
-      key,
+      keyHash: hashApiKey(key),
+      keyPrefix: keyDisplayPrefix(key),
       name,
       tier,
       domain: domain ?? null,
@@ -33,7 +47,8 @@ export async function createApiKey(
     },
   });
 
-  return apiKey;
+  // Return the plaintext key exactly once — it is never retrievable again.
+  return { ...apiKey, key };
 }
 
 // ─── Key Validation ──────────────────────────────────────────────────────────
@@ -56,8 +71,9 @@ export async function validateApiKey(
   }
 
   try {
+    const keyHash = hashApiKey(keyString);
     const apiKey = await prisma.apiKey.findUnique({
-      where: { key: keyString },
+      where: { keyHash },
     });
 
     if (!apiKey) {
@@ -72,37 +88,44 @@ export async function validateApiKey(
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const isRecentlyReset = !apiKey.lastUsedAt || apiKey.lastUsedAt < hourAgo;
 
-    let currentUsage = apiKey.usageCount;
-    if (isRecentlyReset) {
-      currentUsage = 0;
-    }
-
-    if (currentUsage >= apiKey.rateLimit) {
-      return {
-        valid: false,
-        error: `Rate limit exceeded. ${apiKey.tier} tier allows ${apiKey.rateLimit} requests/hour.`,
-      };
-    }
-
-    // Increment usage
-    await prisma.apiKey.update({
-      where: { id: apiKey.id },
+    // Atomic conditional increment — prevents concurrent requests from
+    // blowing past the limit via a read-then-write race.
+    const updated = await prisma.apiKey.updateMany({
+      where: {
+        id: apiKey.id,
+        OR: [
+          // Window expired — reset to 1
+          { lastUsedAt: { lt: hourAgo } },
+          { lastUsedAt: null },
+          // Window active — only increment if under the limit
+          ...(isRecentlyReset ? [] : [{ usageCount: { lt: apiKey.rateLimit } }]),
+        ],
+      },
       data: {
         usageCount: isRecentlyReset ? 1 : { increment: 1 },
         lastUsedAt: new Date(),
       },
     });
 
+    if (updated.count === 0) {
+      return {
+        valid: false,
+        error: `Rate limit exceeded. ${apiKey.tier} tier allows ${apiKey.rateLimit} requests/hour.`,
+      };
+    }
+
+    const currentUsage = isRecentlyReset ? 1 : apiKey.usageCount + 1;
+
     return {
       valid: true,
       key: {
         id: apiKey.id,
-        key: apiKey.key,
+        key: keyString,
         name: apiKey.name,
         tier: apiKey.tier,
         domain: apiKey.domain,
         rateLimit: apiKey.rateLimit,
-        usageCount: currentUsage + 1,
+        usageCount: currentUsage,
       },
     };
   } catch (err) {
@@ -160,7 +183,7 @@ export async function listApiKeys() {
     orderBy: { createdAt: 'desc' },
     select: {
       id: true,
-      key: true,
+      keyPrefix: true,
       name: true,
       tier: true,
       domain: true,

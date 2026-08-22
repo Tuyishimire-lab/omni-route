@@ -31,8 +31,8 @@ function AuditContent() {
       } else {
         setErrorMessage(data.error || 'Failed to scan domain');
       }
-    } catch (err: any) {
-      setErrorMessage(err?.message || 'Network error executing scan');
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : 'Network error executing scan');
     } finally {
       setIsScanning(false);
     }
@@ -40,8 +40,11 @@ function AuditContent() {
 
   useEffect(() => {
     const urlDomain = searchParams.get('url') || searchParams.get('domain') || 'stripe.com';
-    setDomainInput(urlDomain);
-    fetchScan(urlDomain);
+    const t = setTimeout(() => {
+      setDomainInput(urlDomain);
+      fetchScan(urlDomain);
+    }, 0);
+    return () => clearTimeout(t);
   }, [searchParams]);
 
   const handleScan = (e: React.FormEvent) => {

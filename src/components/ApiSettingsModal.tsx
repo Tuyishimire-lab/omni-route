@@ -14,12 +14,18 @@ export default function ApiSettingsModal({ isOpen, onClose }: ApiSettingsModalPr
   const [firecrawlKey, setFirecrawlKey] = useState('');
   const [isSaved, setIsSaved] = useState(false);
 
+  // Lazy initializer can't touch localStorage during SSR, so hydrate on mount
+  // via a one-shot effect that only runs when the modal opens.
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (!isOpen || typeof window === 'undefined') return;
+    let cancelled = false;
+    setTimeout(() => {
+      if (cancelled) return;
       setPerplexityKey(localStorage.getItem('omni_perplexity_key') || '');
       setOpenaiKey(localStorage.getItem('omni_openai_key') || '');
       setFirecrawlKey(localStorage.getItem('omni_firecrawl_key') || '');
-    }
+    }, 0);
+    return () => { cancelled = true; };
   }, [isOpen]);
 
   const handleSave = () => {

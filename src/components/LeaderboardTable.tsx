@@ -40,10 +40,12 @@ export default function LeaderboardTable({
   const [isLoading, setIsLoading] = useState(false);
   const [historyMap, setHistoryMap] = useState<Record<string, { date: string; score: number }[]>>({});
 
-  // Sync initialEntries if provided
+  // Sync initialEntries if provided — deferred so it doesn't fire synchronously
+  // inside the effect body (avoids cascading-render lint error).
   useEffect(() => {
     if (initialEntries && initialEntries.length > 0 && entries.length === 0) {
-      setEntries(initialEntries);
+      const t = setTimeout(() => setEntries(initialEntries), 0);
+      return () => clearTimeout(t);
     }
   }, [initialEntries, entries.length]);
 

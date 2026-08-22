@@ -11,9 +11,9 @@ export async function GET(request: NextRequest) {
       success: true,
       data: summary,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, error: error?.message || 'Failed to fetch analytics' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to fetch analytics' },
       { status: 500 }
     );
   }
@@ -41,9 +41,9 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true, event });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json(
-      { success: false, error: error?.message || 'Failed to record telemetry' },
+      { success: false, error: error instanceof Error ? error.message : 'Failed to record telemetry' },
       { status: 500 }
     );
   }

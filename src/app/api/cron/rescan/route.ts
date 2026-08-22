@@ -2,18 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { crawlAndAnalyzeUrl } from '../../../../lib/liveCrawler';
 import { saveScanToDB } from '../../../../lib/db';
+import { cleanupExpiredRateLimits } from '../../../../lib/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Verify Vercel Cron Secret (if configured)
+    // 1. Verify Vercel Cron Secret — mandatory in production so the endpoint
+    //    can't be abused as a free scan farm.
     const authHeader = req.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;
 
+    if (process.env.NODE_ENV === 'production' && (!cronSecret || authHeader !== `Bearer ${cronSecret}`)) {
+      return NextResponse.json({ error: 'Unauthorized cron request' }, { status: 401 });
+    }
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       return NextResponse.json({ error: 'Unauthorized cron request' }, { status: 401 });
     }
+
+    // 2. Housekeeping: purge expired rate-limit rows (table would grow unbounded)
+    await cleanupExpiredRateLimits();
 
     // 2. Fetch the oldest scanned domains to refresh (e.g. top 15 per batch)
     const domainsToRefresh = await prisma.domain.findMany({

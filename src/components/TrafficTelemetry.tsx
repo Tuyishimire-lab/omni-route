@@ -12,17 +12,24 @@ interface TrafficTelemetryProps {
 export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProps) {
   const [events, setEvents] = useState<LiveTelemetryEvent[]>(() => initialEvents || getInitialTelemetry(8));
   const [isLive, setIsLive] = useState(true);
+  // Demo mode: no real events were provided, so the stream is simulated.
+  const [isDemo, setIsDemo] = useState(!initialEvents || initialEvents.length === 0);
 
-  // Sync initial events if passed
+  // Sync initial events if passed — deferred to avoid sync setState in effect
   useEffect(() => {
     if (initialEvents && initialEvents.length > 0) {
-      setEvents(initialEvents);
+      const t = setTimeout(() => {
+        setEvents(initialEvents);
+        setIsDemo(false);
+      }, 0);
+      return () => clearTimeout(t);
     } else {
       fetch('/api/v1/analytics')
         .then((res) => (res.ok ? res.json() : null))
         .then((json) => {
           if (json?.data?.events && json.data.events.length > 0) {
             setEvents(json.data.events);
+            setIsDemo(false);
           }
         })
         .catch((err) => console.warn('Could not fetch DB telemetry:', err));
@@ -62,13 +69,20 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               Live Autonomous Traffic & Attestation Feed
+              {isDemo && (
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  Demo Data
+                </span>
+              )}
               <span className="flex h-2 w-2 relative">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
             </h3>
             <p className="text-[11px] text-[#878787]">
-              Real-time cryptographic stream of AI agent queries, generative citations, and direct purchases from Turso database.
+              {isDemo
+                ? 'Simulated stream for demonstration purposes — events shown are illustrative, not real traffic.'
+                : 'Real-time cryptographic stream of AI agent queries, generative citations, and direct purchases from Turso database.'}
             </p>
           </div>
         </div>

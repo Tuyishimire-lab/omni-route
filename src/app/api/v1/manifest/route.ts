@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const domain = searchParams.get('domain');
 
-  let manifest = { ...defaultSampleManifest };
+  const manifest = { ...defaultSampleManifest };
   if (domain) {
     manifest.domain = domain;
     manifest.siteName = domain.split('.')[0].toUpperCase() + ' Agent Node';

@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OmniRoute
 
-## Getting Started
+**Generative Engine Optimization (GEO) and AI-traffic analytics for the post-search web.**
 
-First, run the development server:
+OmniRoute tells you how visible your domain is to AI answer engines (ChatGPT, Perplexity, Claude, Gemini), and — uniquely — measures the AI agent traffic *actually hitting your site*.
+
+## What it does
+
+| Capability | How it works |
+|---|---|
+| **GEO Audit** (`/audit`) | Live-crawls any URL via [Jina Reader](https://jina.ai/reader/), extracts real signals (JSON-LD schemas, heading structure, content depth, entity markup) and computes a transparent weighted score. Falls back to a clearly-labeled deterministic estimate when a site can't be crawled. |
+| **Agent Traffic Analytics** | Install one `<script>` tag; OmniRoute classifies every visitor server-side as human, AI training crawler, AI search crawler, autonomous agent, or answer-engine referral — then records real telemetry to your dashboard. |
+| **Watchlist** (`/watchlist`) | Continuous score tracking with history sparklines and trend deltas across your domain portfolio. |
+| **Leaderboard** (`/leaderboard`) | Public ranking of domains by GEO authority. |
+| **agent.json Generator** (`/manifest`) | Produce machine-readable manifests so autonomous buyer agents can discover and transact with your products. |
+| **API** (`/docs`) | Key-authenticated REST API with tiered rate limits (free / pro / enterprise). |
+
+## Quick start
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local   # set DATABASE_URL + JWT_SECRET
+pnpm exec prisma migrate deploy
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires Node ≥ 22 and pnpm ≥ 10.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Turso/libSQL connection string (SQLite-compatible) |
+| `JWT_SECRET` | Session signing secret — **required in production**, app refuses to boot without it |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth (optional) |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth (optional) |
 
-## Learn More
+### Installing the tracking snippet
 
-To learn more about Next.js, take a look at the following resources:
+Add one line to any site you want to monitor:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```html
+<script async src="https://your-omniroute-deployment/api/v1/track.js"
+        data-omniroute-endpoint="https://your-omniroute-deployment"></script>
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+No cookies, no PII. Classification happens server-side from request headers.
 
-## Deploy on Vercel
+## Architecture
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Next.js 16 App Router** · React 19 · TypeScript strict
+- **Prisma 7 + libSQL/Turso** — serverless-safe persistence
+- **DB-backed rate limiting & scan caching** — correct across cold starts
+- **API keys hashed at rest** (sha256); plaintext shown exactly once at creation
+- **SSRF-hardened crawler** — private ranges, link-local, and cloud-metadata targets blocked
+- **Vitest** unit tests: `pnpm test`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/api/v1/     scan · track · leaderboard · analytics · keys · manifest · watchlist
+  lib/            geoAnalyzer · liveCrawler · agentTraffic · apiAuth · auth · rateLimiter
+  components/     dashboard UI (telemetry feed, audit view, ROI calculator, …)
+prisma/schema.prisma   Domain · ScanEvent · TelemetryEvent · ApiKey · User · RateLimitRecord
+```
+
+## Honest-data policy
+
+Anything simulated is labeled **"Demo Data"** in the UI. Scores derived from live crawls are marked as live scans; uncrawlable domains get a clearly-flagged fallback estimate. We never present synthetic traffic as real.
+
+## Deploy
+
+Optimized for Vercel (uses `after()` for background persistence). See `vercel.json`.
+
+```bash
+vercel deploy --prod
+```
+
+---
+
+© 2026 OmniRoute Protocol — see DOCUMENTATION.md for the full product spec.

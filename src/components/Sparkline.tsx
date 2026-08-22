@@ -54,7 +54,8 @@ export default function Sparkline({
     'Z',
   ].join(' ');
 
-  const gradientId = `sparkline-grad-${Math.random().toString(36).slice(2, 8)}`;
+  // Stable ID derived from data — avoids impure Math.random() during render
+  const gradientId = `sparkline-grad-${scores.slice(0, 4).join('-')}-${scores.length}`;
 
   // Determine trend color
   const trend = scores[scores.length - 1] - scores[0];

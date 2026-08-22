@@ -37,7 +37,8 @@ export default function AgentJsonEditor() {
   // Auto-populate if domain query param is passed from audit/leaderboard
   useEffect(() => {
     const domainParam = searchParams.get('domain') || searchParams.get('url');
-    if (domainParam) {
+    if (!domainParam) return;
+    const t = setTimeout(() => {
       const clean = domainParam.replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
       const brand = clean.split('.')[0].charAt(0).toUpperCase() + clean.split('.')[0].slice(1);
       setManifest((prev) => ({
@@ -51,7 +52,8 @@ export default function AgentJsonEditor() {
           contactEmail: `agents@${clean}`
         }
       }));
-    }
+    }, 0);
+    return () => clearTimeout(t);
   }, [searchParams]);
 
   const handleCopy = (content: string, key: string) => {
@@ -473,7 +475,7 @@ export default function AgentJsonEditor() {
               ].map((p) => (
                 <button
                   key={p.id}
-                  onClick={() => setDeployPlatform(p.id as any)}
+                  onClick={() => setDeployPlatform(p.id as typeof deployPlatform)}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all ${
                     deployPlatform === p.id
                       ? 'bg-[rgba(5,173,152,0.20)] text-[#05AD98] border-[rgba(5,173,152,0.4)]'

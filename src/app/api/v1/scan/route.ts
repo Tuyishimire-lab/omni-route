@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { crawlAndAnalyzeUrl } from '../../../../lib/liveCrawler';
 import { saveScanToDB } from '../../../../lib/db';
 import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
@@ -32,9 +32,11 @@ export async function POST(req: NextRequest) {
 
     const report = await crawlAndAnalyzeUrl(url, { bypassCache });
 
-    // Fire-and-forget DB persist — don't block the response
-    saveScanToDB(report, sessionId, report.liveMetadata?.isLiveScanned ?? false)
-      .catch((e) => console.error('[scan] DB persist failed:', e));
+    // Persist after the response is sent — survives function completion on Vercel
+    after(() =>
+      saveScanToDB(report, sessionId, report.liveMetadata?.isLiveScanned ?? false)
+        .catch((e) => console.error('[scan] DB persist failed:', e))
+    );
 
     return NextResponse.json(
       { success: true, data: report, cached: !bypassCache },
@@ -77,8 +79,10 @@ export async function GET(req: NextRequest) {
 
     const report = await crawlAndAnalyzeUrl(targetUrl, { bypassCache });
 
-    saveScanToDB(report, sessionId, report.liveMetadata?.isLiveScanned ?? false)
-      .catch((e) => console.error('[scan] DB persist failed:', e));
+    after(() =>
+      saveScanToDB(report, sessionId, report.liveMetadata?.isLiveScanned ?? false)
+        .catch((e) => console.error('[scan] DB persist failed:', e))
+    );
 
     return NextResponse.json(
       { success: true, data: report, cached: !bypassCache },

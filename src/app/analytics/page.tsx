@@ -3,6 +3,7 @@ import TrafficTelemetry from '../../components/TrafficTelemetry';
 import RoiCalculator from '../../components/RoiCalculator';
 import MetricCard from '../../components/MetricCard';
 import { getAnalyticsSummary } from '../../lib/db';
+import { LiveTelemetryEvent } from '../../lib/types';
 import {
   BarChart3,
   TrendingUp,
@@ -156,7 +157,7 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Telemetry Stream (Live DB Events) */}
-      <TrafficTelemetry initialEvents={summary?.events as any} />
+      <TrafficTelemetry initialEvents={summary?.events as LiveTelemetryEvent[] | undefined} />
 
       {/* Yield & ROI Calculator */}
       <RoiCalculator />

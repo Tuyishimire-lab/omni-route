@@ -70,8 +70,13 @@ export default function WatchlistManager() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-    setDomains(getWatchedDomains());
+    // Deferred: localStorage isn't available during SSR, and sync setState
+    // in an effect body causes cascading renders.
+    const t = setTimeout(() => {
+      setIsClient(true);
+      setDomains(getWatchedDomains());
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   const handleRemove = (id: string) => {

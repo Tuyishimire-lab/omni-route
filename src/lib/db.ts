@@ -1,6 +1,33 @@
 import { prisma } from './prisma';
 import { GeoAuditReport } from './types';
 
+// ─── DB-backed Scan Cache ─────────────────────────────────────────────────────
+// In-memory caches are useless across serverless instances — each cold start
+// gets a fresh Map. The latest ScanEvent.rawReport serves as a shared cache
+// instead, with a TTL enforced by comparing scannedAt.
+
+const SCAN_CACHE_TTL_MS = 1000 * 60 * 20; // 20 minutes
+
+export async function getCachedScanReport(
+  domain: string,
+  options: { bypassCache?: boolean } = {}
+): Promise<GeoAuditReport | null> {
+  if (options.bypassCache) return null;
+  try {
+    const event = await prisma.scanEvent.findFirst({
+      where: { domain, isLiveScan: true, rawReport: { not: null } },
+      orderBy: { scannedAt: 'desc' },
+      select: { rawReport: true, scannedAt: true },
+    });
+    if (!event) return null;
+    if (Date.now() - event.scannedAt.getTime() > SCAN_CACHE_TTL_MS) return null;
+    return JSON.parse(event.rawReport!) as GeoAuditReport;
+  } catch (e) {
+    console.warn('[scanCache] DB cache read failed, will re-crawl:', e);
+    return null;
+  }
+}
+
 // ─── Domain + Scan Persistence ────────────────────────────────────────────────
 
 export async function saveScanToDB(
@@ -215,9 +242,21 @@ export async function getGlobalStats() {
 
 // ─── Analytics Telemetry & Channel Aggregations ──────────────────────────────
 
+interface TelemetryEventRow {
+  id: string;
+  timestamp: Date;
+  type: string;
+  source: string;
+  domain: string;
+  destinationUrl: string;
+  intent: string;
+  geoScoreAtTime: number;
+  settlementValue: number | null;
+}
+
 export async function getAnalyticsSummary() {
   try {
-    const db = prisma as any;
+    const db = prisma;
     const [totalEvents, txEvents, sumGmv, domainCount, eventsList] = await Promise.all([
       db.telemetryEvent.count(),
       db.telemetryEvent.count({ where: { type: 'AGENT_TX' } }),
@@ -244,7 +283,7 @@ export async function getAnalyticsSummary() {
       'Claude & Gemini Knowledge Grounding': 0,
     };
 
-    (eventsList || []).forEach((ev: any) => {
+    (eventsList || []).forEach((ev: TelemetryEventRow) => {
       const src = (ev.source || '').toLowerCase();
       if (src.includes('perplexity')) {
         channelCounts['Perplexity Pro & Sonar Answers']++;
@@ -276,7 +315,7 @@ export async function getAnalyticsSummary() {
       effectiveCac: '$4.18',
       agentLtv: avgOrderValue > 0 ? `$${avgOrderValue * 3}` : '$1,240',
       channels,
-      events: (eventsList || []).map((e: any) => ({
+      events: (eventsList || []).map((e: TelemetryEventRow) => ({
         id: e.id,
         timestamp: e.timestamp instanceof Date ? e.timestamp.toLocaleTimeString() : new Date(e.timestamp).toLocaleTimeString(),
         type: e.type,
