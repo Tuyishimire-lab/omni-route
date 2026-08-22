@@ -26,14 +26,22 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let body: { path?: string; sessionId?: string } = {};
+    let body: { path?: string; sessionId?: string; domain?: string } = {};
     try { body = await req.json(); } catch { body = {}; }
 
     const userAgent = req.headers.get('user-agent');
     const referer = req.headers.get('referer');
     const host = req.headers.get('host');
 
-    const domain = extractDomainFromHost(host);
+    // Prefer the explicit ?site= domain the client sends in the body
+    // (set by the new one-tag snippet). Falls back to Host-header extraction
+    // for backwards compatibility with the old data-omniroute-endpoint style.
+    const rawBodyDomain = typeof body.domain === 'string' ? body.domain.trim() : null;
+    // Basic validation — must look like a hostname, not a URL or IP injection
+    const isValidHostname = rawBodyDomain
+      ? /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(rawBodyDomain)
+      : false;
+    const domain = (isValidHostname ? rawBodyDomain : null) ?? extractDomainFromHost(host);
     if (!domain) {
       return NextResponse.json({ error: 'Unable to determine domain from request' }, { status: 400 });
     }

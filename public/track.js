@@ -1,18 +1,19 @@
-/**
- * OmniRoute Tracking Snippet
- * ─────────────────────────
- * Minimal script customers embed in their site:
+﻿/**
+ * OmniRoute Tracking Tag
+ * ──────────────────────
+ * Drop this ONE tag into your site — replace yourdomain.com with your domain:
  *
- *   <script async src="https://your-omniroute-deployment/api/v1/track.js"
- *           data-omniroute-endpoint="https://your-omniroute-deployment"></script>
+ *   <script async src="https://omni-route-rho.vercel.app/api/v1/track.js?site=yourdomain.com"></script>
  *
- * It reports every pageview to the /api/v1/track endpoint, which classifies
- * the visitor server-side (human vs AI crawler vs agent vs answer-engine
- * referral) using request headers. No cookies, no PII, no client fingerprinting.
+ * The ?site= parameter tells OmniRoute which domain to attribute traffic to.
+ * Reports pageviews to /api/v1/track, which classifies visitors server-side
+ * (human vs AI crawler vs agent vs answer-engine referral) using request headers.
+ * No cookies. No PII. No client fingerprinting. GDPR-safe.
  */
 (function () {
   'use strict';
 
+  // Locate this <script> element — works even when loaded async.
   var script =
     document.currentScript ||
     (function () {
@@ -23,17 +24,26 @@
       return null;
     })();
 
+  if (!script || !script.src) return;
+
+  var scriptUrl;
+  try { scriptUrl = new URL(script.src); } catch (e) { return; }
+
+  // ?site=yourdomain.com  — the domain OmniRoute will attribute traffic to.
+  var siteDomain = scriptUrl.searchParams.get('site') || null;
+
+  // OmniRoute deployment origin — same origin as track.js by default.
+  // Backwards-compatible with the old data-omniroute-endpoint attribute.
   var endpoint =
-    (script && script.getAttribute('data-omniroute-endpoint')) ||
-    (script ? new URL(script.src).origin : '');
-  if (!endpoint) return;
+    script.getAttribute('data-omniroute-endpoint') ||
+    scriptUrl.origin;
 
   function report() {
     try {
       var payload = JSON.stringify({
         path: location.pathname + location.search,
+        // Anonymous per-browser session id — no cookies, sessionStorage only.
         sessionId: (function () {
-          // Anonymous per-browser session id — no cookies, sessionStorage only
           try {
             var k = 'omniroute_sid';
             var sid = sessionStorage.getItem(k);
@@ -42,10 +52,11 @@
               sessionStorage.setItem(k, sid);
             }
             return sid;
-          } catch (e) {
-            return undefined;
-          }
+          } catch (e) { return undefined; }
         })(),
+        // Explicit domain — avoids relying on the Host header when the
+        // customer site and OmniRoute are on different origins.
+        domain: siteDomain,
       });
 
       if (navigator.sendBeacon) {
