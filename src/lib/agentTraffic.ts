@@ -84,6 +84,16 @@ const AGENT_MARKERS = [
 ];
 
 /**
+ * Hosting / CI / infra user-agent patterns that contain headless markers
+ * but are NOT AI agents — they are the deployment platform itself.
+ * These must be excluded before checking AGENT_MARKERS.
+ */
+const INFRASTRUCTURE_UA_PATTERNS = [
+  // Vercel pre-rendering / ISR renderer (Linux x86_64 headless)
+  /mozilla\/5\.0 \(x11; linux x86_64\) applewebkit\/537\.36 \(khtml, like gecko\) headlesschrome/i,
+];
+
+/**
  * Classify an inbound request.
  * @param userAgent Raw User-Agent header
  * @param referer   Raw Referer header
@@ -119,15 +129,19 @@ export function classifyRequest(userAgent: string | null, referer: string | null
   }
 
   // 3. Autonomous agent frameworks / headless automation
-  for (const marker of AGENT_MARKERS) {
-    if (ua.includes(marker)) {
-      return {
-        classification: 'AI_AGENT',
-        agentName: userAgent!.slice(0, 80),
-        referredBy: null,
-        eventType: 'AGENT_TX',
-        confidence: 0.85,
-      };
+  // Skip if this looks like a known hosting/infra renderer (e.g. Vercel ISR bot).
+  const isInfraBot = INFRASTRUCTURE_UA_PATTERNS.some(p => p.test(userAgent ?? ''));
+  if (!isInfraBot) {
+    for (const marker of AGENT_MARKERS) {
+      if (ua.includes(marker)) {
+        return {
+          classification: 'AI_AGENT',
+          agentName: userAgent!.slice(0, 80),
+          referredBy: null,
+          eventType: 'AGENT_TX',
+          confidence: 0.85,
+        };
+      }
     }
   }
 
