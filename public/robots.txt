@@ -1,0 +1,29 @@
+﻿User-agent: *
+Allow: /
+
+# Welcome, AI crawlers — OmniRoute is built for you.
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Machine-readable manifest for autonomous agents
+# agent.json: https://omni-route-rho.vercel.app/.well-known/agent.json
+
+Sitemap: https://omni-route-rho.vercel.app/sitemap.xml

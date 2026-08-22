@@ -25,8 +25,16 @@ export default async function AnalyticsPage() {
   const hasRealData = !!summary && summary.totalReferrals > 0;
 
   const totalEvents = summary ? Number(summary.totalReferrals).toLocaleString() : '0';
+  const totalEventsRaw = summary ? Number(summary.totalReferrals) : 0;
   const directGmv = summary ? `$${Number(summary.directGmv).toLocaleString()}` : '$0';
-  const conversionRate = summary?.conversionRate || '0.0%';
+
+  // Guard: derived rates are meaningless below a minimum sample size.
+  // "100% conversion" from 4 events is misleading — show a clear n/a instead.
+  const MIN_EVENTS_FOR_RATES = 30;
+  const enoughData = totalEventsRaw >= MIN_EVENTS_FOR_RATES;
+  const conversionRate = enoughData
+    ? (summary?.conversionRate || '0.0%')
+    : `n/a (n=${totalEventsRaw})`;
   const monitoredDomains = summary?.monitoredDomains || 0;
   const channels = hasRealData
     ? summary!.channels
@@ -53,7 +61,7 @@ export default async function AnalyticsPage() {
           Traffic Liquidity & Conversion Analytics
         </h1>
         <p className="text-xs sm:text-sm text-[#BBBFBF] max-w-3xl leading-relaxed">
-          Monitor genuine cross-channel synthetic-to-human traffic streams in real-time. Direct query counts, verified autonomous agent transactions, and live engine citation proportions recorded in your Turso cloud database.
+          Monitor AI crawler activity, answer-engine referrals, and autonomous agent transactions in real-time. All data is recorded directly from your site&apos;s tracking tag — no sampling, no modelling.
         </p>
       </div>
 
@@ -96,8 +104,8 @@ export default async function AnalyticsPage() {
           title="Agentic Conversion Rate"
           value={conversionRate}
           change="AGENT_TX / Total Events"
-          isPositive={true}
-          subtitle="High-intent transactions"
+          isPositive={enoughData}
+          subtitle={enoughData ? 'High-intent transactions' : `Need ${MIN_EVENTS_FOR_RATES} events for reliable rate`}
           icon={Activity}
           accentColor="indigo"
         />

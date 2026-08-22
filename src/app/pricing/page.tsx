@@ -18,8 +18,8 @@ const PLANS = [
     ctaLink: '/audit',
     highlight: false,
     features: [
-      { text: '3 GEO scans per hour', included: true },
-      { text: '5 watchlist domains', included: true },
+      { text: '10 GEO scans per month', included: true },
+      { text: '3 watchlist domains', included: true },
       { text: 'Community leaderboard', included: true },
       { text: 'agent.json Studio', included: true },
       { text: 'Basic score reports', included: true },
@@ -27,7 +27,7 @@ const PLANS = [
       { text: 'Daily cron re-scans', included: false },
       { text: 'Edge Worker bot detection', included: false },
       { text: 'Email score alerts', included: false },
-      { text: 'Priority support', included: false },
+      { text: 'Community support', included: true },
     ],
   },
   {
@@ -48,7 +48,7 @@ const PLANS = [
       { text: 'Daily automated re-scans', included: true },
       { text: 'Edge Worker bot detection', included: true },
       { text: 'Email score drop alerts', included: true },
-      { text: 'Standard support', included: true },
+      { text: 'Priority support', included: true },
     ],
   },
   {

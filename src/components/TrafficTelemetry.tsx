@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { LiveTelemetryEvent } from '../lib/types';
-import { getInitialTelemetry, generateMockTelemetryEvent } from '../lib/mockTelemetry';
-import { Activity, CheckCircle2, Cpu, ArrowUpRight, Radio, Database } from 'lucide-react';
+import { getInitialTelemetry } from '../lib/mockTelemetry';
+import { Activity, ArrowUpRight, Radio, Database } from 'lucide-react';
 
 interface TrafficTelemetryProps {
   initialEvents?: LiveTelemetryEvent[];
@@ -34,7 +35,8 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
             setEvents(json.data.events);
             setIsDemo(false);
           } else {
-            // No real data — fall back to clearly-labeled demo events
+            // No real data — show a static demo batch, clearly labelled.
+            // Do NOT continuously stream fake events into the table.
             setEvents(getInitialTelemetry(8));
           }
         })
@@ -42,16 +44,9 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
     }
   }, [initialEvents]);
 
-  // Live streaming simulation adding new edge pulses.
-  // Only inject simulated events while in demo mode — never mix fabricated
-  // rows into a real DB-backed feed.
-  useEffect(() => {
-    if (!isLive || !isDemo) return;
-    const interval = setInterval(() => {
-      setEvents((prev) => [generateMockTelemetryEvent(), ...prev.slice(0, 24)]);
-    }, 2800);
-    return () => clearInterval(interval);
-  }, [isLive, isDemo]);
+  // NOTE: The continuous fake-event interval is intentionally removed.
+  // Demo mode shows a static snapshot labelled "Demo Data".
+  // Real data streams live via the SSE polling above.
 
   const getEventBadge = (type: LiveTelemetryEvent['type']) => {
     switch (type) {
@@ -88,9 +83,16 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
               </span>
             </h3>
             <p className="text-[11px] text-[#878787]">
-              {isDemo
-                ? 'Simulated stream for demonstration purposes — events shown are illustrative, not real traffic.'
-                : 'Real-time cryptographic stream of AI agent queries, generative citations, and direct purchases from Turso database.'}
+              {isDemo ? (
+                <>
+                  Illustrative demo — not real traffic.{' '}
+                  <Link href="/analytics" className="text-[#05AD98] hover:underline">
+                    View your real data on Analytics →
+                  </Link>
+                </>
+              ) : (
+                'Real-time stream of AI agent queries, generative citations, and direct purchases from Turso database.'
+              )}
             </p>
           </div>
         </div>

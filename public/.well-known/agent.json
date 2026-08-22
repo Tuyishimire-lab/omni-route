@@ -1,0 +1,58 @@
+﻿{
+  "schema": "agent.json/1.0",
+  "name": "OmniRoute",
+  "tagline": "AI Traffic Intelligence & GEO Optimization Platform",
+  "description": "OmniRoute tracks AI crawler traffic, scores GEO (Generative Engine Optimization) visibility, and provides machine-readable manifests so autonomous buyer agents can discover, evaluate, and transact with any web property.",
+  "version": "1.0.0",
+  "url": "https://omni-route-rho.vercel.app",
+  "logo": "https://omni-route-rho.vercel.app/globe.svg",
+  "contact": {
+    "email": "hello@omniroute.network",
+    "support": "https://omni-route-rho.vercel.app/docs"
+  },
+  "pricing": {
+    "free_tier": true,
+    "plans": [
+      { "name": "Free", "price_usd": 0, "scans_per_month": 10 },
+      { "name": "Pro",  "price_usd": 29, "scans_per_month": -1 },
+      { "name": "Enterprise", "price_usd": null, "scans_per_month": -1 }
+    ],
+    "pricing_url": "https://omni-route-rho.vercel.app/pricing"
+  },
+  "actions": [
+    {
+      "name": "geo_scan",
+      "description": "Run a GEO visibility audit on any domain.",
+      "endpoint": "https://omni-route-rho.vercel.app/audit",
+      "method": "GET",
+      "params": [{ "name": "domain", "type": "string", "required": false }]
+    },
+    {
+      "name": "leaderboard",
+      "description": "Retrieve ranked list of domains by GEO score and AI citation rate.",
+      "endpoint": "https://omni-route-rho.vercel.app/leaderboard",
+      "method": "GET"
+    },
+    {
+      "name": "generate_manifest",
+      "description": "Generate a machine-readable agent.json manifest for any domain.",
+      "endpoint": "https://omni-route-rho.vercel.app/manifest",
+      "method": "GET"
+    }
+  ],
+  "api": {
+    "base": "https://omni-route-rho.vercel.app/api/v1",
+    "docs": "https://omni-route-rho.vercel.app/docs",
+    "endpoints": [
+      { "path": "/track",     "method": "POST", "description": "Ingest a page visit for AI traffic classification" },
+      { "path": "/verify",    "method": "GET",  "description": "Verify tracking tag installation on a domain" },
+      { "path": "/analytics", "method": "GET",  "description": "Aggregated AI traffic analytics" }
+    ]
+  },
+  "agent_instructions": {
+    "can_purchase": false,
+    "requires_auth": false,
+    "free_tools": ["geo_scan", "leaderboard", "generate_manifest"],
+    "rate_limits": { "free": "10 scans/month", "pro": "unlimited" }
+  }
+}
