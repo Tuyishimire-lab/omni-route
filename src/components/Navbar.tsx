@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -202,12 +202,6 @@ export default function Navbar() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2 shrink-0">
-            <button onClick={() => setIsSettingsOpen(true)} title="Configure API Keys"
-              className="p-2 rounded-lg transition-colors" style={{ color: '#878787' }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = '#05AD98'}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = '#878787'}>
-              <Key className="w-4 h-4" />
-            </button>
 
             {user ? (
               <div className="relative" ref={userMenuRef}>
@@ -239,6 +233,12 @@ export default function Navbar() {
                           <Shield className="w-3.5 h-3.5 text-[#B8A04A]" /> Admin Dashboard
                         </Link>
                       )}
+                      <button
+                        onClick={() => { setIsUserMenuOpen(false); setIsSettingsOpen(true); }}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-white hover:bg-[rgba(187,191,191,0.06)] transition-colors w-full text-left">
+                        <Key className="w-3.5 h-3.5 text-[#878787]" /> API Settings
+                      </button>
+                      <div className="my-1 border-t border-[rgba(187,191,191,0.06)]" />
                       <button onClick={handleLogout}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-rose-400 hover:bg-[rgba(244,63,94,0.06)] transition-colors w-full text-left">
                         <LogOut className="w-3.5 h-3.5" /> Sign Out
@@ -315,12 +315,6 @@ export default function Navbar() {
             })}
 
             <div className="pt-2 flex flex-col gap-2">
-              <button onClick={() => { setIsMobileMenuOpen(false); setIsSettingsOpen(true); }}
-                className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium"
-                style={{ color: '#BBBFBF', background: '#1A2020', border: '1px solid rgba(187,191,191,0.12)' }}>
-                <Key className="w-3.5 h-3.5" style={{ color: '#05AD98' }} /> Configure API Keys
-              </button>
-
               {user ? (
                 <>
                   <div className="flex items-center gap-3 px-3 py-2.5">
@@ -340,6 +334,11 @@ export default function Navbar() {
                       <Shield className="w-3.5 h-3.5" /> Admin Dashboard
                     </Link>
                   )}
+                  <button onClick={() => { setIsMobileMenuOpen(false); setIsSettingsOpen(true); }}
+                    className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-medium"
+                    style={{ color: '#BBBFBF', background: '#1A2020', border: '1px solid rgba(187,191,191,0.12)' }}>
+                    <Key className="w-3.5 h-3.5" style={{ color: '#05AD98' }} /> API Settings
+                  </button>
                   <button onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}
                     className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-rose-400"
                     style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.20)' }}>
