@@ -15,7 +15,7 @@ function createPrismaClient(): PrismaClient {
     }
   }
 
-  // Prisma 7+ requires a driver adapter — libsql works for both:
+  // Prisma 7+ requires a driver adapter - libsql works for both:
   //   - Remote Turso:  libsql://xxx.turso.io  (production)
   //   - Local SQLite:  file:./omniroute.db    (dev/test)
   const adapter = new PrismaLibSql({

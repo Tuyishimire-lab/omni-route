@@ -29,7 +29,7 @@ export default function TagVerifier() {
       const data: VerifyResult = await res.json();
       setResult(data);
     } catch {
-      setResult({ found: false, method: null, siteDomain: null, domainMatch: false, tagUrl: null, checkedUrl: d, error: 'Network error — please try again.' });
+      setResult({ found: false, method: null, siteDomain: null, domainMatch: false, tagUrl: null, checkedUrl: d, error: 'Network error - please try again.' });
     } finally {
       setLoading(false);
     }
@@ -87,8 +87,8 @@ export default function TagVerifier() {
                 status === 'warn'    ? 'text-amber-400'  :
                 status === 'missing' ? 'text-red-400'    : 'text-[#878787]'
               }`}>
-                {status === 'ok'      && 'Tag detected — all good ✓'}
-                {status === 'warn'    && 'Tag found — check site= parameter'}
+                {status === 'ok'      && 'Tag detected - all good ✓'}
+                {status === 'warn'    && 'Tag found - check site= parameter'}
                 {status === 'missing' && 'Tag not detected'}
                 {status === 'error'   && 'Could not check this domain'}
               </p>
@@ -137,7 +137,7 @@ export default function TagVerifier() {
                 <ul className="list-disc list-inside space-y-1 text-[#878787]">
                   <li>Make sure the tag is in your HTML and the site has been redeployed</li>
                   <li>Check that the script src contains <code className="font-mono text-red-300">/api/v1/track.js</code></li>
-                  <li>If your homepage requires auth, the checker can{"'"}t reach it — try a public page</li>
+                  <li>If your homepage requires auth, the checker can{"'"}t reach it - try a public page</li>
                 </ul>
               </div>
             )}

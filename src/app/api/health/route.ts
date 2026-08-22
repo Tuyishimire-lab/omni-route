@@ -46,7 +46,7 @@ export async function GET() {
     {
       status: httpStatus,
       headers: {
-        // Don't cache — monitors need a fresh probe every time
+        // Don't cache - monitors need a fresh probe every time
         'Cache-Control': 'no-store',
       },
     }

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Live community rankings of the most GEO-optimized domains across AI citation engines. See who dominates Perplexity, ChatGPT, Claude, and Gemini.'
 };
 
-// Revalidate every 5 minutes via ISR — leaderboard changes once daily via cron.
+// Revalidate every 5 minutes via ISR - leaderboard changes once daily via cron.
 // Vercel serves the static page from edge; silently re-fetches in the background.
 export const revalidate = 300;
 

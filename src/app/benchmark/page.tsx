@@ -6,7 +6,7 @@ import { GeoAuditReport } from '../../lib/types';
 import { Scale, Plus, X, Search, Loader2, GitCompare, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
-// recharts (~200KB) is lazy-loaded — only fetched when comparison results render
+// recharts (~200KB) is lazy-loaded - only fetched when comparison results render
 const BenchmarkMatrix = dynamic(() => import('../../components/BenchmarkMatrix'), {
   ssr: false,
   loading: () => (
@@ -68,7 +68,7 @@ export default function BenchmarkPage() {
   const [hasRun, setHasRun]       = useState(false);
   const [globalError, setGlobalError] = useState('');
 
-  // Completed reports — streams in as each domain finishes
+  // Completed reports - streams in as each domain finishes
   const completedReports = domainStates
     .filter((s) => s.status === 'done' && s.report)
     .map((s) => s.report!);
@@ -308,7 +308,7 @@ export default function BenchmarkPage() {
           </div>
         )}
 
-        {/* Results — stream in as reports arrive */}
+        {/* Results - stream in as reports arrive */}
         {completedReports.length >= 2 && (
           <div>
             {isScanning && (

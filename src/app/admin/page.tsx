@@ -85,7 +85,7 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Auto-fetch keys when authenticated as admin — deferred so the setState
+  // Auto-fetch keys when authenticated as admin - deferred so the setState
   // inside fetchKeys doesn't fire synchronously in the effect body.
   useEffect(() => {
     if (authChecked && user?.role === 'admin') {
@@ -200,7 +200,7 @@ export default function AdminPage() {
         </div>
         <h2 className="text-2xl font-extrabold text-white">Access Denied</h2>
         <p className="text-xs text-[#878787]">
-          Signed in as <span className="text-white font-mono">{user.email}</span> — this account doesn&apos;t have admin privileges.
+          Signed in as <span className="text-white font-mono">{user.email}</span> - this account doesn&apos;t have admin privileges.
         </p>
         <Link
           href="/"
@@ -242,7 +242,7 @@ export default function AdminPage() {
             { label: 'Total Keys', value: stats.total, icon: Key, color: 'text-sky-400' },
             { label: 'Active', value: stats.active, icon: ToggleRight, color: 'text-[#05AD98]' },
             { label: 'Inactive', value: stats.inactive, icon: ToggleLeft, color: 'text-rose-400' },
-            { label: 'Tiers', value: stats.byTier.map((t) => `${t.count} ${t.tier}`).join(', ') || '—', icon: Users, color: 'text-[#B8A04A]' },
+            { label: 'Tiers', value: stats.byTier.map((t) => `${t.count} ${t.tier}`).join(', ') || '-', icon: Users, color: 'text-[#B8A04A]' },
           ].map((s, i) => (
             <div key={i} className="glass-panel rounded-xl p-4 border border-[rgba(187,191,191,0.08)] space-y-1">
               <div className="flex items-center gap-2">
@@ -310,7 +310,7 @@ export default function AdminPage() {
         {/* Created key banner */}
         {createdKey && (
           <div className="mt-3 p-4 rounded-xl bg-[rgba(5,173,152,0.08)] border border-[rgba(5,173,152,0.3)] space-y-2">
-            <p className="text-xs text-[#05AD98] font-semibold">✅ API Key created — copy it now, it won&apos;t be shown again in full:</p>
+            <p className="text-xs text-[#05AD98] font-semibold">✅ API Key created - copy it now, it won&apos;t be shown again in full:</p>
             <div className="flex items-center gap-2">
               <code className="flex-1 text-xs font-mono text-white bg-[#0A0E0E] rounded-lg px-3 py-2 border border-[rgba(187,191,191,0.10)] truncate">
                 {createdKey}
@@ -501,7 +501,7 @@ function TrackedDomains() {
                   </td>
                   <td className="px-4 py-3 text-right text-white font-semibold">{row.totalEvents}</td>
                   <td className="px-4 py-3 text-[#878787] text-xs">
-                    {row.lastEvent ? new Date(row.lastEvent).toLocaleDateString() : '—'}
+                    {row.lastEvent ? new Date(row.lastEvent).toLocaleDateString() : '-'}
                   </td>
                   <td className="px-4 py-3 text-xs">
                     {row.owner
@@ -509,7 +509,7 @@ function TrackedDomains() {
                       : <span className="text-[#878787] italic">Unregistered</span>}
                   </td>
                   <td className="px-4 py-3 text-[#878787] text-xs">
-                    {row.registeredAt ? new Date(row.registeredAt).toLocaleDateString() : '—'}
+                    {row.registeredAt ? new Date(row.registeredAt).toLocaleDateString() : '-'}
                   </td>
                 </tr>
               ))}

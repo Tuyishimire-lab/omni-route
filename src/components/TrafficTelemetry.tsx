@@ -11,7 +11,7 @@ interface TrafficTelemetryProps {
 }
 
 export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProps) {
-  // Start empty on both server and client — mock/DB events are hydrated in an
+  // Start empty on both server and client - mock/DB events are hydrated in an
   // effect. Generating events during initial render causes a hydration
   // mismatch (timestamps differ between server and client).
   const [events, setEvents] = useState<LiveTelemetryEvent[]>(initialEvents ?? []);
@@ -19,7 +19,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
   // Demo mode: no real events were provided, so the stream is simulated.
   const [isDemo, setIsDemo] = useState(!initialEvents || initialEvents.length === 0);
 
-  // Hydrate events after mount — deferred to avoid sync setState in effect
+  // Hydrate events after mount - deferred to avoid sync setState in effect
   useEffect(() => {
     if (initialEvents && initialEvents.length > 0) {
       const t = setTimeout(() => {
@@ -35,7 +35,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
             setEvents(json.data.events);
             setIsDemo(false);
           } else {
-            // No real data — show a static demo batch, clearly labelled.
+            // No real data - show a static demo batch, clearly labelled.
             // Do NOT continuously stream fake events into the table.
             setEvents(getInitialTelemetry(8));
           }
@@ -85,7 +85,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
             <p className="text-[11px] text-[#878787]">
               {isDemo ? (
                 <>
-                  Illustrative demo — not real traffic.{' '}
+                  Illustrative demo - not real traffic.{' '}
                   <Link href="/analytics" className="text-[#05AD98] hover:underline">
                     View your real data on Analytics →
                   </Link>

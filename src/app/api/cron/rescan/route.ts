@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Verify Vercel Cron Secret — mandatory in production so the endpoint
+    // 1. Verify Vercel Cron Secret - mandatory in production so the endpoint
     //    can't be abused as a free scan farm.
     const authHeader = req.headers.get('authorization');
     const cronSecret = process.env.CRON_SECRET;

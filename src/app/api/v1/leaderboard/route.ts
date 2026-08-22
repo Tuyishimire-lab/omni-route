@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
         headers: {
           // Edge-cached for 5 min; leaderboard only changes via daily cron.
           // stale-while-revalidate lets Vercel serve the old response while
-          // quietly refreshing in the background — zero added latency.
+          // quietly refreshing in the background - zero added latency.
           'Cache-Control': 's-maxage=300, stale-while-revalidate=60',
         },
       }

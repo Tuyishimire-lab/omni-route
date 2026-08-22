@@ -5,14 +5,14 @@ import { getSession } from '../../../../lib/auth';
 export const dynamic = 'force-dynamic';
 
 // Admin authorization: session-based only (role=admin).
-// P0: The ADMIN_SECRET header backdoor has been removed — a leaked secret
+// P0: The ADMIN_SECRET header backdoor has been removed - a leaked secret
 // would give full admin access to anyone. Session auth is sufficient.
 async function isAdminAuthorized(): Promise<boolean> {
   const session = await getSession();
   return session?.role === 'admin';
 }
 
-// GET /api/v1/keys — List all API keys + stats
+// GET /api/v1/keys - List all API keys + stats
 export async function GET(req: NextRequest) {
   if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       success: true,
       keys: keys.map(k => ({
         ...k,
-        // Only the display prefix is stored — full keys are never retrievable
+        // Only the display prefix is stored - full keys are never retrievable
         maskedKey: k.keyPrefix + '…',
         lastUsedAt: k.lastUsedAt?.toISOString() ?? null,
         createdAt: k.createdAt.toISOString(),
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/v1/keys — Create a new API key
+// POST /api/v1/keys - Create a new API key
 export async function POST(req: NextRequest) {
   if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
         rateLimit: apiKey.rateLimit,
         createdAt: apiKey.createdAt.toISOString(),
       },
-      message: 'Store this key securely — it will only be shown in full once.',
+      message: 'Store this key securely - it will only be shown in full once.',
     });
   } catch (err) {
     console.error('[keys] POST error:', err);
@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH /api/v1/keys — Toggle API key active/inactive
+// PATCH /api/v1/keys - Toggle API key active/inactive
 export async function PATCH(req: NextRequest) {
   if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });
@@ -106,7 +106,7 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-// DELETE /api/v1/keys — Delete an API key
+// DELETE /api/v1/keys - Delete an API key
 export async function DELETE(req: NextRequest) {
   if (!await isAdminAuthorized()) {
     return NextResponse.json({ error: 'Admin authorization required' }, { status: 401 });

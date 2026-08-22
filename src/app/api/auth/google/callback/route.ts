@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect(new URL('/', req.url));
   } catch (err) {
-    // Log server-side only — never expose error details in the redirect URL
+    // Log server-side only - never expose error details in the redirect URL
     console.error('[Google OAuth] Callback error:', err instanceof Error ? err.message : err);
     return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
   }

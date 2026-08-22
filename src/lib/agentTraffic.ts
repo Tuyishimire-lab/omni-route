@@ -6,13 +6,13 @@
  * product: every classified event feeds real telemetry (TelemetryEvent rows)
  * instead of simulated data.
  *
- * Designed to run in an edge snippet, a middleware, or server-side — zero deps.
+ * Designed to run in an edge snippet, a middleware, or server-side - zero deps.
  */
 
 export type TrafficClass =
   | 'HUMAN'
-  | 'AI_TRAINING_CRAWLER'   // GPTBot, CCBot, etc. — model training crawls
-  | 'AI_SEARCH_CRAWLER'     // OAI-SearchBot, PerplexityBot — live search indexing
+  | 'AI_TRAINING_CRAWLER'   // GPTBot, CCBot, etc. - model training crawls
+  | 'AI_SEARCH_CRAWLER'     // OAI-SearchBot, PerplexityBot - live search indexing
   | 'AI_AGENT'              // Autonomous buyer/tooling agents (operator-style)
   | 'AI_ANSWER_ENGINE';     // Referral traffic arriving FROM an answer engine
 
@@ -48,7 +48,7 @@ const AI_CRAWLERS: Record<string, { name: string; kind: 'training' | 'search' }>
   'youbot': { name: 'YouBot', kind: 'search' },
 };
 
-/** Answer-engine referers — traffic arriving from an AI answer, not a blue link */
+/** Answer-engine referers - traffic arriving from an AI answer, not a blue link */
 const ANSWER_ENGINE_REFERRERS: Record<string, string> = {
   'chatgpt.com': 'ChatGPT',
   'chat.openai.com': 'ChatGPT',
@@ -85,7 +85,7 @@ const AGENT_MARKERS = [
 
 /**
  * Hosting / CI / infra user-agent patterns that contain headless markers
- * but are NOT AI agents — they are the deployment platform itself.
+ * but are NOT AI agents - they are the deployment platform itself.
  * These must be excluded before checking AGENT_MARKERS.
  */
 const INFRASTRUCTURE_UA_PATTERNS = [
@@ -102,7 +102,7 @@ export function classifyRequest(userAgent: string | null, referer: string | null
   const ua = (userAgent ?? '').toLowerCase();
   const ref = (referer ?? '').toLowerCase();
 
-  // 1. Answer-engine referral — highest business value (a citation that converted)
+  // 1. Answer-engine referral - highest business value (a citation that converted)
   for (const [host, engine] of Object.entries(ANSWER_ENGINE_REFERRERS)) {
     if (ref.includes(host)) {
       return {

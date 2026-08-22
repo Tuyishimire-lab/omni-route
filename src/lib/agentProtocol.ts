@@ -346,7 +346,7 @@ export function generateEdgeWorkerWithBotDetection(
   const jsonString = JSON.stringify(manifest, null, 2);
   const domain = manifest.domain || 'example.com';
 
-  return `// Cloudflare Worker — Bot Detection + agent.json + OmniRoute Telemetry
+  return `// Cloudflare Worker - Bot Detection + agent.json + OmniRoute Telemetry
 // Deploy via: wrangler deploy
 
 const AGENT_MANIFEST = ${jsonString};
@@ -392,7 +392,7 @@ async function reportToOmniRoute(event) {
       body: JSON.stringify(event),
     });
   } catch (e) {
-    // Fire-and-forget — don't block the response
+    // Fire-and-forget - don't block the response
     console.error('[OmniRoute Telemetry] Failed to report:', e);
   }
 }

@@ -59,7 +59,7 @@ describe('money path: scan → report → classify', () => {
 
     expect(report.liveMetadata).toBeDefined();
     expect(typeof report.liveMetadata!.isLiveScanned).toBe('boolean');
-    // Either genuinely live-scanned, or honestly flagged as fallback — never ambiguous
+    // Either genuinely live-scanned, or honestly flagged as fallback - never ambiguous
     if (report.liveMetadata!.isLiveScanned) {
       expect(report.liveMetadata!.wordCount).toBeGreaterThan(0);
     }
@@ -94,7 +94,7 @@ describe('money path: scan → report → classify', () => {
     const a = await crawlAndAnalyzeUrl('stability-test.io', { bypassCache: true });
     const b = await crawlAndAnalyzeUrl('stability-test.io', { bypassCache: true });
 
-    // If both fell back (likely — fake TLD), scores must match exactly
+    // If both fell back (likely - fake TLD), scores must match exactly
     if (!a.liveMetadata?.isLiveScanned && !b.liveMetadata?.isLiveScanned) {
       expect(b.overallGeoScore).toBe(a.overallGeoScore);
     }

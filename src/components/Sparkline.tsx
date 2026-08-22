@@ -23,7 +23,7 @@ export default function Sparkline({
         className="flex items-center justify-center text-[10px] text-[#878787] font-mono"
         style={{ width, height }}
       >
-        —
+        -
       </div>
     );
   }
@@ -54,7 +54,7 @@ export default function Sparkline({
     'Z',
   ].join(' ');
 
-  // Stable ID derived from data — avoids impure Math.random() during render
+  // Stable ID derived from data - avoids impure Math.random() during render
   const gradientId = `sparkline-grad-${scores.slice(0, 4).join('-')}-${scores.length}`;
 
   // Determine trend color

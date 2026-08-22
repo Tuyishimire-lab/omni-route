@@ -2,7 +2,7 @@ import { prisma } from './prisma';
 import { GeoAuditReport } from './types';
 
 // ─── DB-backed Scan Cache ─────────────────────────────────────────────────────
-// In-memory caches are useless across serverless instances — each cold start
+// In-memory caches are useless across serverless instances - each cold start
 // gets a fresh Map. The latest ScanEvent.rawReport serves as a shared cache
 // instead, with a TTL enforced by comparing scannedAt.
 
@@ -43,7 +43,7 @@ export async function saveScanToDB(
       ? 'MODERATE'
       : 'AT_RISK';
 
-  // Upsert domain — update latest scores if it already exists
+  // Upsert domain - update latest scores if it already exists
   const existing = await prisma.domain.findUnique({ where: { domain: report.domain } });
   const prevScore = existing?.latestGeoScore ?? report.overallGeoScore;
   const delta = report.overallGeoScore - prevScore;
@@ -174,7 +174,7 @@ export async function getDomainHistory(domain: string, days = 14) {
 }
 
 /**
- * Batch version of getDomainHistory — fetches all domains in ONE query.
+ * Batch version of getDomainHistory - fetches all domains in ONE query.
  * Use instead of Promise.all(domains.map(d => getDomainHistory(d))) to avoid
  * N Turso round-trips (1 per domain → ~80ms each).
  */
@@ -193,7 +193,7 @@ export async function getBulkDomainHistory(
     select: { domain: true, scannedAt: true, geoScore: true },
   });
 
-  // Group in memory — O(n) single pass
+  // Group in memory - O(n) single pass
   const grouped: Record<string, { date: string; score: number }[]> = {};
   for (const e of events) {
     if (!grouped[e.domain]) grouped[e.domain] = [];

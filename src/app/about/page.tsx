@@ -20,14 +20,14 @@ export default function AboutPage() {
 
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
           The Future of Web Discovery<br />
-          <span className="gradient-text">Is Not Search — It&apos;s AI</span>
+          <span className="gradient-text">Is Not Search - It&apos;s AI</span>
         </h1>
 
         <div className="max-w-3xl space-y-4 text-sm sm:text-base text-[#BBBFBF] leading-relaxed">
           <p>
             Traditional SEO is dying. Over 65% of search queries now end in zero-click AI-generated answers.
             Perplexity, ChatGPT, Claude, and Gemini are replacing Google&apos;s blue links with synthesized responses
-            that cite sources directly — or don&apos;t cite them at all.
+            that cite sources directly - or don&apos;t cite them at all.
           </p>
           <p>
             <strong className="text-white">OmniRoute exists to solve this.</strong> We&apos;re building the infrastructure
@@ -49,7 +49,7 @@ export default function AboutPage() {
             {
               stat: '38%',
               label: 'of web traffic is now AI-driven',
-              desc: 'Autonomous agents crawl, cite, and transact — but most sites aren\'t ready for them.',
+              desc: 'Autonomous agents crawl, cite, and transact - but most sites aren\'t ready for them.',
             },
             {
               stat: '$0',
@@ -73,7 +73,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* How It Works — Three Pillars */}
+      {/* How It Works - Three Pillars */}
       <section className="space-y-6">
         <h2 className="text-2xl font-bold text-white text-center">How OmniRoute Works</h2>
         <p className="text-sm text-[#878787] text-center max-w-2xl mx-auto">
@@ -168,7 +168,7 @@ export default function AboutPage() {
       <section className="text-center space-y-3 py-4">
         <h2 className="text-xl font-bold text-white">Get In Touch</h2>
         <p className="text-sm text-[#878787]">
-          Enterprise inquiries, partnership proposals, or feedback — we&apos;d love to hear from you.
+          Enterprise inquiries, partnership proposals, or feedback - we&apos;d love to hear from you.
         </p>
         <p className="text-sm text-[#05AD98] font-mono">enterprise@omniroute.network</p>
       </section>

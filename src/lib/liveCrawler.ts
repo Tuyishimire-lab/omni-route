@@ -2,7 +2,7 @@ import { GeoAuditReport, LiveExtractionMetadata, EngineScore, EntityNode, Recomm
 import { validateAndSanitizeUrl, scanReportCache } from './security';
 import { getCachedScanReport } from './db';
 
-// Jina Reader API — converts any URL to clean LLM-ready markdown, no API key needed.
+// Jina Reader API - converts any URL to clean LLM-ready markdown, no API key needed.
 // Docs: https://jina.ai/reader/
 const JINA_READER_BASE = 'https://r.jina.ai/';
 
@@ -88,7 +88,7 @@ function analyzeMarkdown(markdown: string, title: string, description: string): 
   const words = markdown.trim().split(/\s+/).filter(Boolean);
   const wordCount = words.length;
 
-  // robots.txt — Jina respects it, so if we got content it's allowed
+  // robots.txt - Jina respects it, so if we got content it's allowed
   const hasRobotsIndexingAllowed = markdown.length > 100;
 
   return {
@@ -144,7 +144,7 @@ export async function crawlAndAnalyzeUrl(
       ...signals,
     };
   } else {
-    // Graceful fallback — deterministic simulation based on domain name
+    // Graceful fallback - deterministic simulation based on domain name
     liveMeta = {
       isLiveScanned: false,
       schemaJsonLdCount: 0,
@@ -173,7 +173,7 @@ export async function crawlAndAnalyzeUrl(
     if (liveMeta.detectedSchemas.includes('Product'))         calculatedScore += 4;
     if (liveMeta.detectedSchemas.includes('FAQPage'))         calculatedScore += 6;
   } else {
-    // Deterministic fallback — same domain always gets same score
+    // Deterministic fallback - same domain always gets same score
     let hash = 0;
     for (let i = 0; i < cleanDomain.length; i++) hash = (hash << 5) - hash + cleanDomain.charCodeAt(i);
     calculatedScore = 55 + (Math.abs(hash) % 36);

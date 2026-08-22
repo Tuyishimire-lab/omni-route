@@ -34,13 +34,13 @@ export async function GET(req: NextRequest) {
   }
 
   const checkedUrl = validation.normalizedUrl;
-  // Extract the raw hostname — do NOT use validation.domain which strips www.
+  // Extract the raw hostname - do NOT use validation.domain which strips www.
   const checkedHostname = new URL(checkedUrl).hostname;
   const checkedHostnameNoWww = checkedHostname.replace(/^www\./, '');
 
   // ── Heartbeat check (framework-agnostic) ──────────────────────────────
   // When track.js loads on any site it upserts a TagHeartbeat row.
-  // If we have a recent heartbeat (≤ 7 days) we trust it — no HTML scrape needed.
+  // If we have a recent heartbeat (≤ 7 days) we trust it - no HTML scrape needed.
   // This works for Next.js Script component, React SPAs, GTM, etc.
   const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
   const heartbeat = await prisma.tagHeartbeat.findFirst({
@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Read first 128 KB — enough to find any script tag in <head> or early <body>
+    // Read first 128 KB - enough to find any script tag in <head> or early <body>
     const reader = res.body?.getReader();
     if (!reader) throw new Error('No response body');
     const chunks: Uint8Array[] = [];
@@ -142,7 +142,7 @@ export async function GET(req: NextRequest) {
   }
 
   const found = tagUrl !== null;
-  // Normalize site domain — strip trailing slash and compare against both
+  // Normalize site domain - strip trailing slash and compare against both
   // the exact hostname (www.uselocalpdf.com) and the www-stripped form (uselocalpdf.com)
   // so either value in ?site= is accepted as a valid match.
   const normSite = siteDomain?.replace(/\/$/, '') ?? null;

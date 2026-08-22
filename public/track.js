@@ -1,7 +1,7 @@
 ﻿/**
  * OmniRoute Tracking Tag
  * ──────────────────────
- * Drop this ONE tag into your site — replace yourdomain.com with your domain:
+ * Drop this ONE tag into your site - replace yourdomain.com with your domain:
  *
  *   <script async src="https://omni-route-rho.vercel.app/api/v1/track.js?site=yourdomain.com"></script>
  *
@@ -13,7 +13,7 @@
 (function () {
   'use strict';
 
-  // Locate this <script> element — works even when loaded async.
+  // Locate this <script> element - works even when loaded async.
   var script =
     document.currentScript ||
     (function () {
@@ -29,10 +29,10 @@
   var scriptUrl;
   try { scriptUrl = new URL(script.src); } catch (e) { return; }
 
-  // ?site=yourdomain.com  — the domain OmniRoute will attribute traffic to.
+  // ?site=yourdomain.com  - the domain OmniRoute will attribute traffic to.
   var siteDomain = scriptUrl.searchParams.get('site') || null;
 
-  // OmniRoute deployment origin — same origin as track.js by default.
+  // OmniRoute deployment origin - same origin as track.js by default.
   // Backwards-compatible with the old data-omniroute-endpoint attribute.
   var endpoint =
     script.getAttribute('data-omniroute-endpoint') ||
@@ -42,7 +42,7 @@
     try {
       var payload = JSON.stringify({
         path: location.pathname + location.search,
-        // Anonymous per-browser session id — no cookies, sessionStorage only.
+        // Anonymous per-browser session id - no cookies, sessionStorage only.
         sessionId: (function () {
           try {
             var k = 'omniroute_sid';
@@ -54,7 +54,7 @@
             return sid;
           } catch (e) { return undefined; }
         })(),
-        // Explicit domain — avoids relying on the Host header when the
+        // Explicit domain - avoids relying on the Host header when the
         // customer site and OmniRoute are on different origins.
         domain: siteDomain,
       });

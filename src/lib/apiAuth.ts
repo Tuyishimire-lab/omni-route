@@ -17,7 +17,7 @@ export function generateKeyString(prefix: 'live' | 'test' = 'live'): string {
 
 /**
  * Hash an API key for at-rest storage. Keys are 48+ chars of CSPRNG entropy,
- * so a fast sha256 is sufficient — no need for bcrypt here.
+ * so a fast sha256 is sufficient - no need for bcrypt here.
  */
 export function hashApiKey(keyString: string): string {
   return crypto.createHash('sha256').update(keyString).digest('hex');
@@ -47,7 +47,7 @@ export async function createApiKey(
     },
   });
 
-  // Return the plaintext key exactly once — it is never retrievable again.
+  // Return the plaintext key exactly once - it is never retrievable again.
   return { ...apiKey, key };
 }
 
@@ -88,16 +88,16 @@ export async function validateApiKey(
     const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const isRecentlyReset = !apiKey.lastUsedAt || apiKey.lastUsedAt < hourAgo;
 
-    // Atomic conditional increment — prevents concurrent requests from
+    // Atomic conditional increment - prevents concurrent requests from
     // blowing past the limit via a read-then-write race.
     const updated = await prisma.apiKey.updateMany({
       where: {
         id: apiKey.id,
         OR: [
-          // Window expired — reset to 1
+          // Window expired - reset to 1
           { lastUsedAt: { lt: hourAgo } },
           { lastUsedAt: null },
-          // Window active — only increment if under the limit
+          // Window active - only increment if under the limit
           ...(isRecentlyReset ? [] : [{ usageCount: { lt: apiKey.rateLimit } }]),
         ],
       },

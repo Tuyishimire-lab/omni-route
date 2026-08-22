@@ -29,7 +29,7 @@ export default async function AnalyticsPage() {
   const directGmv = summary ? `$${Number(summary.directGmv).toLocaleString()}` : '$0';
 
   // Guard: derived rates are meaningless below a minimum sample size.
-  // "100% conversion" from 4 events is misleading — show a clear n/a instead.
+  // "100% conversion" from 4 events is misleading - show a clear n/a instead.
   const MIN_EVENTS_FOR_RATES = 30;
   const enoughData = totalEventsRaw >= MIN_EVENTS_FOR_RATES;
   const conversionRate = enoughData
@@ -61,7 +61,7 @@ export default async function AnalyticsPage() {
           Traffic Liquidity & Conversion Analytics
         </h1>
         <p className="text-xs sm:text-sm text-[#BBBFBF] max-w-3xl leading-relaxed">
-          Monitor AI crawler activity, answer-engine referrals, and autonomous agent transactions in real-time. All data is recorded directly from your site&apos;s tracking tag — no sampling, no modelling.
+          Monitor AI crawler activity, answer-engine referrals, and autonomous agent transactions in real-time. All data is recorded directly from your site&apos;s tracking tag - no sampling, no modelling.
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export default async function AnalyticsPage() {
           <Database className="w-8 h-8 text-[#878787] mx-auto" />
           <h2 className="text-base font-bold text-white">No telemetry recorded yet</h2>
           <p className="text-xs text-[#878787] max-w-lg mx-auto leading-relaxed">
-            These numbers reflect <span className="text-[#BBBFBF] font-semibold">real recorded traffic only</span> — we never
+            These numbers reflect <span className="text-[#BBBFBF] font-semibold">real recorded traffic only</span> - we never
             show synthetic data as live. Install the tracking snippet on your site to start capturing AI crawler
             visits and answer-engine referrals.
           </p>
@@ -175,7 +175,7 @@ export default async function AnalyticsPage() {
 
           <div className="p-4 bg-[rgba(5,173,152,0.10)] rounded-xl border border-[rgba(5,173,152,0.20)] text-xs text-emerald-200">
             <span className="font-semibold block mb-1">How OmniRoute Traffic Scoring Works:</span>
-            By serving machine-readable semantic vectors and cryptographic click attestations, inbound traffic is classified by intent and source. This makes automated API queries and agentic referrals attributable and auditable — replacing opaque ad-click tracking with verifiable signals.
+            By serving machine-readable semantic vectors and cryptographic click attestations, inbound traffic is classified by intent and source. This makes automated API queries and agentic referrals attributable and auditable - replacing opaque ad-click tracking with verifiable signals.
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /**
- * DB-backed rate limiter — works correctly across Vercel serverless instances.
+ * DB-backed rate limiter - works correctly across Vercel serverless instances.
  * Unlike in-memory Maps, this survives cold starts and is shared across all
  * concurrent function invocations.
  *
@@ -41,7 +41,7 @@ export async function checkRateLimit(
     });
 
     if (!existing || existing.windowStart < windowStart) {
-      // No record or window expired — create/reset atomically.
+      // No record or window expired - create/reset atomically.
       // The update guard ensures a concurrent request that already reset the
       // window doesn't get clobbered back to 1.
       const result = await prisma.rateLimitRecord.upsert({
@@ -66,7 +66,7 @@ export async function checkRateLimit(
       };
     }
 
-    // Atomic conditional increment — only increments while under the limit,
+    // Atomic conditional increment - only increments while under the limit,
     // closing the read-then-write race between concurrent requests.
     const updated = await prisma.rateLimitRecord.updateMany({
       where: {
@@ -95,7 +95,7 @@ export async function checkRateLimit(
       resetMs: existing.windowStart.getTime() + windowMs - now.getTime(),
     };
   } catch (err) {
-    // Fail open — never block a user due to a rate limiter DB error
+    // Fail open - never block a user due to a rate limiter DB error
     console.error('[rateLimiter] DB error, failing open:', err);
     return { allowed: true, remaining: 1, resetMs: 60_000 };
   }
@@ -112,7 +112,7 @@ export function getClientIp(req: { headers: { get(name: string): string | null }
 
 /**
  * Delete rate-limit rows whose windows expired more than an hour ago.
- * Called by the rescan cron — without this, RateLimitRecord grows unbounded.
+ * Called by the rescan cron - without this, RateLimitRecord grows unbounded.
  */
 export async function cleanupExpiredRateLimits(): Promise<number> {
   try {

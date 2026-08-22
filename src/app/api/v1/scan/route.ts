@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
     let body: { url?: string; sessionId?: string; bypassCache?: boolean } = {};
     try { body = await req.json(); } catch { body = {}; }
 
-    // P0-4: Require an explicit URL — no silent fallback that wastes compute
+    // P0-4: Require an explicit URL - no silent fallback that wastes compute
     const url = body?.url;
     if (!url || typeof url !== 'string' || url.trim().length === 0) {
       return NextResponse.json({ error: 'url is required' }, { status: 400 });
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     const report = await crawlAndAnalyzeUrl(url, { bypassCache });
 
-    // Persist after the response is sent — survives function completion on Vercel
+    // Persist after the response is sent - survives function completion on Vercel
     after(() =>
       saveScanToDB(report, sessionId, report.liveMetadata?.isLiveScanned ?? false)
         .catch((e) => console.error('[scan] DB persist failed:', e))

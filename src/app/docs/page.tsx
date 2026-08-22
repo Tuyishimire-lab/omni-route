@@ -5,7 +5,7 @@ import { Book, Code, Globe, Shield, Cpu, ArrowRight, CheckCircle2, Layers, Zap }
 
 export const metadata: Metadata = {
   title: 'agent.json Specification & Documentation | OmniRoute',
-  description: 'Complete technical reference for the agent.json protocol — the machine-readable standard that enables AI search engines and autonomous buyer agents to discover, query, and transact with your website.',
+  description: 'Complete technical reference for the agent.json protocol - the machine-readable standard that enables AI search engines and autonomous buyer agents to discover, query, and transact with your website.',
 };
 
 const SCHEMA_FIELDS = [
@@ -38,7 +38,7 @@ export default function DocsPage() {
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed max-w-3xl">
           The <code className="text-[#05AD98] font-mono">agent.json</code> protocol is a machine-readable standard deployed at
           {' '}<code className="text-[#05AD98] font-mono">/.well-known/agent.json</code> that enables AI search engines and
-          autonomous buyer agents to discover, query, and transact with your website — without human intermediary lag.
+          autonomous buyer agents to discover, query, and transact with your website - without human intermediary lag.
         </p>
 
         {/* Quick install link */}
@@ -70,7 +70,7 @@ export default function DocsPage() {
           {[
             { icon: Cpu, title: 'Machine-Readable API', desc: 'Transforms any website into an autonomous agent endpoint. AI assistants can discover your capabilities, products, and pricing programmatically.' },
             { icon: Shield, title: 'Controlled Access', desc: 'Define rate limits, auth requirements, and which agent crawlers are allowed. You stay in full control of who accesses your data.' },
-            { icon: Zap, title: 'Zero-Click Transactions', desc: 'Personal AI buyer agents can discover products and execute checkout orders in milliseconds — no human browsing needed.' },
+            { icon: Zap, title: 'Zero-Click Transactions', desc: 'Personal AI buyer agents can discover products and execute checkout orders in milliseconds - no human browsing needed.' },
           ].map((item, i) => (
             <div key={i} className="glass-card rounded-xl p-5 border border-[rgba(187,191,191,0.08)] space-y-3">
               <div className="w-10 h-10 rounded-xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98]">
@@ -111,7 +111,7 @@ export default function DocsPage() {
                 {field.required ? (
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#05AD98]" />
                 ) : (
-                  <span className="text-[#878787]">—</span>
+                  <span className="text-[#878787]">-</span>
                 )}
               </span>
               <span className="text-xs text-[#BBBFBF] leading-relaxed">{field.description}</span>

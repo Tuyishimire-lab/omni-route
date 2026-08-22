@@ -43,7 +43,7 @@ export default function LeaderboardTable({
   );
   const [historyMap, setHistoryMap] = useState<Record<string, { date: string; score: number }[]>>({});
 
-  // Sync initialEntries if provided — deferred so it doesn't fire synchronously
+  // Sync initialEntries if provided - deferred so it doesn't fire synchronously
   // inside the effect body (avoids cascading-render lint error).
   useEffect(() => {
     if (initialEntries && initialEntries.length > 0 && entries.length === 0) {
@@ -134,7 +134,7 @@ export default function LeaderboardTable({
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs bg-amber-500/8 border border-amber-500/20 text-amber-300">
           <Sparkles className="w-3.5 h-3.5 shrink-0" />
           <span>
-            <strong>Sample data</strong> — showing representative domains while live rankings load.
+            <strong>Sample data</strong> - showing representative domains while live rankings load.
             Scores are illustrative; real DB rankings appear once your Turso cron has run.
           </span>
         </div>
@@ -199,7 +199,7 @@ export default function LeaderboardTable({
                 </span>
                 {entry.isLiveScanned !== undefined && (
                   <span
-                    title={entry.isLiveScanned ? 'Score from a live crawl of the site' : 'Estimated score — site could not be live-crawled'}
+                    title={entry.isLiveScanned ? 'Score from a live crawl of the site' : 'Estimated score - site could not be live-crawled'}
                     className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wide border ${
                       entry.isLiveScanned
                         ? 'bg-[rgba(5,173,152,0.12)] text-[#05AD98] border-[rgba(5,173,152,0.25)]'

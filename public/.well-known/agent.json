@@ -48,8 +48,8 @@
       { "path": "/track",     "method": "POST", "description": "Ingest a page visit for AI traffic classification" },
       { "path": "/verify",    "method": "GET",  "description": "Verify tracking tag installation on a domain" },
       { "path": "/analytics", "method": "GET",  "description": "Aggregated AI traffic analytics" },
-      { "path": "/geo-score", "method": "GET",  "description": "GEO score for any domain — .02/call" },
-      { "path": "/ai-traffic","method": "GET",  "description": "AI crawler visit data for tracked domains — .05/call" }
+      { "path": "/geo-score", "method": "GET",  "description": "GEO score for any domain - .02/call" },
+      { "path": "/ai-traffic","method": "GET",  "description": "AI crawler visit data for tracked domains - .05/call" }
     ]
   },
   "agent_instructions": {

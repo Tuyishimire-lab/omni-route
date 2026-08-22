@@ -144,7 +144,7 @@ export default function OnboardingWizard() {
             {current.detail}
           </div>
 
-          {/* Domain Input — only on Step 1 (scan step) */}
+          {/* Domain Input - only on Step 1 (scan step) */}
           {step === 1 && (
             <div className="space-y-1.5">
               <label className="text-xs text-[#878787] font-medium">Enter your domain to scan now:</label>

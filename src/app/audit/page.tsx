@@ -119,7 +119,7 @@ function AuditContent() {
         {rateLimitRetryAfter !== null && (
           <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300 flex items-center justify-between gap-3">
             <span>
-              Scan limit reached — free scans are capped at 30/minute. Try again in{' '}
+              Scan limit reached - free scans are capped at 30/minute. Try again in{' '}
               <strong className="font-mono">{rateLimitRetryAfter}s</strong>, or create an API key for higher limits.
             </span>
             <a href="/register" className="shrink-0 underline hover:text-amber-200">Get free key</a>

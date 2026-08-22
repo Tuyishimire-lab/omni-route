@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     // (set by the new one-tag snippet). Falls back to Host-header extraction
     // for backwards compatibility with the old data-omniroute-endpoint style.
     const rawBodyDomain = typeof body.domain === 'string' ? body.domain.trim() : null;
-    // Basic validation — must look like a hostname, not a URL or IP injection
+    // Basic validation - must look like a hostname, not a URL or IP injection
     const isValidHostname = rawBodyDomain
       ? /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(rawBodyDomain)
       : false;
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const classified = classifyRequest(userAgent, referer);
 
     // Always record a heartbeat so the verifier knows the tag is live on this domain.
-    // Fire-and-forget — a heartbeat failure must never affect the tracking response.
+    // Fire-and-forget - a heartbeat failure must never affect the tracking response.
     prisma.tagHeartbeat.upsert({
       where:  { domain },
       update: { lastSeen: new Date() },
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       console.warn('[track] heartbeat upsert failed:', e instanceof Error ? e.message : e);
     });
 
-    // Only persist non-human traffic — human analytics is not our product.
+    // Only persist non-human traffic - human analytics is not our product.
     if (classified.classification === 'HUMAN') {
       return NextResponse.json({ success: true, recorded: false, classification: classified.classification });
     }
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, recorded: true, classification: classified.classification });
   } catch (error: unknown) {
-    // Log everything — ingestion failures must be diagnosable
+    // Log everything - ingestion failures must be diagnosable
     console.error('[track] Error:', error);
     return NextResponse.json({ error: 'Failed to record traffic event' }, { status: 500 });
   }

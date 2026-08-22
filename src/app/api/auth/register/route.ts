@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
 
-    // Limit registrations to 5 per IP per hour — blocks account factory abuse
+    // Limit registrations to 5 per IP per hour - blocks account factory abuse
     const rateCheck = await checkRateLimit(ip, 'register', 60 * 60_000, 5);
     if (!rateCheck.allowed) {
       return NextResponse.json(

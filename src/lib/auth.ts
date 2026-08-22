@@ -2,7 +2,7 @@ import { prisma } from './prisma';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-// ─── Password Hashing (bcryptjs — pure JS, works in serverless) ─────────────
+// ─── Password Hashing (bcryptjs - pure JS, works in serverless) ─────────────
 
 let bcryptModule: typeof import('bcryptjs') | null = null;
 
@@ -25,7 +25,7 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 // ─── JWT Session Management ─────────────────────────────────────────────────
 
-// P0: Never fall back to a hardcoded secret in production — an attacker who
+// P0: Never fall back to a hardcoded secret in production - an attacker who
 // finds this repo could forge valid session tokens.
 //
 // Lazy initialization: the secret is resolved on first use, NOT at module
@@ -41,7 +41,7 @@ function getJwtSecret(): Uint8Array {
     if (process.env.NODE_ENV === 'production') {
       throw new Error('[auth] JWT_SECRET environment variable is not set. Cannot start in production without it.');
     }
-    // Dev-only fallback — safe because NODE_ENV !== 'production'
+    // Dev-only fallback - safe because NODE_ENV !== 'production'
     console.warn('[auth] WARNING: JWT_SECRET is not set. Using insecure dev fallback. Set JWT_SECRET in .env.local.');
     _jwtSecret = new TextEncoder().encode('omniroute-dev-secret-DO-NOT-USE-IN-PROD');
   } else {
