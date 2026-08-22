@@ -118,7 +118,7 @@ export async function getLeaderboard(category?: string) {
     if (domains && domains.length > 0) {
       // Fetch the latest scan per domain to determine live vs fallback scoring
       const latestScans = await prisma.scanEvent.findMany({
-        where: { domain: { in: domains.map((d) => d.domain) } },
+        where: { domain: { in: domains.map((d: { domain: string }) => d.domain) } },
         orderBy: { scannedAt: 'desc' },
         select: { domain: true, isLiveScan: true },
       });
@@ -127,7 +127,7 @@ export async function getLeaderboard(category?: string) {
         if (!liveMap.has(s.domain)) liveMap.set(s.domain, s.isLiveScan);
       }
 
-      return domains.map((d, i) => ({
+      return domains.map((d: typeof domains[number], i: number) => ({
         rank: i + 1,
         domain: d.domain,
         category: d.category,
@@ -167,7 +167,7 @@ export async function getDomainHistory(domain: string, days = 14) {
     select: { scannedAt: true, geoScore: true },
   });
 
-  return events.map((e) => ({
+  return events.map((e: { scannedAt: Date; geoScore: number }) => ({
     date: e.scannedAt.toISOString().split('T')[0],
     score: e.geoScore,
   }));
@@ -256,7 +256,7 @@ export async function getWatchlistDomains(sessionId: string) {
 
   // Preserve watchlist order
   return domains
-    .map((d) => rows.find((r) => r.domain === d))
+    .map((d: string) => rows.find((r) => r.domain === d))
     .filter(Boolean)
     .map((r) => ({
       id: r!.id,
