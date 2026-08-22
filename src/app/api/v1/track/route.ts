@@ -49,21 +49,33 @@ export async function POST(req: NextRequest) {
       ? `https://${domain}${body.path.startsWith('/') ? body.path : '/' + body.path}`
       : `https://${domain}`;
 
-    await prisma.telemetryEvent.create({
-      data: {
-        type: classified.eventType,
-        source: classified.agentName ?? 'Unknown Agent',
-        domain,
-        destinationUrl,
-        intent: `${classified.classification}${classified.referredBy ? ` via ${classified.referredBy}` : ''}`,
-        geoScoreAtTime: 0, // enriched later by the rescan cron
-        settlementValue: null,
-      },
-    });
+    // Ingestion endpoint: a dropped event is lost forever. Retry once on
+    // transient DB failures before giving up.
+    const record = () =>
+      prisma.telemetryEvent.create({
+        data: {
+          type: classified.eventType,
+          source: classified.agentName ?? 'Unknown Agent',
+          domain,
+          destinationUrl,
+          intent: `${classified.classification}${classified.referredBy ? ` via ${classified.referredBy}` : ''}`,
+          geoScoreAtTime: 0, // enriched later by the rescan cron
+          settlementValue: null,
+        },
+      });
+
+    try {
+      await record();
+    } catch (firstError) {
+      console.error('[track] Write failed, retrying:', firstError instanceof Error ? firstError.message : firstError);
+      await new Promise((r) => setTimeout(r, 150));
+      await record();
+    }
 
     return NextResponse.json({ success: true, recorded: true, classification: classified.classification });
   } catch (error: unknown) {
-    console.error('[track] Error:', error instanceof Error ? error.message : error);
+    // Log everything — ingestion failures must be diagnosable
+    console.error('[track] Error:', error);
     return NextResponse.json({ error: 'Failed to record traffic event' }, { status: 500 });
   }
 }

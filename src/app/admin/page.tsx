@@ -178,7 +178,7 @@ export default function AdminPage() {
         <div className="w-14 h-14 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98] mx-auto">
           <LogIn className="w-7 h-7" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white">Sign In Required</h1>
+        <h2 className="text-2xl font-extrabold text-white">Sign In Required</h2>
         <p className="text-xs text-[#878787]">You need to be logged in with an admin account to access this page.</p>
         <Link
           href="/login"
@@ -198,7 +198,7 @@ export default function AdminPage() {
         <div className="w-14 h-14 rounded-2xl bg-[rgba(244,63,94,0.10)] border border-[rgba(244,63,94,0.2)] flex items-center justify-center text-rose-400 mx-auto">
           <ShieldOff className="w-7 h-7" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white">Access Denied</h1>
+        <h2 className="text-2xl font-extrabold text-white">Access Denied</h2>
         <p className="text-xs text-[#878787]">
           Signed in as <span className="text-white font-mono">{user.email}</span> — this account doesn&apos;t have admin privileges.
         </p>

@@ -116,6 +116,17 @@ export async function getLeaderboard(category?: string) {
     });
 
     if (domains && domains.length > 0) {
+      // Fetch the latest scan per domain to determine live vs fallback scoring
+      const latestScans = await prisma.scanEvent.findMany({
+        where: { domain: { in: domains.map((d) => d.domain) } },
+        orderBy: { scannedAt: 'desc' },
+        select: { domain: true, isLiveScan: true },
+      });
+      const liveMap = new Map<string, boolean>();
+      for (const s of latestScans) {
+        if (!liveMap.has(s.domain)) liveMap.set(s.domain, s.isLiveScan);
+      }
+
       return domains.map((d, i) => ({
         rank: i + 1,
         domain: d.domain,
@@ -126,6 +137,7 @@ export async function getLeaderboard(category?: string) {
         trend: d.trend as 'up' | 'down' | 'flat',
         trendDelta: d.trendDelta,
         scanCount: d.scanCount,
+        isLiveScanned: liveMap.get(d.domain) ?? false,
         lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
       }));
     }

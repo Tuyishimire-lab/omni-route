@@ -8,6 +8,8 @@ export interface LeaderboardEntry {
   trend: 'up' | 'down' | 'flat';
   trendDelta: number;
   scanCount: number;
+  /** True when the score came from a live crawl; false = deterministic fallback estimate */
+  isLiveScanned?: boolean;
   lastScanned?: string;
 }
 

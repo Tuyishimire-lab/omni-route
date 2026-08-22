@@ -182,6 +182,18 @@ export default function LeaderboardTable({
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#1A2020] text-[#878787] border border-[rgba(187,191,191,0.12)] font-medium">
                   {entry.category}
                 </span>
+                {entry.isLiveScanned !== undefined && (
+                  <span
+                    title={entry.isLiveScanned ? 'Score from a live crawl of the site' : 'Estimated score — site could not be live-crawled'}
+                    className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wide border ${
+                      entry.isLiveScanned
+                        ? 'bg-[rgba(5,173,152,0.12)] text-[#05AD98] border-[rgba(5,173,152,0.25)]'
+                        : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                    }`}
+                  >
+                    {entry.isLiveScanned ? 'Live' : 'Est.'}
+                  </span>
+                )}
               </div>
             </div>
 

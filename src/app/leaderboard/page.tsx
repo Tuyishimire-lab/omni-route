@@ -47,7 +47,7 @@ export default async function LeaderboardPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-omni-mesh">
+    <div className="min-h-screen bg-omni-mesh">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
 
         {/* Header */}
@@ -92,6 +92,6 @@ export default async function LeaderboardPage() {
         <LeaderboardTable initialEntries={initialEntries} />
 
       </div>
-    </main>
+    </div>
   );
 }

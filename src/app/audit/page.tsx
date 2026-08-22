@@ -15,10 +15,12 @@ function AuditContent() {
   const [isScanning, setIsScanning] = useState(false);
   const [scanMode, setScanMode] = useState<'live' | 'instant'>('live');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
 
   const fetchScan = async (target: string) => {
     setIsScanning(true);
     setErrorMessage(null);
+    setRateLimitRetryAfter(null);
     try {
       const res = await fetch('/api/v1/scan', {
         method: 'POST',
@@ -28,6 +30,9 @@ function AuditContent() {
       const data = await res.json();
       if (data.success && data.data) {
         setActiveReport(data.data);
+      } else if (res.status === 429) {
+        const retryAfter = parseInt(res.headers.get('Retry-After') ?? '60', 10);
+        setRateLimitRetryAfter(Number.isFinite(retryAfter) ? retryAfter : 60);
       } else {
         setErrorMessage(data.error || 'Failed to scan domain');
       }
@@ -110,6 +115,16 @@ function AuditContent() {
             )}
           </button>
         </form>
+
+        {rateLimitRetryAfter !== null && (
+          <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300 flex items-center justify-between gap-3">
+            <span>
+              Scan limit reached — free scans are capped at 30/minute. Try again in{' '}
+              <strong className="font-mono">{rateLimitRetryAfter}s</strong>, or create an API key for higher limits.
+            </span>
+            <a href="/register" className="shrink-0 underline hover:text-amber-200">Get free key</a>
+          </div>
+        )}
 
         {errorMessage && (
           <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-300">

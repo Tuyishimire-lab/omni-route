@@ -10,12 +10,15 @@ interface TrafficTelemetryProps {
 }
 
 export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProps) {
-  const [events, setEvents] = useState<LiveTelemetryEvent[]>(() => initialEvents || getInitialTelemetry(8));
+  // Start empty on both server and client — mock/DB events are hydrated in an
+  // effect. Generating events during initial render causes a hydration
+  // mismatch (timestamps differ between server and client).
+  const [events, setEvents] = useState<LiveTelemetryEvent[]>(initialEvents ?? []);
   const [isLive, setIsLive] = useState(true);
   // Demo mode: no real events were provided, so the stream is simulated.
   const [isDemo, setIsDemo] = useState(!initialEvents || initialEvents.length === 0);
 
-  // Sync initial events if passed — deferred to avoid sync setState in effect
+  // Hydrate events after mount — deferred to avoid sync setState in effect
   useEffect(() => {
     if (initialEvents && initialEvents.length > 0) {
       const t = setTimeout(() => {
@@ -30,20 +33,25 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
           if (json?.data?.events && json.data.events.length > 0) {
             setEvents(json.data.events);
             setIsDemo(false);
+          } else {
+            // No real data — fall back to clearly-labeled demo events
+            setEvents(getInitialTelemetry(8));
           }
         })
-        .catch((err) => console.warn('Could not fetch DB telemetry:', err));
+        .catch(() => setEvents(getInitialTelemetry(8)));
     }
   }, [initialEvents]);
 
-  // Live streaming simulation adding new edge pulses
+  // Live streaming simulation adding new edge pulses.
+  // Only inject simulated events while in demo mode — never mix fabricated
+  // rows into a real DB-backed feed.
   useEffect(() => {
-    if (!isLive) return;
+    if (!isLive || !isDemo) return;
     const interval = setInterval(() => {
       setEvents((prev) => [generateMockTelemetryEvent(), ...prev.slice(0, 24)]);
     }, 2800);
     return () => clearInterval(interval);
-  }, [isLive]);
+  }, [isLive, isDemo]);
 
   const getEventBadge = (type: LiveTelemetryEvent['type']) => {
     switch (type) {
