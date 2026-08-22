@@ -1,15 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAndSanitizeUrl } from '../../../../lib/security';
+import { prisma } from '../../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
 export interface VerifyResult {
   found: boolean;
-  method: 'query-param' | 'data-attribute' | 'bare' | null;
+  method: 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
   siteDomain: string | null;
   domainMatch: boolean;
   tagUrl: string | null;
   checkedUrl: string;
+  heartbeatAge?: string | null; // ISO timestamp of last heartbeat
   error?: string;
 }
 
@@ -33,10 +35,35 @@ export async function GET(req: NextRequest) {
 
   const checkedUrl = validation.normalizedUrl;
   // Extract the raw hostname — do NOT use validation.domain which strips www.
-  // We need the exact hostname so ?site=www.uselocalpdf.com matches correctly.
-  const checkedHostname = new URL(checkedUrl).hostname; // e.g. "www.uselocalpdf.com"
-  const checkedHostnameNoWww = checkedHostname.replace(/^www\./, ''); // "uselocalpdf.com"
+  const checkedHostname = new URL(checkedUrl).hostname;
+  const checkedHostnameNoWww = checkedHostname.replace(/^www\./, '');
 
+  // ── Heartbeat check (framework-agnostic) ──────────────────────────────
+  // When track.js loads on any site it upserts a TagHeartbeat row.
+  // If we have a recent heartbeat (≤ 7 days) we trust it — no HTML scrape needed.
+  // This works for Next.js Script component, React SPAs, GTM, etc.
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+  const heartbeat = await prisma.tagHeartbeat.findFirst({
+    where: {
+      domain: { in: [checkedHostname, checkedHostnameNoWww] },
+      lastSeen: { gte: new Date(Date.now() - SEVEN_DAYS) },
+    },
+    orderBy: { lastSeen: 'desc' },
+  }).catch(() => null);
+
+  if (heartbeat) {
+    return NextResponse.json<VerifyResult>({
+      found: true,
+      method: 'heartbeat',
+      siteDomain: heartbeat.domain,
+      domainMatch: true,
+      tagUrl: null,
+      checkedUrl,
+      heartbeatAge: heartbeat.lastSeen.toISOString(),
+    });
+  }
+
+  // ── Fallback: HTML scrape ─────────────────────────────────────────────
   let html = '';
   try {
     const controller = new AbortController();

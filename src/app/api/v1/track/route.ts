@@ -48,6 +48,16 @@ export async function POST(req: NextRequest) {
 
     const classified = classifyRequest(userAgent, referer);
 
+    // Always record a heartbeat so the verifier knows the tag is live on this domain.
+    // Fire-and-forget — a heartbeat failure must never affect the tracking response.
+    prisma.tagHeartbeat.upsert({
+      where:  { domain },
+      update: { lastSeen: new Date() },
+      create: { domain, lastSeen: new Date(), firstSeen: new Date() },
+    }).catch((e: unknown) => {
+      console.warn('[track] heartbeat upsert failed:', e instanceof Error ? e.message : e);
+    });
+
     // Only persist non-human traffic — human analytics is not our product.
     if (classified.classification === 'HUMAN') {
       return NextResponse.json({ success: true, recorded: false, classification: classified.classification });

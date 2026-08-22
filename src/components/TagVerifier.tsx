@@ -5,11 +5,12 @@ import { Search, CheckCircle2, XCircle, AlertTriangle, Loader2, ExternalLink } f
 
 interface VerifyResult {
   found: boolean;
-  method: 'query-param' | 'data-attribute' | 'bare' | null;
+  method: 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
   siteDomain: string | null;
   domainMatch: boolean;
   tagUrl: string | null;
   checkedUrl: string;
+  heartbeatAge?: string | null;
   error?: string;
 }
 
@@ -103,8 +104,16 @@ export default function TagVerifier() {
 
             {status === 'ok' && (
               <>
-                <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-omniroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
+                {result.method === 'heartbeat'
+                  ? (
+                    <Detail label="Verified via" value="Live tag ping ✓" ok />
+                  ) : (
+                    <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-omniroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
+                  )}
                 {result.siteDomain && <Detail label="Site attributed to" value={result.siteDomain} ok />}
+                {result.heartbeatAge && (
+                  <Detail label="Last seen" value={`${Math.round((Date.now() - new Date(result.heartbeatAge).getTime()) / 60000)} min ago`} />
+                )}
                 {result.tagUrl && <Detail label="Script src" value={result.tagUrl} mono />}
               </>
             )}

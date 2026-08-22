@@ -146,6 +146,18 @@ model RegisteredSite {
   @@index([domain])
 }
 
+// Lightweight record of when track.js last loaded on a domain.
+// Updated on every call to /api/v1/track, human or AI.
+// Used by /api/v1/verify so verification works on all frameworks
+// (Next.js Script component, React, SPAs) not just static HTML.
+model TagHeartbeat {
+  domain    String   @id  // unique per domain — cheap upsert
+  lastSeen  DateTime @default(now())
+  firstSeen DateTime @default(now())
+
+  @@index([lastSeen])
+}
+
 // Persistent rate limiting — survives serverless cold starts unlike in-memory Maps.
 // Rows are cheap and auto-expired by the cleanup cron.
 model RateLimitRecord {
