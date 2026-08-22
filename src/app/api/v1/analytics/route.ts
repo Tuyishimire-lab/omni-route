@@ -2,15 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAnalyticsSummary } from '../../../../lib/db';
 import { prisma } from '../../../../lib/prisma';
 
-export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   try {
     const summary = await getAnalyticsSummary();
-    return NextResponse.json({
-      success: true,
-      data: summary,
-    });
+    return NextResponse.json(
+      { success: true, data: summary },
+      { headers: { 'Cache-Control': 's-maxage=60, stale-while-revalidate=30' } }
+    );
   } catch (error: unknown) {
     return NextResponse.json(
       { success: false, error: error instanceof Error ? error.message : 'Failed to fetch analytics' },

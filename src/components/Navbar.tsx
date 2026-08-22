@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Network, Menu, X, Key, LogIn, LogOut, Shield, ChevronDown, User } from 'lucide-react';
 import ApiSettingsModal from './ApiSettingsModal';
@@ -133,9 +134,11 @@ export default function Navbar() {
                 >
                   {/* Avatar */}
                   {user.avatarUrl ? (
-                    <img
+                    <Image
                       src={user.avatarUrl}
                       alt={user.name}
+                      width={28}
+                      height={28}
                       className="w-7 h-7 rounded-full border border-[rgba(5,173,152,0.3)]"
                     />
                   ) : (
@@ -253,7 +256,7 @@ export default function Navbar() {
                 <>
                   <div className="flex items-center gap-3 px-3 py-2.5">
                     {user.avatarUrl ? (
-                      <img src={user.avatarUrl} alt={user.name} className="w-8 h-8 rounded-full border border-[rgba(5,173,152,0.3)]" />
+                      <Image src={user.avatarUrl} alt={user.name} width={32} height={32} className="w-8 h-8 rounded-full border border-[rgba(5,173,152,0.3)]" />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#05AD98] to-[#038a79] flex items-center justify-center text-xs font-bold text-white">
                         {getInitials(user.name)}
