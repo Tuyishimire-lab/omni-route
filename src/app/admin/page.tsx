@@ -417,6 +417,103 @@ export default function AdminPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Tracked Domains ─────────────────────────────────────────────── */}
+      <TrackedDomains />
+    </div>
+  );
+}
+
+// ── Tracked Domains component (admin only) ─────────────────────────────────
+interface TrackedDomain {
+  domain: string;
+  totalEvents: number;
+  lastEvent: string | null;
+  owner: { email: string; name: string; id: string } | null;
+  registeredAt: string | null;
+}
+
+function TrackedDomains() {
+  const [rows, setRows] = React.useState<TrackedDomain[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    fetch('/api/admin/tracked-sites')
+      .then(r => r.json())
+      .then(d => { if (Array.isArray(d)) setRows(d); else setError(d.error ?? 'Failed'); })
+      .catch(() => setError('Network error'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(187,191,191,0.08)]">
+        <div>
+          <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <Users className="w-4 h-4 text-[#05AD98]" />
+            Tracked Domains
+          </h2>
+          <p className="text-xs text-[#878787] mt-0.5">All domains that have sent AI traffic events</p>
+        </div>
+        <span className="text-xs text-[#878787] bg-[#111514] border border-[rgba(187,191,191,0.10)] px-2.5 py-1 rounded-full">
+          {rows.length} domains
+        </span>
+      </div>
+
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <RefreshCw className="w-5 h-5 text-[#05AD98] animate-spin" />
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-2 px-6 py-4 text-sm text-rose-400">
+          <AlertCircle className="w-4 h-4" />{error}
+        </div>
+      )}
+
+      {!loading && !error && rows.length === 0 && (
+        <p className="text-center text-[#878787] text-sm py-10">No tracked domains yet.</p>
+      )}
+
+      {!loading && rows.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-[rgba(187,191,191,0.06)] text-[10px] text-[#878787] uppercase tracking-wider">
+                <th className="px-6 py-3 text-left">Domain</th>
+                <th className="px-4 py-3 text-right">Events</th>
+                <th className="px-4 py-3 text-left">Last Seen</th>
+                <th className="px-4 py-3 text-left">Owner</th>
+                <th className="px-4 py-3 text-left">Registered</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[rgba(187,191,191,0.05)]">
+              {rows.map(row => (
+                <tr key={row.domain} className="hover:bg-[rgba(5,173,152,0.04)] transition-colors">
+                  <td className="px-6 py-3 font-mono text-xs text-[#05AD98]">
+                    <a href={`https://${row.domain}`} target="_blank" rel="noopener noreferrer"
+                      className="hover:underline">{row.domain}</a>
+                  </td>
+                  <td className="px-4 py-3 text-right text-white font-semibold">{row.totalEvents}</td>
+                  <td className="px-4 py-3 text-[#878787] text-xs">
+                    {row.lastEvent ? new Date(row.lastEvent).toLocaleDateString() : '—'}
+                  </td>
+                  <td className="px-4 py-3 text-xs">
+                    {row.owner
+                      ? <span className="text-white">{row.owner.name} <span className="text-[#878787]">({row.owner.email})</span></span>
+                      : <span className="text-[#878787] italic">Unregistered</span>}
+                  </td>
+                  <td className="px-4 py-3 text-[#878787] text-xs">
+                    {row.registeredAt ? new Date(row.registeredAt).toLocaleDateString() : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

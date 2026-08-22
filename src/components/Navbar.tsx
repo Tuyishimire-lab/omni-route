@@ -20,6 +20,7 @@ const navItems = [
   { name: 'Home', href: '/' },
   { name: 'GEO Scanner', href: '/audit' },
   { name: 'Watchlist', href: '/watchlist' },
+  { name: 'My Sites', href: '/my-sites' },
   { name: 'Benchmark', href: '/benchmark' },
   { name: 'Leaderboard', href: '/leaderboard' },
   { name: 'agent.json', href: '/manifest' },

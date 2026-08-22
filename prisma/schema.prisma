@@ -121,10 +121,29 @@ model User {
   lastLoginAt   DateTime?
   isActive      Boolean   @default(true)
 
-  apiKeys       ApiKey[]
+  apiKeys          ApiKey[]
+  registeredSites  RegisteredSite[]
 
   @@index([email])
   @@index([provider, providerId])
+}
+
+// Sites where the user has installed & verified the OmniRoute tag.
+// Distinct from watchlist (which monitors any domain for GEO score).
+// A domain can only be registered once per user.
+// Adding requires server-side re-verification that the tag is live.
+model RegisteredSite {
+  id           String   @id @default(cuid())
+  userId       String
+  domain       String   // exact hostname e.g. "www.uselocalpdf.com"
+  verifiedAt   DateTime @default(now())
+  addedAt      DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, domain])
+  @@index([userId])
+  @@index([domain])
 }
 
 // Persistent rate limiting — survives serverless cold starts unlike in-memory Maps.
