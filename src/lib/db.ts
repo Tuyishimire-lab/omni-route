@@ -333,4 +333,99 @@ export async function getAnalyticsSummary() {
   }
 }
 
+// ─── Per-Domain Agent Traffic Analytics ───────────────────────────────────────
+
+export interface DomainAgentHit {
+  agentName: string;
+  classification: string;
+  hits: number;
+  lastSeen: string;
+}
+
+export interface DomainAnalytics {
+  domain: string;
+  geoScore: number;
+  status: string;
+  trend: 'up' | 'down' | 'flat';
+  trendDelta: number;
+  scanCount: number;
+  lastScanned: string;
+  scoreHistory: { date: string; score: number }[];
+  agentHits: DomainAgentHit[];
+  totalAgentHits7d: number;
+  referralsByEngine: { engine: string; count: number }[];
+  crawledByAgents7d: number;
+}
+
+/**
+ * Full analytics picture for one domain: GEO score history + real agent
+ * traffic from TelemetryEvent rows written by the tracking snippet.
+ */
+export async function getDomainAnalytics(domain: string): Promise<DomainAnalytics | null> {
+  const cleanDomain = domain.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  try {
+    const [domainRow, scoreHistory, recentEvents] = await Promise.all([
+      prisma.domain.findUnique({ where: { domain: cleanDomain } }),
+      getDomainHistory(cleanDomain, 14),
+      prisma.telemetryEvent.findMany({
+        where: { domain: cleanDomain, timestamp: { gte: weekAgo } },
+        orderBy: { timestamp: 'desc' },
+        take: 500,
+      }),
+    ]);
+
+    if (!domainRow) return null;
+
+    // Aggregate agent hits by source
+    const hitMap = new Map<string, DomainAgentHit>();
+    const engineMap = new Map<string, number>();
+    let crawledByAgents7d = 0;
+
+    for (const ev of recentEvents) {
+      const existing = hitMap.get(ev.source);
+      if (existing) {
+        existing.hits++;
+      } else {
+        hitMap.set(ev.source, {
+          agentName: ev.source,
+          classification: ev.intent.split(' ')[0] || ev.type,
+          hits: 1,
+          lastSeen: ev.timestamp.toISOString(),
+        });
+      }
+
+      // Answer-engine referrals (AI_CITATION with a named engine source)
+      if (ev.type === 'AI_CITATION') {
+        engineMap.set(ev.source, (engineMap.get(ev.source) ?? 0) + 1);
+      }
+      // Crawler/agent activity (indexing pings + agent transactions)
+      if (ev.type === 'GEO_INDEX_PING' || ev.type === 'AGENT_TX') {
+        crawledByAgents7d++;
+      }
+    }
+
+    return {
+      domain: cleanDomain,
+      geoScore: domainRow.latestGeoScore,
+      status: domainRow.status,
+      trend: domainRow.trend as 'up' | 'down' | 'flat',
+      trendDelta: domainRow.trendDelta,
+      scanCount: domainRow.scanCount,
+      lastScanned: domainRow.lastScanned.toISOString(),
+      scoreHistory,
+      agentHits: [...hitMap.values()].sort((a, b) => b.hits - a.hits),
+      totalAgentHits7d: recentEvents.length,
+      referralsByEngine: [...engineMap.entries()]
+        .map(([engine, count]) => ({ engine, count }))
+        .sort((a, b) => b.count - a.count),
+      crawledByAgents7d,
+    };
+  } catch (e) {
+    console.error('[getDomainAnalytics] Error:', e);
+    return null;
+  }
+}
+
 

@@ -20,16 +20,17 @@ export const dynamic = 'force-dynamic';
 export default async function AnalyticsPage() {
   const summary = await getAnalyticsSummary();
 
-  const totalEvents = summary ? Number(summary.totalReferrals).toLocaleString() : '120';
-  const directGmv = summary ? `$${Number(summary.directGmv).toLocaleString()}` : '$22,185';
-  const conversionRate = summary?.conversionRate || '18.3%';
-  const monitoredDomains = summary?.monitoredDomains || 50;
-  const channels = summary?.channels || [
-    { name: 'Perplexity Pro & Sonar Answers', count: 41, percentage: 41 },
-    { name: 'OpenAI GPT-4o Search Citations', count: 28, percentage: 28 },
-    { name: 'Autonomous Buyer Agents (agent.json)', count: 18, percentage: 18 },
-    { name: 'P2P Cryptographic Human Mesh', count: 12, percentage: 12 },
-  ];
+  // Honest-data policy: when no real events exist, show the empty state
+  // instead of fabricated numbers.
+  const hasRealData = !!summary && summary.totalReferrals > 0;
+
+  const totalEvents = summary ? Number(summary.totalReferrals).toLocaleString() : '0';
+  const directGmv = summary ? `$${Number(summary.directGmv).toLocaleString()}` : '$0';
+  const conversionRate = summary?.conversionRate || '0.0%';
+  const monitoredDomains = summary?.monitoredDomains || 0;
+  const channels = hasRealData
+    ? summary!.channels
+    : [];
 
   const channelColors = ['bg-sky-400', 'bg-indigo-400', 'bg-[#05AD98]', 'bg-amber-400', 'bg-purple-400'];
 
@@ -57,6 +58,21 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* High-Level Metrics (Pure Ground Truth) */}
+      {!hasRealData && (
+        <div className="glass-card rounded-3xl p-8 border border-[rgba(187,191,191,0.10)] text-center space-y-3">
+          <Database className="w-8 h-8 text-[#878787] mx-auto" />
+          <h2 className="text-base font-bold text-white">No telemetry recorded yet</h2>
+          <p className="text-xs text-[#878787] max-w-lg mx-auto leading-relaxed">
+            These numbers reflect <span className="text-[#BBBFBF] font-semibold">real recorded traffic only</span> — we never
+            show synthetic data as live. Install the tracking snippet on your site to start capturing AI crawler
+            visits and answer-engine referrals.
+          </p>
+          <code className="block text-left text-[11px] bg-[#111514] border border-[rgba(187,191,191,0.10)] rounded-xl p-4 font-mono text-[#05AD98] overflow-x-auto max-w-2xl mx-auto mt-3">
+            {`<script async src="%ORIGIN%/api/v1/track.js"\n        data-omniroute-endpoint="%ORIGIN%"></script>`}
+          </code>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Total Telemetry Events"

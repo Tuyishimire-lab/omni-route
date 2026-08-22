@@ -58,10 +58,36 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // 4. Alert on significant score drops (webhook if configured)
+    const alertWebhook = process.env.ALERT_WEBHOOK_URL;
+    const drops = results.filter((r) => r.delta <= -10);
+    if (alertWebhook && drops.length > 0) {
+      try {
+        await fetch(alertWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: `⚠️ OmniRoute GEO score drop${drops.length > 1 ? 's' : ''} detected`,
+            drops: drops.map((d) => ({
+              domain: d.domain,
+              previous: d.previousScore,
+              current: d.newScore,
+              delta: d.delta,
+            })),
+            timestamp: new Date().toISOString(),
+          }),
+          signal: AbortSignal.timeout(5000),
+        });
+      } catch (e) {
+        console.error('[cron/rescan] Alert webhook failed:', e);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),
       refreshedCount: results.length,
+      alertsSent: drops.length,
       domains: results
     });
 

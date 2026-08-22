@@ -27,7 +27,15 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 
 // P0: Never fall back to a hardcoded secret in production — an attacker who
 // finds this repo could forge valid session tokens.
+//
+// Lazy initialization: the secret is resolved on first use, NOT at module
+// load time. This prevents next build from crashing when it statically
+// imports route modules in NODE_ENV=production (before env vars are served).
+let _jwtSecret: Uint8Array | null = null;
+
 function getJwtSecret(): Uint8Array {
+  if (_jwtSecret) return _jwtSecret;
+
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     if (process.env.NODE_ENV === 'production') {
@@ -35,12 +43,13 @@ function getJwtSecret(): Uint8Array {
     }
     // Dev-only fallback — safe because NODE_ENV !== 'production'
     console.warn('[auth] WARNING: JWT_SECRET is not set. Using insecure dev fallback. Set JWT_SECRET in .env.local.');
-    return new TextEncoder().encode('omniroute-dev-secret-DO-NOT-USE-IN-PROD');
+    _jwtSecret = new TextEncoder().encode('omniroute-dev-secret-DO-NOT-USE-IN-PROD');
+  } else {
+    _jwtSecret = new TextEncoder().encode(secret);
   }
-  return new TextEncoder().encode(secret);
+  return _jwtSecret;
 }
 
-const JWT_SECRET = getJwtSecret();
 const SESSION_COOKIE = 'omniroute_session';
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -58,12 +67,12 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_MAX_AGE}s`)
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as SessionPayload;
   } catch {
     return null;
