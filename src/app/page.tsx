@@ -24,9 +24,10 @@ export default function HomePage() {
   const router = useRouter();
   const [searchDomain, setSearchDomain] = useState('');
   const [liveStats, setLiveStats] = useState({
-    domainsRanked: 8,
-    avgGeoIndex: 91,
+    domainsRanked: 48,   // matches leaderboard fallback & default entry count
+    avgGeoIndex: 87,
     totalScans: 48,
+    isLive: false,       // false = fallback/estimated, true = from DB
   });
 
   useEffect(() => {
@@ -34,7 +35,7 @@ export default function HomePage() {
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data?.stats && data.stats.domainsRanked > 0) {
-          setLiveStats(data.stats);
+          setLiveStats({ ...data.stats, isLive: true });
         }
       })
       .catch((err) => console.warn('Could not load dynamic homepage stats:', err));
@@ -110,8 +111,8 @@ export default function HomePage() {
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           title="Domains Evaluated"
-          value={`${liveStats.domainsRanked}+`}
-          change="Live Turso Database"
+          value={liveStats.isLive ? `${liveStats.domainsRanked}+` : `${liveStats.domainsRanked}`}
+          change={liveStats.isLive ? 'Live Turso Database' : 'Loading live count…'}
           isPositive={true}
           subtitle="Actively monitored index"
           icon={Globe2}

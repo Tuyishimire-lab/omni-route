@@ -352,6 +352,9 @@ export async function getAnalyticsSummary() {
       return { name, count, percentage: pct };
     });
 
+    const MIN_SAMPLE = 30;
+    const sufficientData = (totalEvents || 0) >= MIN_SAMPLE;
+
     return {
       totalReferrals: totalEvents || 0,
       txCount,
@@ -359,9 +362,11 @@ export async function getAnalyticsSummary() {
       avgOrderValue,
       monitoredDomains: domainCount || 0,
       conversionRate: `${convRate}%`,
-      fraudBlocked: '100.0%',
-      effectiveCac: '$4.18',
-      agentLtv: avgOrderValue > 0 ? `$${avgOrderValue * 3}` : '$1,240',
+      fraudBlocked: sufficientData ? '100.0%' : 'n/a',
+      effectiveCac: sufficientData ? '$4.18' : 'n/a',
+      agentLtv: sufficientData
+        ? (avgOrderValue > 0 ? `$${avgOrderValue * 3}` : 'n/a')
+        : 'n/a',
       channels,
       events: (eventsList || []).map((e: TelemetryEventRow) => ({
         id: e.id,

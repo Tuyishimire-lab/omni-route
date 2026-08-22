@@ -38,6 +38,9 @@ export default function LeaderboardTable({
     initialEntries && initialEntries.length > 0 ? initialEntries : DEFAULT_LEADERBOARD_ENTRIES
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isDefaultData, setIsDefaultData] = useState(
+    !initialEntries || initialEntries.length === 0
+  );
   const [historyMap, setHistoryMap] = useState<Record<string, { date: string; score: number }[]>>({});
 
   // Sync initialEntries if provided — deferred so it doesn't fire synchronously
@@ -61,6 +64,7 @@ export default function LeaderboardTable({
           const json = await res.json();
           if (json.entries && Array.isArray(json.entries)) {
             setEntries(json.entries);
+            setIsDefaultData(json.entries.length === 0);
             // Fetch sparkline history for all domains in the result
             const domainList = json.entries.map((e: LeaderboardEntry) => e.domain).slice(0, 20);
             if (domainList.length > 0) {
@@ -124,6 +128,17 @@ export default function LeaderboardTable({
           />
         </div>
       </div>
+
+      {/* Sample data notice */}
+      {isDefaultData && !isLoading && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs bg-amber-500/8 border border-amber-500/20 text-amber-300">
+          <Sparkles className="w-3.5 h-3.5 shrink-0" />
+          <span>
+            <strong>Sample data</strong> — showing representative domains while live rankings load.
+            Scores are illustrative; real DB rankings appear once your Turso cron has run.
+          </span>
+        </div>
+      )}
 
       {/* Table */}
       <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
