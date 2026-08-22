@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   description: 'Live community rankings of the most GEO-optimized domains across AI citation engines. See who dominates Perplexity, ChatGPT, Claude, and Gemini.'
 };
 
-export const dynamic = 'force-dynamic';
+// Revalidate every 5 minutes via ISR — leaderboard changes once daily via cron.
+// Vercel serves the static page from edge; silently re-fetches in the background.
+export const revalidate = 300;
 
 export default async function LeaderboardPage() {
   let stats = { domainsRanked: 48, avgGeoIndex: 87, totalScans: 48 };

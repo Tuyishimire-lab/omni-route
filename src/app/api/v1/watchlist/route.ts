@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWatchlistDomains, addToWatchlist, removeFromWatchlist, getDomainHistory } from '../../../../lib/db';
+import { getWatchlistDomains, addToWatchlist, removeFromWatchlist, getBulkDomainHistory } from '../../../../lib/db';
 import { getSession } from '../../../../lib/auth';
 import { prisma } from '../../../../lib/prisma';
 
@@ -59,13 +59,13 @@ export async function GET(req: NextRequest) {
       domains = await getWatchlistDomains(sessionId!);
     }
 
-    // Attach score history to each domain
-    const withHistory = await Promise.all(
-      domains.map(async (d: Awaited<ReturnType<typeof getWatchlistDomains>>[number]) => ({
-        ...d,
-        scoreHistory: await getDomainHistory(d.domain, 14),
-      }))
-    );
+    // Attach score history to all domains in ONE batch query (avoids N round-trips)
+    const domainNames = domains.map((d: { domain: string }) => d.domain);
+    const historyMap = await getBulkDomainHistory(domainNames, 14);
+    const withHistory = domains.map((d: { domain: string }) => ({
+      ...d,
+      scoreHistory: historyMap[d.domain] ?? [],
+    }));
 
     return NextResponse.json({ domains: withHistory, source: session ? 'user' : 'session' });
   } catch (e) {

@@ -1,10 +1,23 @@
 'use client';
 
 import React, { useState } from 'react';
-import BenchmarkMatrix from '../../components/BenchmarkMatrix';
+import dynamic from 'next/dynamic';
 import { GeoAuditReport } from '../../lib/types';
 import { Scale, Plus, X, Search, Loader2, GitCompare, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+
+// recharts (~200KB) is lazy-loaded — only fetched when comparison results render
+const BenchmarkMatrix = dynamic(() => import('../../components/BenchmarkMatrix'), {
+  ssr: false,
+  loading: () => (
+    <div className="glass-panel rounded-2xl p-8 border border-[rgba(187,191,191,0.10)] flex items-center justify-center min-h-[300px]">
+      <div className="flex flex-col items-center gap-3 text-[#878787]">
+        <Loader2 className="w-6 h-6 animate-spin text-[#05AD98]" />
+        <span className="text-xs">Loading comparison chart…</span>
+      </div>
+    </div>
+  ),
+});
 
 const PRESET_PACKS = [
   { label: 'Fintech Giants',   domains: ['stripe.com', 'brex.com', 'mercury.com'] },

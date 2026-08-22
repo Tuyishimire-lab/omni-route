@@ -173,6 +173,42 @@ export async function getDomainHistory(domain: string, days = 14) {
   }));
 }
 
+/**
+ * Batch version of getDomainHistory — fetches all domains in ONE query.
+ * Use instead of Promise.all(domains.map(d => getDomainHistory(d))) to avoid
+ * N Turso round-trips (1 per domain → ~80ms each).
+ */
+export async function getBulkDomainHistory(
+  domains: string[],
+  days = 14
+): Promise<Record<string, { date: string; score: number }[]>> {
+  if (domains.length === 0) return {};
+
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+
+  const events = await prisma.scanEvent.findMany({
+    where: { domain: { in: domains }, scannedAt: { gte: since } },
+    orderBy: { scannedAt: 'asc' },
+    select: { domain: true, scannedAt: true, geoScore: true },
+  });
+
+  // Group in memory — O(n) single pass
+  const grouped: Record<string, { date: string; score: number }[]> = {};
+  for (const e of events) {
+    if (!grouped[e.domain]) grouped[e.domain] = [];
+    grouped[e.domain].push({
+      date: e.scannedAt.toISOString().split('T')[0],
+      score: e.geoScore,
+    });
+  }
+  // Ensure every requested domain has an entry (empty array if no history)
+  for (const d of domains) {
+    if (!grouped[d]) grouped[d] = [];
+  }
+  return grouped;
+}
+
 // ─── Watchlist (session-scoped) ───────────────────────────────────────────────
 
 export async function getWatchlist(sessionId: string): Promise<string[]> {
