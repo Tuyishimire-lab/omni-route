@@ -14,7 +14,10 @@ export async function GET() {
       status: 200,
       headers: {
         'Content-Type': 'application/javascript; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+        // 5-minute CDN cache + 60s stale-while-revalidate keeps latency low
+        // while ensuring bug fixes reach customer sites quickly.
+        // Browser cache stays at 5 minutes too — short enough to be practical.
+        'Cache-Control': 'public, max-age=300, s-maxage=300, stale-while-revalidate=60',
         'Access-Control-Allow-Origin': '*',
       },
     });

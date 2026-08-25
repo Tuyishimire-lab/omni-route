@@ -108,7 +108,12 @@ const AGENT_MARKERS = [
  */
 const INFRASTRUCTURE_UA_PATTERNS = [
   // Vercel ISR renderer: HeadlessChrome on Linux x86_64, UA ends at Safari token.
+  // Strict match: nothing after Safari/<version>.
   /mozilla\/5\.0 \(x11; linux x86_64\) applewebkit\/537\.36 \(khtml, like gecko\) headlesschrome\/[\d.]+ safari\/537\.36\s*$/i,
+  // Wider fallback: catches minor UA variants Vercel deploys (e.g. slightly
+  // different version strings) that share the same x11/Linux/HeadlessChrome
+  // fingerprint but don't have any additional product tokens after Safari.
+  /^\s*mozilla\/5\.0 \(x11;[^)]*linux[^)]*\) applewebkit\/[\d.]+ \(khtml[^)]*\) headlesschrome\/[\d.]+ safari\/[\d.]+\s*$/i,
 ];
 
 /**
