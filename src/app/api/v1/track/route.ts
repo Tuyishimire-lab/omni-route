@@ -31,21 +31,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    let body: { path?: string; sessionId?: string; domain?: string } = {};
+    let body: { path?: string; sessionId?: string; domain?: string; pageReferrer?: string | null } = {};
     try { body = await req.json(); } catch { body = {}; }
 
     // When the call originates from our own proxy.ts (server-side capture),
     // the real visitor UA/referer are forwarded in custom headers because
     // the internal fetch() UA would be the edge runtime, not the actual bot.
     const userAgent = req.headers.get('x-forwarded-user-agent') ?? req.headers.get('user-agent');
-    const referer = req.headers.get('x-forwarded-referer') ?? req.headers.get('referer');
+    // Referrer priority:
+    //  1. pageReferrer from JS payload — the original AI engine URL captured by
+    //     document.referrer in the browser (most accurate for human click-throughs).
+    //  2. x-forwarded-referer — set by proxy.ts for server-side bot captures.
+    //  3. Raw HTTP Referer — fallback (will be the customer's own page URL for
+    //     cross-origin beacon requests, so least useful for classification).
+    const referer =
+      (typeof body.pageReferrer === 'string' && body.pageReferrer.trim() ? body.pageReferrer.trim() : null) ??
+      req.headers.get('x-forwarded-referer') ??
+      req.headers.get('referer');
     const host = req.headers.get('host');
 
     // Prefer the explicit ?site= domain the client sends in the body
-    // (set by the new one-tag snippet). Falls back to Host-header extraction
-    // for backwards compatibility with the old data-omniroute-endpoint style.
+    // (set by the one-tag snippet). Falls back to Host-header extraction
+    // for backwards compatibility.
     const rawBodyDomain = typeof body.domain === 'string' ? body.domain.trim() : null;
-    // Basic validation - must look like a hostname, not a URL or IP injection
     const isValidHostname = rawBodyDomain
       ? /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(rawBodyDomain)
       : false;

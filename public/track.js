@@ -1,4 +1,4 @@
-﻿/**
+/**
  * OmniRoute Tracking Tag
  * ──────────────────────
  * Drop this ONE tag into your site - replace yourdomain.com with your domain:
@@ -42,6 +42,11 @@
     try {
       var payload = JSON.stringify({
         path: location.pathname + location.search,
+        // The original referrer (e.g. perplexity.ai, chatgpt.com) that brought
+        // the visitor to this page. Captured in JS because the HTTP Referer
+        // header on the cross-origin beacon request would point to THIS page,
+        // not to the AI engine that referred the visit.
+        pageReferrer: document.referrer || null,
         // Anonymous per-browser session id - no cookies, sessionStorage only.
         sessionId: (function () {
           try {
