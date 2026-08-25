@@ -85,12 +85,27 @@ const AGENT_MARKERS = [
 
 /**
  * Hosting / CI / infra user-agent patterns that contain headless markers
- * but are NOT AI agents - they are the deployment platform itself.
+ * but are NOT AI agents — they are the deployment platform itself.
  * These must be excluded before checking AGENT_MARKERS.
+ *
+ * IMPORTANT: Be as specific as possible here. Over-broad patterns silently
+ * drop real AI agents (e.g. OpenAI Operator, browser-use frameworks) that
+ * happen to use Headless Chrome on Linux.
+ *
+ * Vercel's ISR pre-renderer has a highly consistent UA:
+ *   Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)
+ *   HeadlessChrome/<version> Safari/537.36
+ * It has NO extra product tokens beyond HeadlessChrome + Safari.
+ * Real operator agents typically append their own product token AFTER Safari,
+ * e.g. "...Safari/537.36 OpenAI-Operator/1.0" or "...Safari/537.36 Playwright/..."
+ *
+ * Strategy: exclude only the Vercel ISR signature by requiring the UA to END
+ * with 'safari/<version>' (nothing appended after). Agents that add their own
+ * token after Safari will correctly pass through to AGENT_MARKERS.
  */
 const INFRASTRUCTURE_UA_PATTERNS = [
-  // Vercel pre-rendering / ISR renderer (Linux x86_64 headless)
-  /mozilla\/5\.0 \(x11; linux x86_64\) applewebkit\/537\.36 \(khtml, like gecko\) headlesschrome/i,
+  // Vercel ISR renderer: HeadlessChrome on Linux x86_64, UA ends at Safari token.
+  /mozilla\/5\.0 \(x11; linux x86_64\) applewebkit\/537\.36 \(khtml, like gecko\) headlesschrome\/[\d.]+ safari\/537\.36\s*$/i,
 ];
 
 /**

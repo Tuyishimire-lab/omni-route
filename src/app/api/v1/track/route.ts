@@ -18,19 +18,27 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
-    const rateCheck = await checkRateLimit(ip, 'track', 60_000, 120);
-    if (!rateCheck.allowed) {
-      return NextResponse.json(
-        { error: 'Too many tracking requests.' },
-        { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfter ?? 60) } }
-      );
+    // Skip rate-limiting for internal proxy calls — they come from our own
+    // edge function, not an external client, so they can't be abused.
+    const isInternalProxyCall = req.headers.get('x-omniroute-proxy') === '1';
+    if (!isInternalProxyCall) {
+      const rateCheck = await checkRateLimit(ip, 'track', 60_000, 120);
+      if (!rateCheck.allowed) {
+        return NextResponse.json(
+          { error: 'Too many tracking requests.' },
+          { status: 429, headers: { 'Retry-After': String(rateCheck.retryAfter ?? 60) } }
+        );
+      }
     }
 
     let body: { path?: string; sessionId?: string; domain?: string } = {};
     try { body = await req.json(); } catch { body = {}; }
 
-    const userAgent = req.headers.get('user-agent');
-    const referer = req.headers.get('referer');
+    // When the call originates from our own proxy.ts (server-side capture),
+    // the real visitor UA/referer are forwarded in custom headers because
+    // the internal fetch() UA would be the edge runtime, not the actual bot.
+    const userAgent = req.headers.get('x-forwarded-user-agent') ?? req.headers.get('user-agent');
+    const referer = req.headers.get('x-forwarded-referer') ?? req.headers.get('referer');
     const host = req.headers.get('host');
 
     // Prefer the explicit ?site= domain the client sends in the body
