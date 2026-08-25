@@ -69,6 +69,25 @@ describe('classifyRequest', () => {
     const r = classifyRequest('GPTBot/1.0', 'https://chatgpt.com/');
     expect(r.classification).toBe('AI_ANSWER_ENGINE');
   });
+
+  it('classifies Google AI Mode click-through (udm=50) as AI_ANSWER_ENGINE', () => {
+    const r = classifyRequest(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      'https://www.google.com/search?q=stripe+pricing&udm=50'
+    );
+    expect(r.classification).toBe('AI_ANSWER_ENGINE');
+    expect(r.agentName).toBe('Google AI Mode');
+    expect(r.referredBy).toBe('Google AI Mode');
+    expect(r.eventType).toBe('AI_CITATION');
+  });
+
+  it('does NOT classify regular Google organic traffic as AI (no udm=50)', () => {
+    const r = classifyRequest(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      'https://www.google.com/search?q=stripe+pricing'
+    );
+    expect(r.classification).toBe('HUMAN');
+  });
 });
 
 describe('extractDomainFromHost', () => {

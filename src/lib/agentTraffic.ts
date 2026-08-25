@@ -60,6 +60,9 @@ const ANSWER_ENGINE_REFERRERS: Record<string, string> = {
   'poe.com': 'Poe',
   'arc.net': 'Arc Search',
   'duck.ai': 'DuckDuckGo AI',
+  // Note: Google AI Mode (google.com/search?udm=50) is handled separately below
+  // because it shares the google.com domain with regular organic search and
+  // requires a URL parameter check, not just a hostname match.
 };
 
 /** UA markers of autonomous agent frameworks / operator-style browsing */
@@ -117,7 +120,21 @@ export function classifyRequest(userAgent: string | null, referer: string | null
   const ua = (userAgent ?? '').toLowerCase();
   const ref = (referer ?? '').toLowerCase();
 
-  // 1. Answer-engine referral - highest business value (a citation that converted)
+  // 1a. Google AI Mode — must be checked BEFORE the generic referrer loop because
+  //     AI Mode referrals come from google.com (same as regular search). The udm=50
+  //     parameter is Google's internal identifier for AI Mode searches.
+  //     e.g. https://www.google.com/search?q=stripe+pricing&udm=50
+  if (ref.includes('google.com') && ref.includes('udm=50')) {
+    return {
+      classification: 'AI_ANSWER_ENGINE',
+      agentName: 'Google AI Mode',
+      referredBy: 'Google AI Mode',
+      eventType: 'AI_CITATION',
+      confidence: 0.92,
+    };
+  }
+
+  // 1b. Answer-engine referral - highest business value (a citation that converted)
   for (const [host, engine] of Object.entries(ANSWER_ENGINE_REFERRERS)) {
     if (ref.includes(host)) {
       return {
