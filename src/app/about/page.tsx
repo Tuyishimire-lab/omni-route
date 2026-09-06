@@ -170,7 +170,12 @@ export default function AboutPage() {
         <p className="text-sm text-[#878787]">
           Enterprise inquiries, partnership proposals, or feedback - we&apos;d love to hear from you.
         </p>
-        <p className="text-sm text-[#05AD98] font-mono">enterprise@omniroute.network</p>
+        <a
+          href="mailto:tuyishime1angel@gmail.com"
+          className="inline-block text-sm text-[#05AD98] font-mono hover:underline transition-all"
+        >
+          tuyishime1angel@gmail.com
+        </a>
       </section>
     </div>
   );
