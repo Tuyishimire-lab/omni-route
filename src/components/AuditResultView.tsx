@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { GeoAuditReport, Recommendation } from '../lib/types';
-import { saveWatchedDomain } from '../lib/storage';
+import { saveWatchedDomain, getWatchedDomains } from '../lib/storage';
+import UpgradeModal from './UpgradeModal';
 import {
   Info,
   CheckCircle2,
@@ -30,6 +31,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
   const [copiedSnippetId, setCopiedSnippetId] = useState<string | null>(null);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('ALL');
   const [isSavedToWatchlist, setIsSavedToWatchlist] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const handleCopyCode = (snippet: string, id: string) => {
     navigator.clipboard.writeText(snippet);
@@ -38,6 +40,12 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
   };
 
   const handleSaveWatchlist = () => {
+    const current = getWatchedDomains();
+    const alreadySaved = current.some((d) => d.domain === report.domain);
+    if (!alreadySaved && current.length >= 3) {
+      setShowUpgradeModal(true);
+      return;
+    }
     saveWatchedDomain(report);
     setIsSavedToWatchlist(true);
     setTimeout(() => setIsSavedToWatchlist(false), 2500);
@@ -418,6 +426,16 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
           ))}
         </div>
       </div>
+
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        title="Upgrade Watchlist Capacity"
+        message="Free tier includes tracking up to 3 domains in your watchlist. Upgrade to Pro to track up to 20 domains."
+        targetTier="pro"
+        currentLimit={3}
+        featureName="Watchlist Domains"
+      />
     </div>
   );
 }

@@ -18,6 +18,8 @@ import {
   Search,
   ArrowRight
 } from 'lucide-react';
+import UpgradeModal from './UpgradeModal';
+import { getTierConfig, UserTier } from '../lib/tierLimits';
 
 function Sparkline({ data }: { data: { date: string; score: number }[] }) {
   if (!data || data.length < 2) return null;
@@ -43,13 +45,9 @@ function Sparkline({ data }: { data: { date: string; score: number }[] }) {
               background: '#0f172a',
               border: '1px solid #334155',
               borderRadius: '8px',
-              fontSize: 10,
+              fontSize: '11px',
               padding: '4px 8px',
-              color: '#f1f5f9'
             }}
-            itemStyle={{ color: strokeColor, fontSize: 10 }}
-            labelStyle={{ color: '#64748b', fontSize: 9 }}
-            formatter={(value) => [`${(value as number | string) ?? '-'}`, 'GEO'] as [string, string]}
           />
         </LineChart>
       </ResponsiveContainer>
@@ -68,13 +66,22 @@ function getStatusBadge(status: WatchedDomain['status']) {
 export default function WatchlistManager() {
   const [domains, setDomains] = useState<WatchedDomain[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [userTier, setUserTier] = useState<UserTier>('free');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
-    // Deferred: localStorage isn't available during SSR, and sync setState
-    // in an effect body causes cascading renders.
+    // Deferred: localStorage isn't available during SSR
     const t = setTimeout(() => {
       setIsClient(true);
       setDomains(getWatchedDomains());
+      fetch('/api/auth/me')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.user?.tier) {
+            setUserTier(data.user.tier as UserTier);
+          }
+        })
+        .catch(() => {});
     }, 0);
     return () => clearTimeout(t);
   }, []);
@@ -86,6 +93,9 @@ export default function WatchlistManager() {
 
   if (!isClient) return null;
 
+  const tierConfig = getTierConfig(userTier);
+  const maxLimit = tierConfig.maxWatchlistDomains;
+  const isLimitReached = domains.length >= maxLimit;
   const optimalCount = domains.filter(d => d.status === 'OPTIMAL').length;
   const atRiskCount = domains.filter(d => d.status === 'AT_RISK').length;
   const avgScore = domains.length > 0
@@ -102,17 +112,51 @@ export default function WatchlistManager() {
               <Bookmark className="w-5 h-5" />
             </span>
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-white">Monitored Domains ({domains.length})</h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-bold text-white">Monitored Domains ({domains.length})</h2>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                  isLimitReached
+                    ? 'bg-amber-500/10 text-amber-400 border-amber-500/25'
+                    : 'bg-[rgba(5,173,152,0.10)] text-[#05AD98] border-[rgba(5,173,152,0.25)]'
+                }`}>
+                  {domains.length} / {maxLimit === Infinity ? '∞' : maxLimit} ({tierConfig.displayName})
+                </span>
+              </div>
               <p className="text-[11px] sm:text-xs text-[#878787]">Track historical GEO citation authority across your brand portfolio.</p>
             </div>
           </div>
-          <Link
-            href="/audit"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-xs font-semibold shadow-md shadow-[rgba(5,173,152,0.20)] self-start sm:self-auto"
-          >
-            <Search className="w-3.5 h-3.5" /> Scan New Domain
-          </Link>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {isLimitReached && (
+              <button
+                onClick={() => setShowUpgradeModal(true)}
+                className="px-3 py-2 rounded-xl bg-[rgba(184,160,74,0.15)] border border-[rgba(184,160,74,0.3)] text-[#B8A04A] hover:text-white text-xs font-semibold transition-colors"
+              >
+                Upgrade Limit
+              </button>
+            )}
+            <Link
+              href="/audit"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-xs font-semibold shadow-md shadow-[rgba(5,173,152,0.20)]"
+            >
+              <Search className="w-3.5 h-3.5" /> Scan New Domain
+            </Link>
+          </div>
         </div>
+
+        {/* Upgrade alert banner if limit hit */}
+        {isLimitReached && (
+          <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-[rgba(184,160,74,0.10)] to-transparent border border-[rgba(184,160,74,0.25)] flex items-center justify-between gap-3 text-xs">
+            <span className="text-[#BBBFBF]">
+              You have reached your <strong className="text-white">{maxLimit} domain limit</strong> on the {tierConfig.displayName} plan. Upgrade to track more brands.
+            </span>
+            <button
+              onClick={() => setShowUpgradeModal(true)}
+              className="text-[#05AD98] hover:underline font-bold whitespace-nowrap"
+            >
+              Upgrade to Pro &rarr;
+            </button>
+          </div>
+        )}
 
         {/* Summary Stats */}
         {domains.length > 0 && (
@@ -220,6 +264,17 @@ export default function WatchlistManager() {
           })}
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        title="Upgrade Watchlist Capacity"
+        message={`You have reached your limit of ${maxLimit} domains on the ${tierConfig.displayName} plan.`}
+        targetTier={userTier === 'free' ? 'pro' : 'agency'}
+        currentLimit={maxLimit}
+        featureName="Watchlist Domain Tracking"
+      />
     </div>
   );
 }

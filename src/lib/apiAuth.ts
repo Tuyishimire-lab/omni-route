@@ -7,6 +7,7 @@ import crypto from 'crypto';
 const TIER_LIMITS: Record<string, number> = {
   free: 100,
   pro: 1000,
+  agency: 5000,
   enterprise: 10000,
 };
 
@@ -30,7 +31,7 @@ export function keyDisplayPrefix(keyString: string): string {
 
 export async function createApiKey(
   name: string,
-  tier: 'free' | 'pro' | 'enterprise' = 'free',
+  tier: 'free' | 'pro' | 'agency' | 'enterprise' = 'free',
   domain?: string
 ) {
   const key = generateKeyString('live');

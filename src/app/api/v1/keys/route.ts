@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Key name is required (min 2 characters)' }, { status: 400 });
     }
 
-    const validTiers = ['free', 'pro', 'enterprise'];
+    const validTiers = ['free', 'pro', 'agency', 'enterprise'];
     if (!validTiers.includes(tier)) {
       return NextResponse.json({ error: `Invalid tier. Must be one of: ${validTiers.join(', ')}` }, { status: 400 });
     }

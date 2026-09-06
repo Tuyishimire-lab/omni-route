@@ -2,6 +2,42 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { crawlAndAnalyzeUrl } from '../../../../lib/liveCrawler';
 import { saveScanToDB } from '../../../../lib/db';
 import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
+import { getSession } from '../../../../lib/auth';
+import { prisma } from '../../../../lib/prisma';
+
+async function verifyScanAllowance(ip: string) {
+  const session = await getSession();
+  let tier = 'free';
+  let trackingId = `ip:${ip}`;
+
+  if (session) {
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { tier: true },
+    });
+    tier = user?.tier ?? 'free';
+    trackingId = `user:${session.userId}`;
+  }
+
+  // Pro, Agency, Enterprise get unlimited scans
+  if (tier !== 'free') {
+    return { allowed: true };
+  }
+
+  // Free / anonymous: 10 scans per 30-day window
+  const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+  const monthlyCheck = await checkRateLimit(trackingId, 'scan:monthly', MONTH_MS, 10);
+  if (!monthlyCheck.allowed) {
+    return {
+      allowed: false,
+      error: 'You have reached your monthly limit of 10 free GEO scans. Upgrade to Pro for unlimited scans.',
+      code: 'TIER_SCAN_LIMIT',
+      upgradeTier: 'pro',
+    };
+  }
+
+  return { allowed: true };
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +51,14 @@ export async function POST(req: NextRequest) {
           status: 429,
           headers: { 'Retry-After': String(rateCheck.retryAfter ?? 60) },
         }
+      );
+    }
+
+    const quotaCheck = await verifyScanAllowance(ip);
+    if (!quotaCheck.allowed) {
+      return NextResponse.json(
+        { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier },
+        { status: 429 }
       );
     }
 
@@ -64,6 +108,14 @@ export async function GET(req: NextRequest) {
           status: 429,
           headers: { 'Retry-After': String(rateCheck.retryAfter ?? 60) },
         }
+      );
+    }
+
+    const quotaCheck = await verifyScanAllowance(ip);
+    if (!quotaCheck.allowed) {
+      return NextResponse.json(
+        { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier },
+        { status: 429 }
       );
     }
 

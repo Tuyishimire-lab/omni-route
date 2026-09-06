@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWatchlistDomains, addToWatchlist, removeFromWatchlist, getBulkDomainHistory } from '../../../../lib/db';
+import { getWatchlist, getWatchlistDomains, addToWatchlist, removeFromWatchlist, getBulkDomainHistory } from '../../../../lib/db';
 import { getSession } from '../../../../lib/auth';
 import { prisma } from '../../../../lib/prisma';
+import { checkWatchlistLimit } from '../../../../lib/tierLimits';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,14 +82,38 @@ export async function POST(req: NextRequest) {
 
     const session = await getSession();
     if (session) {
+      const user = await prisma.user.findUnique({ where: { id: session.userId }, select: { tier: true } });
       const current = await getUserWatchlist(session.userId);
       if (!current.includes(domain)) {
+        const check = checkWatchlistLimit(user?.tier, current.length);
+        if (!check.allowed) {
+          return NextResponse.json({
+            error: check.reason,
+            code: 'TIER_WATCHLIST_LIMIT',
+            limit: check.limit,
+            current: check.current,
+            upgradeTier: check.upgradeTier,
+          }, { status: 403 });
+        }
         await setUserWatchlist(session.userId, [domain, ...current]);
       }
       return NextResponse.json({ watchlist: current.includes(domain) ? current : [domain, ...current], source: 'user' });
     }
 
     if (!sessionId) return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
+    const current = await getWatchlist(sessionId);
+    if (!current.includes(domain)) {
+      const check = checkWatchlistLimit('free', current.length);
+      if (!check.allowed) {
+        return NextResponse.json({
+          error: check.reason,
+          code: 'TIER_WATCHLIST_LIMIT',
+          limit: check.limit,
+          current: check.current,
+          upgradeTier: check.upgradeTier,
+        }, { status: 403 });
+      }
+    }
     const updated = await addToWatchlist(sessionId, domain);
     return NextResponse.json({ watchlist: updated, source: 'session' });
   } catch (e) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import { getSession } from '../../../../lib/auth';
 import { validateAndSanitizeUrl } from '../../../../lib/security';
+import { checkSiteLimit } from '../../../../lib/tierLimits';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,26 @@ export async function POST(req: NextRequest) {
 
   const hostname = new URL(validation.normalizedUrl).hostname;
 
+  // Check user tier limits for verified sites
+  const user = await prisma.user.findUnique({
+    where: { id: session.userId },
+    select: { tier: true },
+  });
+  const currentCount = await prisma.registeredSite.count({
+    where: { userId: session.userId },
+  });
+
+  const limitCheck = checkSiteLimit(user?.tier, currentCount);
+  if (!limitCheck.allowed) {
+    return NextResponse.json({
+      error: limitCheck.reason,
+      code: 'TIER_LIMIT_EXCEEDED',
+      limit: limitCheck.limit,
+      current: limitCheck.current,
+      upgradeTier: limitCheck.upgradeTier,
+    }, { status: 403 });
+  }
+
   const existing = await prisma.registeredSite.findUnique({
     where: { userId_domain: { userId: session.userId, domain: hostname } },
   });
@@ -84,7 +105,7 @@ export async function POST(req: NextRequest) {
   const live = await tagIsLive(validation.normalizedUrl, hostname);
   if (!live) {
     return NextResponse.json({
-      error: 'OmniRoute tag or middleware not detected. Install and verify before adding your site.',
+      error: 'CiteRoute tag or middleware not detected. Install and verify before adding your site.',
     }, { status: 422 });
   }
 
