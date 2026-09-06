@@ -22,7 +22,7 @@ export async function GET() {
       },
     });
   } catch {
-    return new NextResponse('// OmniRoute tracking snippet unavailable', {
+    return new NextResponse('// CiteRoute tracking snippet unavailable', {
       status: 404,
       headers: { 'Content-Type': 'application/javascript' },
     });

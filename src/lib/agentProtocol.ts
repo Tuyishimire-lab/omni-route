@@ -2,14 +2,14 @@ import { AgentManifest } from './types';
 
 export const defaultSampleManifest: AgentManifest = {
   version: '1.2.0',
-  siteName: 'OmniRoute Core Node',
-  domain: 'omniroute.network',
-  description: 'Autonomous agentic traffic liquidity protocol and real-time GEO citation engine.',
+  siteName: 'CiteRoute Core Node',
+  domain: 'citeroute.com',
+  description: 'Autonomous agentic traffic observability and real-time GEO citation engine.',
   organization: {
-    legalName: 'OmniRoute Systems Inc.',
+    legalName: 'CiteRoute Inc.',
     foundedYear: 2026,
     headquarters: 'San Francisco, CA',
-    contactEmail: 'agents@omniroute.network'
+    contactEmail: 'agents@citeroute.com'
   },
   capabilities: [
     'direct-agent-checkout',
@@ -50,26 +50,26 @@ export const defaultSampleManifest: AgentManifest = {
     {
       id: 'prod-1',
       name: 'GEO Pro Citation Seeder',
-      sku: 'OMNI-GEO-PRO',
+      sku: 'CITE-GEO-PRO',
       price: 299.00,
       currency: 'USD',
       category: 'Software & Infrastructure',
       inStock: true,
-      directAgentCheckoutUrl: 'https://omniroute.network/checkout?sku=OMNI-GEO-PRO&agent=direct'
+      directAgentCheckoutUrl: 'https://www.citeroute.com/checkout?sku=CITE-GEO-PRO&agent=direct'
     },
     {
       id: 'prod-2',
       name: 'Enterprise Agentic Tollway Node',
-      sku: 'OMNI-NODE-ENT',
+      sku: 'CITE-NODE-ENT',
       price: 1850.00,
       currency: 'USD',
       category: 'Edge Infrastructure',
       inStock: true,
-      directAgentCheckoutUrl: 'https://omniroute.network/checkout?sku=OMNI-NODE-ENT&agent=direct'
+      directAgentCheckoutUrl: 'https://www.citeroute.com/checkout?sku=CITE-NODE-ENT&agent=direct'
     }
   ],
   semanticVectors: {
-    embeddingsUrl: 'https://omniroute.network/.well-known/vectors.parquet',
+    embeddingsUrl: 'https://www.citeroute.com/.well-known/vectors.parquet',
     contextSizeTokens: 32768,
     lastUpdated: new Date().toISOString()
   },
@@ -264,7 +264,7 @@ export const INDUSTRY_TEMPLATES: Record<string, { label: string; description: st
 export function generateCloudflareWorkerScript(manifest: AgentManifest): string {
   const jsonString = JSON.stringify(manifest, null, 2);
   return `/**
- * OmniRoute Edge Agent Manifest & Gateway Worker
+ * CiteRoute Edge Agent Manifest & Gateway Worker
  * Deploy on Cloudflare Workers to serve /.well-known/agent.json globally.
  */
 
@@ -281,6 +281,7 @@ export default {
           "Content-Type": "application/json; charset=utf-8",
           "Access-Control-Allow-Origin": "*",
           "Cache-Control": "public, max-age=3600, s-maxage=86400",
+          "X-CiteRoute-Protocol": "agent-v1.2",
           "X-OmniRoute-Protocol": "agent-v1.2",
           "X-Agent-Transactions": "supported"
         }
@@ -308,6 +309,7 @@ export async function GET() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+      'X-CiteRoute-Protocol': 'agent-v1.2',
       'X-OmniRoute-Protocol': 'agent-v1.2',
     },
   });
@@ -331,6 +333,7 @@ def get_agent_manifest():
         headers={
             "Access-Control-Allow-Origin": "*",
             "Cache-Control": "public, max-age=3600",
+            "X-CiteRoute-Protocol": "agent-v1.2",
             "X-OmniRoute-Protocol": "agent-v1.2"
         }
     )
@@ -341,12 +344,12 @@ def get_agent_manifest():
 
 export function generateEdgeWorkerWithBotDetection(
   manifest: AgentManifest,
-  omnirouteApiKey: string = 'YOUR_OMNIROUTE_API_KEY'
+  citerouteApiKey: string = 'YOUR_CITEROUTE_API_KEY'
 ): string {
   const jsonString = JSON.stringify(manifest, null, 2);
   const domain = manifest.domain || 'example.com';
 
-  return `// Cloudflare Worker - Bot Detection + agent.json + OmniRoute Telemetry
+  return `// Cloudflare Worker - Bot Detection + agent.json + CiteRoute Telemetry
 // Deploy via: wrangler deploy
 
 const AGENT_MANIFEST = ${jsonString};
@@ -368,8 +371,8 @@ const AI_BOT_PATTERNS = [
   { pattern: /meta-externalagent/i, name: 'Meta AI Agent',               type: 'AGENT_TX' },
 ];
 
-const OMNIROUTE_TELEMETRY_URL = 'https://omniroute.vercel.app/api/v1/analytics';
-const OMNIROUTE_API_KEY = '${omnirouteApiKey}';
+const CITEROUTE_TELEMETRY_URL = 'https://www.citeroute.com/api/v1/analytics';
+const CITEROUTE_API_KEY = '${citerouteApiKey}';
 const DOMAIN = '${domain}';
 
 function detectBot(userAgent) {
@@ -381,19 +384,19 @@ function detectBot(userAgent) {
   return null;
 }
 
-async function reportToOmniRoute(event) {
+async function reportToCiteRoute(event) {
   try {
-    await fetch(OMNIROUTE_TELEMETRY_URL, {
+    await fetch(CITEROUTE_TELEMETRY_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': \`Bearer \${OMNIROUTE_API_KEY}\`,
+        'Authorization': \`Bearer \${CITEROUTE_API_KEY}\`,
       },
       body: JSON.stringify(event),
     });
   } catch (e) {
     // Fire-and-forget - don't block the response
-    console.error('[OmniRoute Telemetry] Failed to report:', e);
+    console.error('[CiteRoute Telemetry] Failed to report:', e);
   }
 }
 
@@ -407,7 +410,7 @@ export default {
       // Always report agent.json requests as telemetry
       const bot = detectBot(userAgent);
       if (bot) {
-        reportToOmniRoute({
+        reportToCiteRoute({
           type: bot.type,
           source: bot.name,
           domain: DOMAIN,
@@ -423,6 +426,7 @@ export default {
           'Content-Type': 'application/json; charset=utf-8',
           'Access-Control-Allow-Origin': '*',
           'Cache-Control': 'public, max-age=3600, s-maxage=86400',
+          'X-CiteRoute-Protocol': 'agent-v1.2',
           'X-OmniRoute-Protocol': 'agent-v1.2',
           'X-Bot-Detected': bot ? bot.name : 'none',
         },
@@ -432,7 +436,7 @@ export default {
     // 2. Detect AI bots on ANY page and report telemetry
     const bot = detectBot(userAgent);
     if (bot) {
-      reportToOmniRoute({
+      reportToCiteRoute({
         type: bot.type,
         source: bot.name,
         domain: DOMAIN,

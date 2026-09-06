@@ -25,15 +25,18 @@ async function tagIsLive(url: string, hostname: string): Promise<boolean> {
     const res = await fetch(url, {
       signal: ctrl.signal,
       headers: {
-        'User-Agent': 'OmniRoute-Verify-Bot/1.0 (+https://omni-route-rho.vercel.app/docs/install)',
+        'User-Agent': 'CiteRoute-Verify-Bot/1.0 (+https://www.citeroute.com/docs/install)',
         Accept: 'text/html',
       },
       redirect: 'follow',
     });
     clearTimeout(t);
 
-    // If edge/server middleware returned an OmniRoute diagnostic header
+    // If edge/server middleware returned a CiteRoute (or legacy OmniRoute) diagnostic header
     const hasMiddlewareHeader =
+      res.headers.get('x-citeroute-tracked') === '1' ||
+      res.headers.get('x-citeroute-middleware') === '1' ||
+      res.headers.get('x-citeroute-edge') === '1' ||
       res.headers.get('x-omniroute-tracked') === '1' ||
       res.headers.get('x-omniroute-middleware') === '1' ||
       res.headers.get('x-omniroute-edge') === '1';

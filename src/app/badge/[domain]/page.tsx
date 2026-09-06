@@ -40,7 +40,7 @@ export default function BadgePage({ params }: { params: Promise<{ domain: string
             style={{ borderColor: 'rgba(5,173,152,0.3)', background: 'rgba(5,173,152,0.10)', color: '#05AD98' }}
           >
             <Award className="w-3.5 h-3.5" />
-            OmniRoute GEO Authority Badge
+            CiteRoute GEO Authority Badge
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
             GEO Badge for <span className="text-gradient font-mono">{domain}</span>

@@ -20,7 +20,9 @@ export async function POST(req: NextRequest) {
     const ip = getClientIp(req);
     // Skip rate-limiting for internal proxy calls — they come from our own
     // edge function, not an external client, so they can't be abused.
-    const isInternalProxyCall = req.headers.get('x-omniroute-proxy') === '1';
+    const isInternalProxyCall =
+      req.headers.get('x-citeroute-proxy') === '1' ||
+      req.headers.get('x-omniroute-proxy') === '1';
     if (!isInternalProxyCall) {
       const rateCheck = await checkRateLimit(ip, 'track', 60_000, 120);
       if (!rateCheck.allowed) {

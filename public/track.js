@@ -1,11 +1,11 @@
 /**
- * OmniRoute Tracking Tag
+ * CiteRoute Tracking Tag
  * ──────────────────────
  * Drop this ONE tag into your site - replace yourdomain.com with your domain:
  *
- *   <script async src="https://omni-route-rho.vercel.app/api/v1/track.js?site=yourdomain.com"></script>
+ *   <script async src="https://www.citeroute.com/api/v1/track.js?site=yourdomain.com"></script>
  *
- * The ?site= parameter tells OmniRoute which domain to attribute traffic to.
+ * The ?site= parameter tells CiteRoute which domain to attribute traffic to.
  * Reports pageviews to /api/v1/track, which classifies visitors server-side
  * (human vs AI crawler vs agent vs answer-engine referral) using request headers.
  * No cookies. No PII. No client fingerprinting. GDPR-safe.
@@ -29,12 +29,13 @@
   var scriptUrl;
   try { scriptUrl = new URL(script.src); } catch (e) { return; }
 
-  // ?site=yourdomain.com  - the domain OmniRoute will attribute traffic to.
+  // ?site=yourdomain.com  - the domain CiteRoute will attribute traffic to.
   var siteDomain = scriptUrl.searchParams.get('site') || null;
 
-  // OmniRoute deployment origin - same origin as track.js by default.
-  // Backwards-compatible with the old data-omniroute-endpoint attribute.
+  // CiteRoute deployment origin - same origin as track.js by default.
+  // Backwards-compatible with legacy data-omniroute-endpoint and new data-citeroute-endpoint.
   var endpoint =
+    script.getAttribute('data-citeroute-endpoint') ||
     script.getAttribute('data-omniroute-endpoint') ||
     scriptUrl.origin;
 
@@ -50,8 +51,8 @@
         // Anonymous per-browser session id - no cookies, sessionStorage only.
         sessionId: (function () {
           try {
-            var k = 'omniroute_sid';
-            var sid = sessionStorage.getItem(k);
+            var k = 'citeroute_sid';
+            var sid = sessionStorage.getItem(k) || sessionStorage.getItem('omniroute_sid');
             if (!sid) {
               sid = 's-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
               sessionStorage.setItem(k, sid);
@@ -60,7 +61,7 @@
           } catch (e) { return undefined; }
         })(),
         // Explicit domain - avoids relying on the Host header when the
-        // customer site and OmniRoute are on different origins.
+        // customer site and CiteRoute are on different origins.
         domain: siteDomain,
       });
 

@@ -5,7 +5,7 @@ import { getGlobalStats, getLeaderboard } from '../../lib/db';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'GEO Leaderboard | OmniRoute - Top AI Citation Authority Rankings',
+  title: 'GEO Leaderboard | CiteRoute - Top AI Citation Authority Rankings',
   description: 'Live community rankings of the most GEO-optimized domains across AI citation engines. See who dominates Perplexity, ChatGPT, Claude, and Gemini.'
 };
 

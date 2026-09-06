@@ -93,6 +93,7 @@ export const proxy: NextProxy = (request: NextRequest, event: NextFetchEvent) =>
         ...(ua ? { 'x-forwarded-user-agent': ua } : {}),
         ...(referer ? { 'x-forwarded-referer': referer } : {}),
         // Mark as an internal proxy call to skip rate-limit on these.
+        'x-citeroute-proxy': '1',
         'x-omniroute-proxy': '1',
       },
       body: payload,

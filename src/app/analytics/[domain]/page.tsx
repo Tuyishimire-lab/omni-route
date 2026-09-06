@@ -114,11 +114,11 @@ export default async function DomainAnalyticsPage({
             <Bot className="w-8 h-8 text-[#878787] mx-auto" />
             <p className="text-sm text-[#BBBFBF] font-semibold">No agent traffic recorded yet</p>
             <p className="text-xs text-[#878787] max-w-md mx-auto">
-              Install the OmniRoute tracking snippet on your site to start capturing AI crawler visits,
+              Install the CiteRoute tracking snippet or edge middleware on your site to start capturing AI crawler visits,
               autonomous agents, and answer-engine referrals in real time.
             </p>
             <code className="block text-left text-[11px] bg-[#111514] border border-[rgba(187,191,191,0.10)] rounded-xl p-4 font-mono text-[#05AD98] overflow-x-auto max-w-2xl mx-auto mt-3">
-              {`<script async src="%ORIGIN%/api/v1/track.js"\n        data-omniroute-endpoint="%ORIGIN%"></script>`}
+              {`<script async src="https://www.citeroute.com/api/v1/track.js?site=yourdomain.com"></script>`}
             </code>
           </div>
         ) : (

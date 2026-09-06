@@ -65,7 +65,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-base sm:text-lg text-[#BBBFBF] max-w-2xl mx-auto leading-relaxed">
-          Traditional SEO is losing ground to zero-click AI summaries. OmniRoute measures your semantic authority and deploys machine-readable <code className="text-[#05AD98] font-mono">agent.json</code> endpoints to maximize citation probability and enable direct agent transactions.
+          Traditional SEO is losing ground to zero-click AI summaries. CiteRoute measures your semantic authority and deploys machine-readable <code className="text-[#05AD98] font-mono">agent.json</code> endpoints to maximize citation probability and enable direct agent transactions.
         </p>
 
         {/* Live Domain Scanner Box */}
@@ -147,10 +147,10 @@ export default function HomePage() {
         />
       </section>
 
-      {/* The 3 Core Pillars of OmniRoute */}
+      {/* The 3 Core Pillars of CiteRoute */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-white">How OmniRoute Secures Your Web Traffic</h2>
+          <h2 className="text-2xl font-bold text-white">How CiteRoute Secures Your Web Traffic</h2>
           <p className="text-xs sm:text-sm text-[#878787] mt-1">
             A three-tier protocol engineered specifically for the post-search generative AI era.
           </p>

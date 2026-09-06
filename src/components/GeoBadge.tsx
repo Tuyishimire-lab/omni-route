@@ -42,7 +42,7 @@ function CompactBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
       <div>
         <div style={{ color: '#f1f5f9', fontSize: 12, fontWeight: 700, fontFamily: 'monospace' }}>{domain}</div>
         <div style={{ color: scoreColor, fontSize: 11, fontWeight: 600 }}>GEO Score: {geoScore}/100</div>
-        <div style={{ color: '#64748b', fontSize: 10 }}>OmniRoute Certified</div>
+        <div style={{ color: '#64748b', fontSize: 10 }}>CiteRoute Certified</div>
       </div>
     </div>
   );
@@ -54,7 +54,7 @@ function CardBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
   return (
     <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', border: '1px solid #334155', borderRadius: 16, padding: '20px 24px', fontFamily: 'Inter, system-ui, sans-serif', width: 220, textAlign: 'center' }}>
       <div style={{ color: '#38bdf8', fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>
-        OmniRoute GEO Certified
+        CiteRoute GEO Certified
       </div>
       <div style={{ margin: '0 auto 12px', width: 'fit-content' }}>
         <ScoreDial score={geoScore} />
@@ -84,7 +84,7 @@ function BannerBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <ScoreDial score={geoScore} />
         <div>
-          <div style={{ color: '#38bdf8', fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' }}>OmniRoute GEO Index</div>
+          <div style={{ color: '#38bdf8', fontSize: 9, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase' }}>CiteRoute GEO Index</div>
           <div style={{ color: '#f1f5f9', fontSize: 15, fontWeight: 800, fontFamily: 'monospace' }}>{domain}</div>
         </div>
       </div>
@@ -113,11 +113,11 @@ export default function GeoBadge({ domain, geoScore, citationRate }: GeoBadgePro
   const [copied, setCopied] = useState(false);
 
   const embedCode = `<iframe
-  src="https://omniroute.network/badge/${domain}?style=${activeStyle}"
+  src="https://www.citeroute.com/badge/${domain}?style=${activeStyle}"
   width="${activeStyle === 'card' ? '240' : activeStyle === 'banner' ? '420' : '280'}"
   height="${activeStyle === 'card' ? '180' : '80'}"
   style="border:none;border-radius:16px;"
-  title="OmniRoute GEO Authority Badge for ${domain}"
+  title="CiteRoute GEO Authority Badge for ${domain}"
 ></iframe>`;
 
   const copyEmbed = () => {
@@ -175,7 +175,7 @@ export default function GeoBadge({ domain, geoScore, citationRate }: GeoBadgePro
       {/* Trust Note */}
       <p className="text-[11px] text-[#878787] flex items-center gap-1.5">
         <Shield className="w-3.5 h-3.5 text-slate-600" />
-        Badges are publicly verifiable and link back to a live audit report on OmniRoute.
+        Badges are publicly verifiable and link back to a live audit report on CiteRoute.
       </p>
     </div>
   );

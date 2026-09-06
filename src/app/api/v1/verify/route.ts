@@ -72,15 +72,18 @@ export async function GET(req: NextRequest) {
       signal: controller.signal,
       headers: {
         // Send an AI Crawler probe UA to trigger Edge Middleware capture
-        'User-Agent': 'OmniRoute-Verify-Bot/1.0 (+https://omni-route-rho.vercel.app/docs/install)',
+        'User-Agent': 'CiteRoute-Verify-Bot/1.0 (+https://www.citeroute.com/docs/install)',
         'Accept': 'text/html',
       },
       redirect: 'follow',
     });
     clearTimeout(timeout);
 
-    // Check if customer edge/server middleware returned an OmniRoute diagnostic header
+    // Check if customer edge/server middleware returned a CiteRoute (or legacy OmniRoute) diagnostic header
     const hasMiddlewareHeader =
+      res.headers.get('x-citeroute-tracked') === '1' ||
+      res.headers.get('x-citeroute-middleware') === '1' ||
+      res.headers.get('x-citeroute-edge') === '1' ||
       res.headers.get('x-omniroute-tracked') === '1' ||
       res.headers.get('x-omniroute-middleware') === '1' ||
       res.headers.get('x-omniroute-edge') === '1';
@@ -151,7 +154,9 @@ export async function GET(req: NextRequest) {
         method = 'query-param';
         siteDomain = siteParam;
       } else {
-        method = match[0].includes('data-omniroute-endpoint') ? 'data-attribute' : 'bare';
+        method = (match[0].includes('data-citeroute-endpoint') || match[0].includes('data-omniroute-endpoint'))
+          ? 'data-attribute'
+          : 'bare';
       }
     } catch {
       method = 'bare';

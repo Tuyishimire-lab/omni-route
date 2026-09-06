@@ -5,7 +5,7 @@ import { Network, Search, Cpu, Info, Key, ArrowRight, Globe, Activity, CheckCirc
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-const ONBOARDING_KEY = 'omniroute_onboarded_v1';
+const ONBOARDING_KEY = 'citeroute_onboarded_v1';
 
 const STEPS = [
   {
@@ -16,7 +16,7 @@ const STEPS = [
     badge: 'Welcome to the Future',
     title: 'The Age of AI Traffic Has Begun',
     body: 'Over 65% of searches now end without a click. AI answer engines like Perplexity, ChatGPT, Claude, and Gemini are replacing traditional search. Your brand needs to be cited by them, not invisible to them.',
-    detail: 'OmniRoute is the first platform built specifically to optimize for Generative Engine Optimization (GEO), ensuring AI systems cite your domain as an authoritative source.'
+    detail: 'CiteRoute is the first platform built specifically to optimize for Generative Engine Optimization (GEO), ensuring AI systems cite your domain as an authoritative source.'
   },
   {
     id: 1,
@@ -25,7 +25,7 @@ const STEPS = [
     iconBg: 'from-[#05AD98]/20 to-[#038a79]/10 border-[rgba(5,173,152,0.25)]',
     badge: 'Step 1 of 3',
     title: 'Scan Your Domain, Free and Instant',
-    body: 'OmniRoute\'s heuristic AI engine analyzes any domain in seconds. No sign-up required. No API keys needed. Just enter your domain and get a full GEO audit across Perplexity, ChatGPT, Claude, and Gemini.',
+    body: 'CiteRoute\'s heuristic AI engine analyzes any domain in seconds. No sign-up required. No API keys needed. Just enter your domain and get a full GEO audit across Perplexity, ChatGPT, Claude, and Gemini.',
     detail: 'You\'ll receive a GEO Score (0–100), engine-by-engine diagnostics, entity grounding analysis, and targeted optimization code patches.'
   },
   {
@@ -35,8 +35,8 @@ const STEPS = [
     iconBg: 'from-amber-500/20 to-orange-500/10 border-amber-500/30',
     badge: 'Step 2 of 3 (Optional)',
     title: 'Connect Live AI Engines (Optional)',
-    body: 'OmniRoute works perfectly without any API keys using its built-in simulation engine. When you\'re ready for real-time live data, connect your Perplexity Sonar, OpenAI, or Firecrawl credentials.',
-    detail: 'Keys are stored only in your browser local storage, never sent to OmniRoute servers. You can add or remove them at any time via the API Keys button in the header.'
+    body: 'CiteRoute works perfectly without any API keys using its built-in simulation engine. When you\'re ready for real-time live data, connect your Perplexity Sonar, OpenAI, or Firecrawl credentials.',
+    detail: 'Keys are stored only in your browser local storage, never sent to CiteRoute servers. You can add or remove them at any time via the API Keys button in the header.'
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const STEPS = [
     iconBg: 'from-[rgba(5,173,152,0.15)] to-[rgba(3,138,121,0.08)] border-[rgba(5,173,152,0.25)]',
     badge: 'Step 3 of 3',
     title: 'Your GEO Operating System',
-    body: 'OmniRoute is a complete platform with 5 modules: Command Center, GEO Scanner, Domain Watchlist, Benchmark Arena, and Traffic Analytics.',
+    body: 'CiteRoute is a complete platform with 5 modules: Command Center, GEO Scanner, Domain Watchlist, Benchmark Arena, and Traffic Analytics.',
     detail: 'Use the Benchmark Arena to compare your domain vs. competitors. Use the Watchlist to track your GEO score over time. Use the Analytics dashboard to monitor real AI bot traffic to your site.'
   }
 ];
@@ -176,7 +176,7 @@ export default function OnboardingWizard() {
                 domain.trim() ? (
                   <><Search className="w-4 h-4" /> Scan My Domain</>
                 ) : (
-                  <><CheckCircle2 className="w-4 h-4" /> Enter OmniRoute</>
+                  <><CheckCircle2 className="w-4 h-4" /> Enter CiteRoute</>
                 )
               ) : (
                 <>Continue <ChevronRight className="w-4 h-4" /></>

@@ -114,7 +114,7 @@ export default function TagVerifier() {
                 ) : result.method === 'heartbeat' ? (
                   <Detail label="Verified via" value="Live tag ping ✓" ok />
                 ) : (
-                  <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-omniroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
+                  <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-citeroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
                 )}
                 {result.siteDomain && <Detail label="Site attributed to" value={result.siteDomain} ok />}
                 {result.heartbeatAge && (
@@ -138,7 +138,7 @@ export default function TagVerifier() {
 
             {status === 'missing' && (
               <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-3 text-xs text-red-200 leading-relaxed space-y-1.5">
-                <p>OmniRoute didn{"'"}t find a tracking tag on <strong>{result.checkedUrl}</strong>.</p>
+                <p>CiteRoute didn{"'"}t find a tracking tag or active edge middleware on <strong>{result.checkedUrl}</strong>.</p>
                 <p>Things to check:</p>
                 <ul className="list-disc list-inside space-y-1 text-[#878787]">
                   <li>Make sure the tag is in your HTML and the site has been redeployed</li>

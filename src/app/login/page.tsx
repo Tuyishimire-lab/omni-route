@@ -51,7 +51,7 @@ function LoginForm() {
             <LogIn className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-extrabold text-white">Welcome Back</h1>
-          <p className="text-xs text-[#878787]">Sign in to your OmniRoute account</p>
+          <p className="text-xs text-[#878787]">Sign in to your CiteRoute account</p>
         </div>
 
         {/* OAuth Buttons */}

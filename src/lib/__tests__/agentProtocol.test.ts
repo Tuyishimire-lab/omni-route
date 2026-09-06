@@ -43,17 +43,18 @@ describe('agentProtocol - Specifications & Schema', () => {
 
     expect(script).toContain('export default {');
     expect(script).toContain('/.well-known/agent.json');
+    expect(script).toContain('X-CiteRoute-Protocol');
     expect(script).toContain('X-OmniRoute-Protocol');
   });
 
   it('generates valid edge worker with AI bot detection and telemetry', () => {
-    const worker = generateEdgeWorkerWithBotDetection(defaultSampleManifest, 'or-live_12345678');
+    const worker = generateEdgeWorkerWithBotDetection(defaultSampleManifest, 'cr-live_12345678');
 
     expect(worker).toContain('export default {');
     expect(worker).toContain('/.well-known/agent.json');
     expect(worker).toContain('PerplexityBot');
     expect(worker).toContain('GPTBot');
     expect(worker).toContain('ClaudeBot');
-    expect(worker).toContain('or-live_12345678');
+    expect(worker).toContain('cr-live_12345678');
   });
 });

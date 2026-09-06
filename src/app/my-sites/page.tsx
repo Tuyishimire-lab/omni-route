@@ -8,7 +8,7 @@ import {
   Copy, CheckCircle2, ChevronRight, AlertCircle, Loader2, ExternalLink, Shield
 } from 'lucide-react';
 
-const ENDPOINT = 'https://omni-route-rho.vercel.app';
+const ENDPOINT = 'https://www.citeroute.com';
 
 interface SiteData {
   domain: string;

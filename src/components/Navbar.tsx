@@ -187,7 +187,7 @@ export default function Navbar() {
               </div>
             </div>
             <span className="font-extrabold text-base tracking-tight text-white">
-              OMNI<span style={{ color: '#05AD98' }}>ROUTE</span>
+              CITE<span style={{ color: '#05AD98' }}>ROUTE</span>
             </span>
           </Link>
 

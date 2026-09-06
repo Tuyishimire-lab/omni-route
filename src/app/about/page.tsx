@@ -4,8 +4,8 @@ import type { Metadata } from 'next';
 import { Info, Cpu, Shield, BarChart3, ArrowRight, Globe2, Layers, CheckCircle2, Users, Heart } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About OmniRoute | The Autonomous Traffic & GEO Protocol',
-  description: 'Learn how OmniRoute helps businesses capture traffic from AI search engines and autonomous buyer agents through Generative Engine Optimization and the agent.json protocol.',
+  title: 'About CiteRoute | Generative Engine & Agent Observability Platform',
+  description: 'Learn how CiteRoute helps businesses capture traffic from AI search engines and autonomous buyer agents through Generative Engine Optimization and the agent.json protocol.',
 };
 
 export default function AboutPage() {
@@ -15,7 +15,7 @@ export default function AboutPage() {
       <section className="space-y-6 pt-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] text-xs font-semibold text-[#05AD98]">
           <Info className="w-3.5 h-3.5" />
-          <span>About OmniRoute</span>
+          <span>About CiteRoute</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
@@ -30,7 +30,7 @@ export default function AboutPage() {
             that cite sources directly - or don&apos;t cite them at all.
           </p>
           <p>
-            <strong className="text-white">OmniRoute exists to solve this.</strong> We&apos;re building the infrastructure
+            <strong className="text-white">CiteRoute exists to solve this.</strong> We&apos;re building the infrastructure
             layer that ensures your website is discoverable, citable, and transactable in the post-search AI economy.
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function AboutPage() {
 
       {/* How It Works - Three Pillars */}
       <section className="space-y-6">
-        <h2 className="text-2xl font-bold text-white text-center">How OmniRoute Works</h2>
+        <h2 className="text-2xl font-bold text-white text-center">How CiteRoute Works</h2>
         <p className="text-sm text-[#878787] text-center max-w-2xl mx-auto">
           A three-tier protocol engineered specifically for the post-search generative AI era.
         </p>
@@ -109,8 +109,8 @@ export default function AboutPage() {
             </div>
             <h3 className="text-base font-bold text-white">3. Traffic Analytics</h3>
             <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              Deploy our Edge Worker to detect real AI bot traffic (PerplexityBot, GPTBot, ClaudeBot, etc.) and stream
-              live telemetry to your OmniRoute dashboard. See exactly which AI engines are crawling your site.
+              Deploy our Edge Middleware to detect real AI bot traffic (PerplexityBot, GPTBot, ClaudeBot, etc.) and stream
+              live telemetry to your CiteRoute dashboard. See exactly which AI engines are crawling your site.
             </p>
           </div>
         </div>
@@ -144,7 +144,7 @@ export default function AboutPage() {
           Open Source & Community
         </h2>
         <p className="text-sm text-[#BBBFBF] leading-relaxed">
-          OmniRoute believes the agent.json protocol should be an open standard. Our core scanner, protocol specification,
+          CiteRoute believes the agent.json protocol should be an open standard. Our core scanner, protocol specification,
           and edge worker are designed to be self-hostable and extensible. We welcome contributions, feedback, and
           integrations from the developer community.
         </p>

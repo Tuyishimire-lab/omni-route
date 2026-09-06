@@ -76,7 +76,7 @@ export default async function AnalyticsPage() {
             visits and answer-engine referrals.
           </p>
           <code className="block text-left text-[11px] bg-[#111514] border border-[rgba(187,191,191,0.10)] rounded-xl p-4 font-mono text-[#05AD98] overflow-x-auto max-w-2xl mx-auto mt-3">
-            {`<script async src="%ORIGIN%/api/v1/track.js"\n        data-omniroute-endpoint="%ORIGIN%"></script>`}
+            {`<script async src="https://www.citeroute.com/api/v1/track.js?site=yourdomain.com"></script>`}
           </code>
         </div>
       )}

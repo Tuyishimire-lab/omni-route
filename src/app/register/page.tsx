@@ -56,7 +56,7 @@ export default function RegisterPage() {
             <UserPlus className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-extrabold text-white">Create Account</h1>
-          <p className="text-xs text-[#878787]">Join OmniRoute and optimize for AI search engines</p>
+          <p className="text-xs text-[#878787]">Join CiteRoute and optimize for AI search engines</p>
         </div>
 
         {/* OAuth Buttons */}

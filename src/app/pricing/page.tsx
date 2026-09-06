@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Check, X, Zap, Shield, Crown, ArrowRight, HelpCircle, Code2, Database, Building2, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Pricing | OmniRoute - GEO Optimization & AI Traffic Plans',
+  title: 'Pricing | CiteRoute - GEO Optimization & AI Traffic Plans',
   description: 'Simple, transparent pricing for GEO optimization. Free to start, $79/mo for Pro, $249/mo for agencies. API access from $0.01/call. Data subscriptions for enterprise.',
 };
 
@@ -267,10 +267,10 @@ export default function PricingPage() {
               <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[rgba(184,160,74,0.12)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)]">ENTERPRISE</span>
             </div>
             <p className="text-sm text-[#878787]">
-              The OmniRoute index is a unique ground-truth dataset - which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
+              The CiteRoute index is a unique ground-truth dataset - which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
             </p>
           </div>
-          <Link href="mailto:enterprise@omniroute.network" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
+          <Link href="mailto:enterprise@citeroute.com" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
             Talk to us <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

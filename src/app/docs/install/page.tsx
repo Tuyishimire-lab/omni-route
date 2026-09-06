@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 import TagVerifier from '../../../components/TagVerifier';
 
-const ENDPOINT = 'https://omni-route-rho.vercel.app';
+const ENDPOINT = 'https://www.citeroute.com';
 
-const TAG = `<!-- OmniRoute Tag -->
+const TAG = `<!-- CiteRoute Tag -->
 <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>`;
 
 const MIDDLEWARE_FRAMEWORKS = [
@@ -33,11 +33,11 @@ const CLIENT_FRAMEWORKS = [
 const MIDDLEWARE_SNIPPETS: Record<string, { file: string; code: string; note: string }> = {
   'nextjs-middleware': {
     file: 'middleware.ts (or src/middleware.ts) · Project Root',
-    note: 'Next.js Edge Middleware intercepts 100% of headless AI crawlers (GPTBot, ClaudeBot, etc.) before page render. Uses event.waitUntil() for zero added latency and sets an x-omniroute-tracked header for instant verification.',
+    note: 'Next.js Edge Middleware intercepts 100% of headless AI crawlers (GPTBot, ClaudeBot, etc.) before page render. Uses event.waitUntil() for zero added latency and sets an x-citeroute-tracked header for instant verification.',
     code: `import { NextResponse } from 'next/server';
 import type { NextRequest, NextFetchEvent } from 'next/server';
 
-const OMNIROUTE_ENDPOINT = '${ENDPOINT}/api/v1/track';
+const CITEROUTE_ENDPOINT = '${ENDPOINT}/api/v1/track';
 const YOUR_DOMAIN = 'yourdomain.com'; // Replace with your domain
 
 const AI_BOTS = [
@@ -54,7 +54,7 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
   // If non-human or AI referral, capture telemetry in background
   if (isAiCrawler || isAiReferral) {
     event.waitUntil(
-      fetch(OMNIROUTE_ENDPOINT, {
+      fetch(CITEROUTE_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,9 +69,9 @@ export function middleware(request: NextRequest, event: NextFetchEvent) {
     );
   }
 
-  // Attach diagnostic header so OmniRoute Verifier detects your middleware
+  // Attach diagnostic header so CiteRoute Verifier detects your middleware
   const response = NextResponse.next();
-  response.headers.set('x-omniroute-tracked', '1');
+  response.headers.set('x-citeroute-tracked', '1');
   return response;
 }
 
@@ -82,7 +82,7 @@ export const config = {
   'cloudflare-worker': {
     file: 'worker.js · Cloudflare Workers / Wrangler',
     note: 'Universal Edge Proxy: Runs globally on Cloudflare edge in <5ms. Works in front of ANY origin (WordPress, Webflow, Shopify custom domains, PHP, Rails). Captures raw AI bots and passes normal traffic directly to your site.',
-    code: `const OMNIROUTE_ENDPOINT = '${ENDPOINT}/api/v1/track';
+    code: `const CITEROUTE_ENDPOINT = '${ENDPOINT}/api/v1/track';
 const YOUR_DOMAIN = 'yourdomain.com'; // Replace with your domain
 
 const AI_BOTS = [
@@ -98,7 +98,7 @@ export default {
 
     if (AI_BOTS.some(b => ua.includes(b)) || /chatgpt|perplexity|claude|gemini/i.test(referer)) {
       ctx.waitUntil(
-        fetch(OMNIROUTE_ENDPOINT, {
+        fetch(CITEROUTE_ENDPOINT, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -112,17 +112,17 @@ export default {
 
     const response = await fetch(request);
     const newHeaders = new Headers(response.headers);
-    newHeaders.set('x-omniroute-tracked', '1');
+    newHeaders.set('x-citeroute-tracked', '1');
     return new Response(response.body, { status: response.status, headers: newHeaders });
   },
 };`,
   },
   'express-node': {
-    file: 'middleware/omniroute.js · Node.js / Express Server',
+    file: 'middleware/citeroute.js · Node.js / Express Server',
     note: 'Drop-in Express middleware for API backends and server-rendered Node apps. Non-blocking asynchronous logging.',
     code: `const AI_BOTS = ['gptbot', 'claudebot', 'perplexitybot', 'bytespider', 'oai-searchbot'];
 
-function omnirouteMiddleware(req, res, next) {
+function citerouteMiddleware(req, res, next) {
   const ua = (req.headers['user-agent'] || '').toLowerCase();
   const referer = req.headers['referer'] || '';
   const isAi = AI_BOTS.some(b => ua.includes(b)) || /chatgpt|perplexity|claude/i.test(referer);
@@ -142,11 +142,11 @@ function omnirouteMiddleware(req, res, next) {
     }).catch(() => {});
   }
 
-  res.setHeader('x-omniroute-tracked', '1');
+  res.setHeader('x-citeroute-tracked', '1');
   next();
 }
 
-module.exports = omnirouteMiddleware;`,
+module.exports = citerouteMiddleware;`,
   },
 };
 
@@ -194,7 +194,7 @@ export default function App({ Component, pageProps }: AppProps) {
     note: 'The cleanup prevents duplicate script tags during React Strict Mode dev re-renders.',
     code: `import { useEffect } from 'react';
 
-function OmniRouteTag() {
+function CiteRouteTag() {
   useEffect(() => {
     const s = document.createElement('script');
     s.src = '${ENDPOINT}/api/v1/track.js?site=yourdomain.com';
@@ -208,7 +208,7 @@ function OmniRouteTag() {
 export default function App() {
   return (
     <>
-      <OmniRouteTag />
+      <CiteRouteTag />
       {/* rest of your app */}
     </>
   );
@@ -218,23 +218,21 @@ export default function App() {
     file: 'functions.php  ·  or Code Snippets plugin',
     note: 'Hooked to wp_footer - loads after page content, no impact on Core Web Vitals.',
     code: `<?php
-function omniroute_tag() {
+function citeroute_tag() {
     echo '<script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>';
 }
-add_action( 'wp_footer', 'omniroute_tag' );`,
+add_action( 'wp_footer', 'citeroute_tag' );`,
   },
   shopify: {
     file: 'layout/theme.liquid  ·  before </body>',
     note: 'Online Store → Themes → Edit Code → layout/theme.liquid',
-    code: `<!-- OmniRoute Tag -->
-<script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>
-
-</body>`,
+    code: `<!-- CiteRoute Tag -->
+<script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>`,
   },
   webflow: {
     file: 'Site Settings → Custom Code → Footer Code',
     note: 'Site Settings → Custom Code → paste into Footer Code → Save & Publish.',
-    code: `<!-- OmniRoute Tag -->
+    code: `<!-- CiteRoute Tag -->
 <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>`,
   },
   nuxt: {
@@ -275,11 +273,11 @@ function CopyButton({ text }: { text: string }) {
 }
 
 const FAQ = [
-  { q: 'What is yourdomain.com?', a: 'Replace it with your actual domain - e.g. stripe.com or myblog.io. Do not include https:// or a trailing slash. This is how OmniRoute attributes AI traffic to your site.' },
+  { q: 'What is yourdomain.com?', a: 'Replace it with your actual domain - e.g. stripe.com or myblog.io. Do not include https:// or a trailing slash. This is how CiteRoute attributes AI traffic to your site.' },
   { q: 'Does it slow down my site?', a: 'No. The async attribute means it never blocks rendering. The beacon fires via navigator.sendBeacon on the load event - fire-and-forget, no response wait.' },
   { q: 'Is it GDPR / CCPA compliant?', a: 'Yes. No cookies. No IP addresses stored. No personal data collected. The only data sent is the URL path and an anonymous sessionStorage ID. Human visits are never written to the database.' },
-  { q: 'I see recorded: false - is that normal?', a: 'Yes. Human visits are intentionally not stored. OmniRoute only persists AI crawler and agent traffic. recorded: false means the script is working correctly.' },
-  { q: 'Do I need an API key?', a: 'No. The tag works without any account. API keys are only needed if you want to query the OmniRoute REST API directly.' },
+  { q: 'I see recorded: false - is that normal?', a: 'Yes. Human visits are intentionally not stored. CiteRoute only persists AI crawler and agent traffic. recorded: false means the script is working correctly.' },
+  { q: 'Do I need an API key?', a: 'No. The tag works without any account. API keys are only needed if you want to query the CiteRoute REST API directly.' },
 ];
 
 export default function InstallPage() {
@@ -306,7 +304,7 @@ export default function InstallPage() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Install <span className="gradient-text">OmniRoute Telemetry</span>
+          Install <span className="gradient-text">CiteRoute Telemetry</span>
         </h1>
 
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed max-w-3xl">
@@ -474,7 +472,7 @@ export default function InstallPage() {
         <h2 className="text-lg font-bold text-white">Verify the installation</h2>
         <div className="space-y-5">
           {[
-            { n: '1', title: 'Open your site + DevTools', body: 'Network tab → filter "track". You should see a POST to omni-route-rho.vercel.app/api/v1/track fire on page load.', code: undefined },
+            { n: '1', title: 'Open your site + DevTools', body: 'Network tab → filter "track". You should see a POST to citeroute.com/api/v1/track fire on page load.', code: undefined },
             { n: '2', title: 'Check the response', body: 'You will see:', code: '{ "success": true, "recorded": false, "classification": "HUMAN" }' },
             { n: '3', title: 'All good', body: 'Human visits are not stored by design. AI crawlers appear in your analytics within 24–48 h. Run a GEO Audit to kick-start crawling.', code: undefined },
           ].map((item) => (

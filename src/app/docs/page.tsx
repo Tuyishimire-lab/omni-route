@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { Book, Code, Globe, Shield, Cpu, ArrowRight, CheckCircle2, Layers, Zap } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'agent.json Specification & Documentation | OmniRoute',
+  title: 'agent.json Specification & Documentation | CiteRoute',
   description: 'Complete technical reference for the agent.json protocol - the machine-readable standard that enables AI search engines and autonomous buyer agents to discover, query, and transact with your website.',
 };
 
