@@ -5,7 +5,7 @@ import { Search, CheckCircle2, XCircle, AlertTriangle, Loader2, ExternalLink } f
 
 interface VerifyResult {
   found: boolean;
-  method: 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
+  method: 'edge-middleware' | 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
   siteDomain: string | null;
   domainMatch: boolean;
   tagUrl: string | null;
@@ -87,9 +87,9 @@ export default function TagVerifier() {
                 status === 'warn'    ? 'text-amber-400'  :
                 status === 'missing' ? 'text-red-400'    : 'text-[#878787]'
               }`}>
-                {status === 'ok'      && 'Tag detected - all good ✓'}
-                {status === 'warn'    && 'Tag found - check site= parameter'}
-                {status === 'missing' && 'Tag not detected'}
+                {status === 'ok'      && (result.method === 'edge-middleware' ? 'Edge Middleware detected — 100% AI bot coverage ✓' : 'Tag detected — all good ✓')}
+                {status === 'warn'    && 'Tag found — check site= parameter'}
+                {status === 'missing' && 'Tag or middleware not detected'}
                 {status === 'error'   && 'Could not check this domain'}
               </p>
               <p className="text-[11px] text-[#878787] mt-0.5 truncate">Checked: {result.checkedUrl}</p>
@@ -104,12 +104,18 @@ export default function TagVerifier() {
 
             {status === 'ok' && (
               <>
-                {result.method === 'heartbeat'
-                  ? (
-                    <Detail label="Verified via" value="Live tag ping ✓" ok />
-                  ) : (
-                    <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-omniroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
-                  )}
+                {result.method === 'edge-middleware' ? (
+                  <>
+                    <Detail label="Verified via" value="Edge / Server Middleware (Zero Client JS) ✓" ok />
+                    <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-200 leading-relaxed">
+                      Active edge middleware verified. Headless AI crawlers (GPTBot, ClaudeBot, PerplexityBot) and search indexers are captured server-side with zero latency added to page delivery.
+                    </div>
+                  </>
+                ) : result.method === 'heartbeat' ? (
+                  <Detail label="Verified via" value="Live tag ping ✓" ok />
+                ) : (
+                  <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-omniroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
+                )}
                 {result.siteDomain && <Detail label="Site attributed to" value={result.siteDomain} ok />}
                 {result.heartbeatAge && (
                   <Detail label="Last seen" value={`${Math.round((Date.now() - new Date(result.heartbeatAge).getTime()) / 60000)} min ago`} />

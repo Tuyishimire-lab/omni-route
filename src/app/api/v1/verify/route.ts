@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 export interface VerifyResult {
   found: boolean;
-  method: 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
+  method: 'edge-middleware' | 'heartbeat' | 'query-param' | 'data-attribute' | 'bare' | null;
   siteDomain: string | null;
   domainMatch: boolean;
   tagUrl: string | null;
@@ -19,7 +19,7 @@ export interface VerifyResult {
  * GET /api/v1/verify?domain=yourdomain.com
  *
  * Fetches the customer homepage server-side and checks whether the OmniRoute
- * tracking tag is present. Returns diagnostics for the verify widget.
+ * tracking tag or edge middleware is present. Returns diagnostics for the verify widget.
  */
 export async function GET(req: NextRequest) {
   const rawDomain = req.nextUrl.searchParams.get('domain')?.trim();
@@ -39,9 +39,9 @@ export async function GET(req: NextRequest) {
   const checkedHostnameNoWww = checkedHostname.replace(/^www\./, '');
 
   // ── Heartbeat check (framework-agnostic) ──────────────────────────────
-  // When track.js loads on any site it upserts a TagHeartbeat row.
+  // When track.js or edge middleware loads on any site it upserts a TagHeartbeat row.
   // If we have a recent heartbeat (≤ 7 days) we trust it - no HTML scrape needed.
-  // This works for Next.js Script component, React SPAs, GTM, etc.
+  // This works for Next.js Script component, React SPAs, GTM, and Edge Middlewares.
   const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
   const heartbeat = await prisma.tagHeartbeat.findFirst({
     where: {
@@ -63,7 +63,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // ── Fallback: HTML scrape ─────────────────────────────────────────────
+  // ── Probe request: Checks for Edge Middleware headers & HTML script tag ───
   let html = '';
   try {
     const controller = new AbortController();
@@ -71,12 +71,30 @@ export async function GET(req: NextRequest) {
     const res = await fetch(checkedUrl, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'OmniRoute-Verify/1.0 (+https://omni-route-rho.vercel.app/docs/install)',
+        // Send an AI Crawler probe UA to trigger Edge Middleware capture
+        'User-Agent': 'OmniRoute-Verify-Bot/1.0 (+https://omni-route-rho.vercel.app/docs/install)',
         'Accept': 'text/html',
       },
       redirect: 'follow',
     });
     clearTimeout(timeout);
+
+    // Check if customer edge/server middleware returned an OmniRoute diagnostic header
+    const hasMiddlewareHeader =
+      res.headers.get('x-omniroute-tracked') === '1' ||
+      res.headers.get('x-omniroute-middleware') === '1' ||
+      res.headers.get('x-omniroute-edge') === '1';
+
+    if (hasMiddlewareHeader) {
+      return NextResponse.json<VerifyResult>({
+        found: true,
+        method: 'edge-middleware',
+        siteDomain: checkedHostname,
+        domainMatch: true,
+        tagUrl: null,
+        checkedUrl,
+      });
+    }
 
     if (!res.ok) {
       return NextResponse.json<VerifyResult>({

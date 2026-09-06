@@ -5,16 +5,41 @@ import { validateAndSanitizeUrl } from '../../../../lib/security';
 
 export const dynamic = 'force-dynamic';
 
-async function tagIsLive(url: string): Promise<boolean> {
+async function tagIsLive(url: string, hostname: string): Promise<boolean> {
+  // 1. Check if we already received a recent heartbeat (from middleware or track.js)
+  const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+  const hostnameNoWww = hostname.replace(/^www\./, '');
+  const heartbeat = await prisma.tagHeartbeat.findFirst({
+    where: {
+      domain: { in: [hostname, hostnameNoWww] },
+      lastSeen: { gte: new Date(Date.now() - SEVEN_DAYS) },
+    },
+  }).catch(() => null);
+
+  if (heartbeat) return true;
+
+  // 2. Probe the site with AI bot probe User-Agent
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 10_000);
     const res = await fetch(url, {
       signal: ctrl.signal,
-      headers: { 'User-Agent': 'OmniRoute-Verify/1.0', Accept: 'text/html' },
+      headers: {
+        'User-Agent': 'OmniRoute-Verify-Bot/1.0 (+https://omni-route-rho.vercel.app/docs/install)',
+        Accept: 'text/html',
+      },
       redirect: 'follow',
     });
     clearTimeout(t);
+
+    // If edge/server middleware returned an OmniRoute diagnostic header
+    const hasMiddlewareHeader =
+      res.headers.get('x-omniroute-tracked') === '1' ||
+      res.headers.get('x-omniroute-middleware') === '1' ||
+      res.headers.get('x-omniroute-edge') === '1';
+
+    if (hasMiddlewareHeader) return true;
+
     if (!res.ok) return false;
 
     const reader = res.body?.getReader();
@@ -53,10 +78,10 @@ export async function POST(req: NextRequest) {
   });
   if (existing) return NextResponse.json({ error: 'Site already registered' }, { status: 409 });
 
-  const live = await tagIsLive(validation.normalizedUrl);
+  const live = await tagIsLive(validation.normalizedUrl, hostname);
   if (!live) {
     return NextResponse.json({
-      error: 'OmniRoute tag not detected. Install and verify the tag before adding your site.',
+      error: 'OmniRoute tag or middleware not detected. Install and verify before adding your site.',
     }, { status: 422 });
   }
 

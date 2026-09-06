@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { crawlAndAnalyzeUrl } from '../liveCrawler';
 import { classifyRequest } from '../agentTraffic';
 import { GeoAuditReport } from '../types';
@@ -8,9 +8,31 @@ import { GeoAuditReport } from '../types';
  * Scan a domain → verify the report is structurally sound → verify the
  * telemetry pipeline would classify its crawler correctly.
  *
- * Network calls to r.jina.ai are attempted but the assertions hold for BOTH
- * the live path and the deterministic fallback, so the test is hermetic.
+ * Network calls to Jina Reader are mocked for fast, hermetic CI runs,
+ * ensuring both the live path and deterministic fallbacks are thoroughly exercised.
  */
+
+const MOCK_JINA_RESPONSE = {
+  code: 200,
+  status: 200,
+  data: {
+    title: 'Verified Domain',
+    description: 'Enterprise production site with semantic data.',
+    content: `# Welcome to Verified Domain
+
+## Features and Capabilities
+Our platform provides high-performance APIs and vector-ready datasets.
+
+### Schema and Entity Data
+Structured with Schema.org JSON-LD and canonical entities.
+
+| Metric | Value | Status |
+| --- | --- | --- |
+| Latency | <5ms | Optimal |
+| Uptime | 99.99% | Active |
+`,
+  },
+};
 
 const REPORT_SHAPE_KEYS: (keyof GeoAuditReport)[] = [
   'domain',
@@ -28,6 +50,23 @@ const REPORT_SHAPE_KEYS: (keyof GeoAuditReport)[] = [
 ];
 
 describe('money path: scan → report → classify', () => {
+  beforeEach(() => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input: RequestInfo | URL) => {
+      const urlStr = typeof input === 'string' ? input : input.toString();
+      if (urlStr.includes('r.jina.ai')) {
+        return new Response(JSON.stringify(MOCK_JINA_RESPONSE), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      return new Response('Not Found', { status: 404 });
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('produces a structurally complete report for a real domain', async () => {
     const report = await crawlAndAnalyzeUrl('https://example.com', { bypassCache: true });
 
@@ -35,7 +74,7 @@ describe('money path: scan → report → classify', () => {
       expect(report, `missing key: ${key}`).toHaveProperty(key);
     }
     expect(report.domain).toBe('example.com');
-  }, 30_000);
+  });
 
   it('scores are always within valid bounds', async () => {
     const report = await crawlAndAnalyzeUrl('stripe.com', { bypassCache: true });
@@ -52,7 +91,7 @@ describe('money path: scan → report → classify', () => {
       expect(s).toBeLessThanOrEqual(100);
       expect(Number.isFinite(s)).toBe(true);
     }
-  }, 30_000);
+  });
 
   it('live scans are flagged; fallbacks are flagged too (honest-data policy)', async () => {
     const report = await crawlAndAnalyzeUrl('example.com', { bypassCache: true });
@@ -63,7 +102,7 @@ describe('money path: scan → report → classify', () => {
     if (report.liveMetadata!.isLiveScanned) {
       expect(report.liveMetadata!.wordCount).toBeGreaterThan(0);
     }
-  }, 30_000);
+  });
 
   it('engine breakdown covers all four engines with consistent data', async () => {
     const report = await crawlAndAnalyzeUrl('vercel.com', { bypassCache: true });
@@ -77,7 +116,7 @@ describe('money path: scan → report → classify', () => {
       expect(e.citationProbability).toBeLessThanOrEqual(100);
       expect(e.indexedChunks).toBeGreaterThan(0);
     }
-  }, 30_000);
+  });
 
   it('recommendations are actionable (have title + description)', async () => {
     const report = await crawlAndAnalyzeUrl('linear.app', { bypassCache: true });
@@ -88,17 +127,18 @@ describe('money path: scan → report → classify', () => {
       expect(rec.description.length).toBeGreaterThan(20);
       expect(['CRITICAL', 'HIGH', 'MEDIUM']).toContain(rec.priority);
     }
-  }, 30_000);
+  });
 
   it('deterministic fallback is stable for the same domain', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Simulated network offline'));
+
     const a = await crawlAndAnalyzeUrl('stability-test.io', { bypassCache: true });
     const b = await crawlAndAnalyzeUrl('stability-test.io', { bypassCache: true });
 
-    // If both fell back (likely - fake TLD), scores must match exactly
-    if (!a.liveMetadata?.isLiveScanned && !b.liveMetadata?.isLiveScanned) {
-      expect(b.overallGeoScore).toBe(a.overallGeoScore);
-    }
-  }, 60_000);
+    expect(a.liveMetadata?.isLiveScanned).toBe(false);
+    expect(b.liveMetadata?.isLiveScanned).toBe(false);
+    expect(b.overallGeoScore).toBe(a.overallGeoScore);
+  });
 
   it('the tracking pipeline classifies the crawler that would scan these sites', () => {
     // The crawler that fetches these pages would itself be classified:
