@@ -92,7 +92,16 @@ export interface LimitCheckResult {
 /**
  * Validates whether a user can register an additional verified site for tracking.
  */
-export function checkSiteLimit(tierRaw: string | null | undefined, currentCount: number): LimitCheckResult {
+export function checkSiteLimit(
+  tierRaw: string | null | undefined,
+  currentCount: number,
+  role?: string | null
+): LimitCheckResult {
+  // Superadmin / Admin has unlimited maximum privileges
+  if (role === 'admin') {
+    return { allowed: true, limit: Infinity, current: currentCount };
+  }
+
   const tier = normalizeTier(tierRaw);
   const config = TIER_CONFIG[tier];
 
@@ -127,7 +136,16 @@ export function checkSiteLimit(tierRaw: string | null | undefined, currentCount:
 /**
  * Validates whether a user or session can add an additional domain to their watchlist.
  */
-export function checkWatchlistLimit(tierRaw: string | null | undefined, currentCount: number): LimitCheckResult {
+export function checkWatchlistLimit(
+  tierRaw: string | null | undefined,
+  currentCount: number,
+  role?: string | null
+): LimitCheckResult {
+  // Superadmin / Admin has unlimited maximum privileges
+  if (role === 'admin') {
+    return { allowed: true, limit: Infinity, current: currentCount };
+  }
+
   const tier = normalizeTier(tierRaw);
   const config = TIER_CONFIG[tier];
 
@@ -152,7 +170,16 @@ export function checkWatchlistLimit(tierRaw: string | null | undefined, currentC
 /**
  * Validates whether a user or IP can perform a GEO scan under their monthly quota.
  */
-export function checkScanLimit(tierRaw: string | null | undefined, monthlyCount: number): LimitCheckResult {
+export function checkScanLimit(
+  tierRaw: string | null | undefined,
+  monthlyCount: number,
+  role?: string | null
+): LimitCheckResult {
+  // Superadmin / Admin has unlimited maximum privileges
+  if (role === 'admin') {
+    return { allowed: true, limit: Infinity, current: monthlyCount };
+  }
+
   const tier = normalizeTier(tierRaw);
   const config = TIER_CONFIG[tier];
 
@@ -176,7 +203,15 @@ export function checkScanLimit(tierRaw: string | null | undefined, monthlyCount:
 /**
  * Validates whether a user is entitled to create API keys.
  */
-export function checkApiKeyEligibility(tierRaw: string | null | undefined): { allowed: boolean; reason?: string; upgradeTier?: UserTier } {
+export function checkApiKeyEligibility(
+  tierRaw: string | null | undefined,
+  role?: string | null
+): { allowed: boolean; reason?: string; upgradeTier?: UserTier } {
+  // Superadmin / Admin has unlimited maximum privileges
+  if (role === 'admin') {
+    return { allowed: true };
+  }
+
   const tier = normalizeTier(tierRaw);
   const config = TIER_CONFIG[tier];
 

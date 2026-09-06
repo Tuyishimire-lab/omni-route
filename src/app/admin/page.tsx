@@ -50,7 +50,7 @@ export default function AdminPage() {
 
   // New key form state
   const [newKeyName, setNewKeyName] = useState('');
-  const [newKeyTier, setNewKeyTier] = useState<'free' | 'pro' | 'enterprise'>('free');
+  const [newKeyTier, setNewKeyTier] = useState<'free' | 'pro' | 'agency' | 'enterprise'>('free');
   const [newKeyDomain, setNewKeyDomain] = useState('');
   const [createdKey, setCreatedKey] = useState<string | null>(null);
 
@@ -154,12 +154,14 @@ export default function AdminPage() {
   const tierColors: Record<string, string> = {
     free: 'text-[#878787] bg-[#1A2020] border-[rgba(187,191,191,0.12)]',
     pro: 'text-[#05AD98] bg-[rgba(5,173,152,0.10)] border-[rgba(5,173,152,0.25)]',
+    agency: 'text-[#05AD98] bg-[rgba(5,173,152,0.15)] border-[rgba(5,173,152,0.35)]',
     enterprise: 'text-[#B8A04A] bg-[rgba(184,160,74,0.10)] border-[rgba(184,160,74,0.25)]',
   };
 
   const tierIcons: Record<string, React.ReactNode> = {
     free: <Shield className="w-3 h-3" />,
     pro: <Zap className="w-3 h-3" />,
+    agency: <Users className="w-3 h-3" />,
     enterprise: <Crown className="w-3 h-3" />,
   };
 
@@ -280,11 +282,12 @@ export default function AdminPage() {
             <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Tier</label>
             <select
               value={newKeyTier}
-              onChange={(e) => setNewKeyTier(e.target.value as 'free' | 'pro' | 'enterprise')}
+              onChange={(e) => setNewKeyTier(e.target.value as 'free' | 'pro' | 'agency' | 'enterprise')}
               className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
             >
               <option value="free">Free (100 req/hr)</option>
               <option value="pro">Pro (1,000 req/hr)</option>
+              <option value="agency">Agency (5,000 req/hr)</option>
               <option value="enterprise">Enterprise (10,000 req/hr)</option>
             </select>
           </div>

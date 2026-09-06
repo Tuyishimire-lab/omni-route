@@ -11,6 +11,9 @@ async function verifyScanAllowance(ip: string) {
   let trackingId = `ip:${ip}`;
 
   if (session) {
+    if (session.role === 'admin') {
+      return { allowed: true };
+    }
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
       select: { tier: true },

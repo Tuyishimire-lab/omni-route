@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       const user = await prisma.user.findUnique({ where: { id: session.userId }, select: { tier: true } });
       const current = await getUserWatchlist(session.userId);
       if (!current.includes(domain)) {
-        const check = checkWatchlistLimit(user?.tier, current.length);
+        const check = checkWatchlistLimit(user?.tier, current.length, session.role);
         if (!check.allowed) {
           return NextResponse.json({
             error: check.reason,

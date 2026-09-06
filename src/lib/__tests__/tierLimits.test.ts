@@ -55,6 +55,12 @@ describe('tierLimits - checkSiteLimit', () => {
     const res = checkSiteLimit('enterprise', 999);
     expect(res.allowed).toBe(true);
   });
+
+  it('allows admin role unlimited verified sites regardless of tier', () => {
+    const res = checkSiteLimit('free', 100, 'admin');
+    expect(res.allowed).toBe(true);
+    expect(res.limit).toBe(Infinity);
+  });
 });
 
 describe('tierLimits - checkWatchlistLimit', () => {
@@ -74,6 +80,12 @@ describe('tierLimits - checkWatchlistLimit', () => {
     expect(checkWatchlistLimit('agency', 100).allowed).toBe(true);
     expect(checkWatchlistLimit('enterprise', 500).allowed).toBe(true);
   });
+
+  it('allows admin role unlimited watchlist domains regardless of tier', () => {
+    const res = checkWatchlistLimit('free', 999, 'admin');
+    expect(res.allowed).toBe(true);
+    expect(res.limit).toBe(Infinity);
+  });
 });
 
 describe('tierLimits - checkScanLimit', () => {
@@ -86,6 +98,12 @@ describe('tierLimits - checkScanLimit', () => {
   it('allows unlimited scans for pro and above', () => {
     expect(checkScanLimit('pro', 500).allowed).toBe(true);
     expect(checkScanLimit('agency', 1000).allowed).toBe(true);
+  });
+
+  it('allows admin role unlimited scans regardless of monthly count', () => {
+    const res = checkScanLimit('free', 9999, 'admin');
+    expect(res.allowed).toBe(true);
+    expect(res.limit).toBe(Infinity);
   });
 });
 
@@ -100,5 +118,9 @@ describe('tierLimits - checkApiKeyEligibility', () => {
     expect(checkApiKeyEligibility('pro').allowed).toBe(true);
     expect(checkApiKeyEligibility('agency').allowed).toBe(true);
     expect(checkApiKeyEligibility('enterprise').allowed).toBe(true);
+  });
+
+  it('allows admin role to create API keys regardless of tier', () => {
+    expect(checkApiKeyEligibility('free', 'admin').allowed).toBe(true);
   });
 });

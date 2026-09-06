@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
     where: { userId: session.userId },
   });
 
-  const limitCheck = checkSiteLimit(user?.tier, currentCount);
+  const limitCheck = checkSiteLimit(user?.tier, currentCount, session.role);
   if (!limitCheck.allowed) {
     return NextResponse.json({
       error: limitCheck.reason,

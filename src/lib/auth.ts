@@ -73,7 +73,11 @@ export async function createSessionToken(payload: SessionPayload): Promise<strin
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
-    return payload as unknown as SessionPayload;
+    const session = payload as unknown as SessionPayload;
+    if (session.role === 'admin') {
+      session.tier = 'enterprise';
+    }
+    return session;
   } catch {
     return null;
   }
@@ -141,6 +145,7 @@ export async function registerUser(
       name: name.trim(),
       passwordHash,
       role: isFirstUser ? 'admin' : 'user',
+      tier: isFirstUser ? 'enterprise' : 'free',
       provider: 'email',
     },
   });
@@ -150,7 +155,7 @@ export async function registerUser(
     email: user.email,
     name: user.name,
     role: user.role,
-    tier: user.tier,
+    tier: isFirstUser ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
   };
 
@@ -193,7 +198,7 @@ export async function loginUser(
     email: user.email,
     name: user.name,
     role: user.role,
-    tier: user.tier,
+    tier: user.role === 'admin' ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
   };
 
@@ -239,6 +244,7 @@ export async function upsertOAuthUser(profile: {
         provider: profile.provider,
         providerId: profile.providerId,
         role: isFirstUser ? 'admin' : 'user',
+        tier: isFirstUser ? 'enterprise' : 'free',
         lastLoginAt: new Date(),
       },
     });
@@ -249,7 +255,7 @@ export async function upsertOAuthUser(profile: {
     email: user.email,
     name: user.name,
     role: user.role,
-    tier: user.tier,
+    tier: user.role === 'admin' ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
   };
 
