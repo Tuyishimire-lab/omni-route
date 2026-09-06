@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import OnboardingWizard from '../components/OnboardingWizard';
-
+import GoogleAnalytics from '../components/GoogleAnalytics';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.citeroute.com'),
@@ -12,6 +12,12 @@ export const metadata: Metadata = {
   },
   description:
     'Turn AI crawlers into citations and revenue. The real-time Generative Engine Optimization (GEO) and autonomous agent observability platform for the post-search economy.',
+  alternates: {
+    canonical: 'https://www.citeroute.com',
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
   openGraph: {
     title: 'CiteRoute | Generative Engine & Agent Observability Platform',
     description:
@@ -28,6 +34,39 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLdSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://www.citeroute.com/#organization',
+      name: 'CiteRoute',
+      url: 'https://www.citeroute.com',
+      logo: 'https://www.citeroute.com/favicon.ico',
+      description: 'Generative Engine Optimization (GEO) and AI agent observability platform.',
+      email: 'tuyishime1angel@gmail.com',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://www.citeroute.com/#website',
+      url: 'https://www.citeroute.com',
+      name: 'CiteRoute',
+      publisher: { '@id': 'https://www.citeroute.com/#organization' },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'CiteRoute',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'All',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,7 +74,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col antialiased" style={{ background: '#0A0E0E', color: '#FFFFFF' }}>
+        <GoogleAnalytics />
 
         {/* Skip to main content - WCAG 2.1 AA keyboard nav requirement */}
         <a

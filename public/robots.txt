@@ -1,11 +1,30 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+Disallow: /my-sites
+Disallow: /watchlist
 
-# Welcome, AI crawlers - OmniRoute is built for you.
+# Explicitly welcome Googlebot and mainstream search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Welcome AI crawlers & search answer engines - CiteRoute is built for you
 User-agent: GPTBot
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
 Allow: /
 
 User-agent: PerplexityBot
@@ -23,7 +42,10 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-# Machine-readable manifest for autonomous agents
-# agent.json: https://omni-route-rho.vercel.app/.well-known/agent.json
+User-agent: CCBot
+Allow: /
 
-Sitemap: https://omni-route-rho.vercel.app/sitemap.xml
+# Machine-readable manifest for autonomous agents
+# agent.json: https://www.citeroute.com/.well-known/agent.json
+
+Sitemap: https://www.citeroute.com/sitemap.xml
