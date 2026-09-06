@@ -3,9 +3,9 @@
 import Script from 'next/script';
 
 export default function GoogleAnalytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-8K36ZX63P8';
 
-  if (!gaId || gaId.trim() === '' || gaId === 'G-XXXXXXXXXX') {
+  if (!gaId || gaId.trim() === '') {
     return null;
   }
 
