@@ -370,7 +370,7 @@ export async function getAnalyticsSummary() {
       channels,
       events: (eventsList || []).map((e: TelemetryEventRow) => ({
         id: e.id,
-        timestamp: e.timestamp instanceof Date ? e.timestamp.toLocaleTimeString() : new Date(e.timestamp).toLocaleTimeString(),
+        timestamp: e.timestamp instanceof Date ? e.timestamp.toISOString() : new Date(e.timestamp).toISOString(),
         type: e.type,
         source: e.source,
         domain: e.domain,

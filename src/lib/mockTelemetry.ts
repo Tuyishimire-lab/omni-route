@@ -46,8 +46,8 @@ export function generateMockTelemetryEvent(minutesAgo = 0): LiveTelemetryEvent {
   // Accept an optional past-offset (seconds) for initial seeding so events
   // don't all carry the same timestamp.
   const ts = minutesAgo > 0
-    ? new Date(Date.now() - minutesAgo * 60_000).toLocaleTimeString()
-    : new Date().toLocaleTimeString();
+    ? new Date(Date.now() - minutesAgo * 60_000).toISOString()
+    : new Date().toISOString();
 
   return {
     id: 'evt-' + Math.random().toString(36).substring(2, 9),

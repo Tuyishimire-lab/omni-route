@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Key, Plus, Trash2, ToggleLeft, ToggleRight, Shield, RefreshCw,
-  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff
+  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity
 } from 'lucide-react';
+import TrafficTelemetry from '../../components/TrafficTelemetry';
+import { formatTelemetryTimestamp } from '../../lib/timestamp';
 
 interface ApiKeyRecord {
   id: string;
@@ -373,7 +375,12 @@ export default function AdminPage() {
                   {copiedKey === k.keyPrefix ? <Check className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
                 </button>
               </div>
-              {k.domain && <span className="text-[9px] text-[#878787] font-mono">🔒 {k.domain}</span>}
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-[#878787] mt-1">
+                {k.domain && <span className="font-mono text-[#05AD98]">🔒 {k.domain}</span>}
+                <span>Created {formatTelemetryTimestamp(k.createdAt).date}</span>
+                <span>·</span>
+                <span>Last used: {k.lastUsedAt ? `${formatTelemetryTimestamp(k.lastUsedAt).date} (${formatTelemetryTimestamp(k.lastUsedAt).relative})` : 'Never'}</span>
+              </div>
             </div>
 
             <div className="flex justify-center">
@@ -420,6 +427,18 @@ export default function AdminPage() {
 
       {/* ── Tracked Domains ─────────────────────────────────────────────── */}
       <TrackedDomains />
+
+      {/* ── Live Telemetry Feed (Admin Stream) ───────────────────────────── */}
+      <div className="space-y-3 pt-2">
+        <div className="flex items-center gap-2">
+          <Activity className="w-5 h-5 text-[#05AD98]" />
+          <div>
+            <h2 className="text-base font-bold text-white">Live Telemetry &amp; Influx Stream</h2>
+            <p className="text-xs text-[#878787]">Real-time attestation stream across all monitored domains</p>
+          </div>
+        </div>
+        <TrafficTelemetry />
+      </div>
     </div>
   );
 }
@@ -500,16 +519,41 @@ function TrackedDomains() {
                       className="hover:underline">{row.domain}</a>
                   </td>
                   <td className="px-4 py-3 text-right text-white font-semibold">{row.totalEvents}</td>
-                  <td className="px-4 py-3 text-[#878787] text-xs">
-                    {row.lastEvent ? new Date(row.lastEvent).toLocaleDateString() : '-'}
+                  <td className="px-4 py-3 text-xs whitespace-nowrap">
+                    {row.lastEvent ? (() => {
+                      const ts = formatTelemetryTimestamp(row.lastEvent);
+                      return (
+                        <div className="flex flex-col leading-tight" title={ts.full}>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-white font-mono text-xs font-semibold">{ts.time}</span>
+                            <span className="text-[10px] text-[#05AD98] font-bold bg-[rgba(5,173,152,0.12)] px-1.5 py-0.5 rounded border border-[rgba(5,173,152,0.20)]">
+                              {ts.relative}
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-[#878787] mt-0.5">{ts.date}</span>
+                        </div>
+                      );
+                    })() : (
+                      <span className="text-[#878787]">-</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-xs">
                     {row.owner
                       ? <span className="text-white">{row.owner.name} <span className="text-[#878787]">({row.owner.email})</span></span>
                       : <span className="text-[#878787] italic">Unregistered</span>}
                   </td>
-                  <td className="px-4 py-3 text-[#878787] text-xs">
-                    {row.registeredAt ? new Date(row.registeredAt).toLocaleDateString() : '-'}
+                  <td className="px-4 py-3 text-xs whitespace-nowrap">
+                    {row.registeredAt ? (() => {
+                      const ts = formatTelemetryTimestamp(row.registeredAt);
+                      return (
+                        <div className="flex flex-col leading-tight" title={ts.full}>
+                          <span className="text-[#BBBFBF] text-xs font-medium">{ts.date}</span>
+                          <span className="text-[10px] text-[#878787] font-mono mt-0.5">{ts.time}</span>
+                        </div>
+                      );
+                    })() : (
+                      <span className="text-[#878787]">-</span>
+                    )}
                   </td>
                 </tr>
               ))}

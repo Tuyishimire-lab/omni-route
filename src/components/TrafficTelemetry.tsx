@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { LiveTelemetryEvent } from '../lib/types';
 import { getInitialTelemetry } from '../lib/mockTelemetry';
+import { formatTelemetryTimestamp } from '../lib/timestamp';
 import { Activity, Radio, RefreshCw } from 'lucide-react';
 
 const POLL_INTERVAL_MS = 30_000;
@@ -202,9 +203,21 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
                 </td>
               </tr>
             ) : (
-              events.map((ev) => (
-                <tr key={ev.id} className="hover:bg-[#111514]/60 transition-colors">
-                  <td className="py-2.5 font-mono text-[#878787] whitespace-nowrap">{ev.timestamp}</td>
+              events.map((ev) => {
+                const ts = formatTelemetryTimestamp(ev.timestamp);
+                return (
+                  <tr key={ev.id} className="hover:bg-[#111514]/60 transition-colors">
+                    <td className="py-2.5 whitespace-nowrap" title={ts.full}>
+                      <div className="flex flex-col leading-tight">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-mono text-white text-xs font-semibold">{ts.time}</span>
+                          <span className="text-[10px] font-sans font-bold text-[#05AD98] bg-[rgba(5,173,152,0.12)] px-1.5 py-0.5 rounded border border-[rgba(5,173,152,0.20)]">
+                            {ts.relative}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-[#878787] mt-0.5">{ts.date}</span>
+                      </div>
+                    </td>
                   <td className="py-2.5">
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold border ${getEventBadge(ev.type)}`}>
                       {ev.type}
@@ -225,7 +238,8 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
                     )}
                   </td>
                 </tr>
-              ))
+                );
+              })
             )}
           </tbody>
         </table>
