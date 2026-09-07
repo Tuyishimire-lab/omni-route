@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getOAuthRedirectUri } from '../../../../lib/auth';
 
 // Redirect to GitHub OAuth authorization
 export async function GET(req: NextRequest) {
@@ -7,9 +8,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'GitHub OAuth is not configured. Set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET.' }, { status: 501 });
   }
 
-  // Always derive the base URL from the incoming request to avoid mismatches
-  const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  const redirectUri = `${baseUrl}/api/auth/github/callback`;
+  const redirectUri = getOAuthRedirectUri(req, 'github');
 
   const params = new URLSearchParams({
     client_id: clientId,

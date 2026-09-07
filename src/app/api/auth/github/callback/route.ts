@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { upsertOAuthUser } from '../../../../../lib/auth';
+import { upsertOAuthUser, getOAuthRedirectUri } from '../../../../../lib/auth';
 
 export async function GET(req: NextRequest) {
+  const redirectUri = getOAuthRedirectUri(req, 'github');
+  const baseOrigin = redirectUri.replace('/api/auth/github/callback', '');
+
   const code = req.nextUrl.searchParams.get('code');
   if (!code) {
-    return NextResponse.redirect(new URL('/login?error=no_code', req.url));
+    return NextResponse.redirect(new URL('/login?error=no_code', baseOrigin));
   }
 
   const clientId = process.env.GITHUB_CLIENT_ID;
@@ -12,7 +15,7 @@ export async function GET(req: NextRequest) {
 
   if (!clientId || !clientSecret) {
     console.error('[GitHub OAuth] Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET env vars');
-    return NextResponse.redirect(new URL('/login?error=missing_env', req.url));
+    return NextResponse.redirect(new URL('/login?error=missing_env', baseOrigin));
   }
 
   try {
@@ -69,13 +72,13 @@ export async function GET(req: NextRequest) {
 
     if (!result.success) {
       console.error('[GitHub OAuth] upsertOAuthUser failed:', result.error);
-      return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
+      return NextResponse.redirect(new URL('/login?error=oauth_failed', baseOrigin));
     }
 
-    return NextResponse.redirect(new URL('/', req.url));
+    return NextResponse.redirect(new URL('/', baseOrigin));
   } catch (err) {
     // Log server-side only - never expose error details in the redirect URL
     console.error('[GitHub OAuth] Callback error:', err instanceof Error ? err.message : err);
-    return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
+    return NextResponse.redirect(new URL('/login?error=oauth_failed', baseOrigin));
   }
 }

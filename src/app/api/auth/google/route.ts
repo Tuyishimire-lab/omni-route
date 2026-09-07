@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getOAuthRedirectUri } from '../../../../lib/auth';
 
 // Redirect to Google OAuth consent screen
 export async function GET(req: NextRequest) {
@@ -7,9 +8,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Google OAuth is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.' }, { status: 501 });
   }
 
-  // Always derive the base URL from the incoming request to avoid mismatches
-  const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  const redirectUri = `${baseUrl}/api/auth/google/callback`;
+  const redirectUri = getOAuthRedirectUri(req, 'google');
 
   const params = new URLSearchParams({
     client_id: clientId,

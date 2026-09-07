@@ -262,3 +262,20 @@ export async function upsertOAuthUser(profile: {
   await setSessionCookie(session);
   return { success: true, user: session };
 }
+
+// ─── OAuth Helper ────────────────────────────────────────────────────────────
+
+export function getOAuthRedirectUri(
+  req: { headers: { get: (name: string) => string | null }; nextUrl: { host: string } },
+  provider: 'google' | 'github'
+): string {
+  const forwardedHost = req.headers.get('x-forwarded-host');
+  const hostHeader = req.headers.get('host');
+  const host = forwardedHost || hostHeader || req.nextUrl.host;
+
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+  const proto = isLocal ? 'http' : 'https';
+
+  return `${proto}://${host}/api/auth/${provider}/callback`;
+}
+

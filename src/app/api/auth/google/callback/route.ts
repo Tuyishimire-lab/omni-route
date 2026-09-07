@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { upsertOAuthUser } from '../../../../../lib/auth';
+import { upsertOAuthUser, getOAuthRedirectUri } from '../../../../../lib/auth';
 
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get('code');
@@ -15,9 +15,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL('/login?error=missing_env', req.url));
   }
 
-  // Always derive the base URL from the incoming request to avoid mismatches
-  const baseUrl = `${req.nextUrl.protocol}//${req.nextUrl.host}`;
-  const redirectUri = `${baseUrl}/api/auth/google/callback`;
+  const redirectUri = getOAuthRedirectUri(req, 'google');
 
   try {
     // Exchange code for tokens
@@ -62,10 +60,12 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
     }
 
-    return NextResponse.redirect(new URL('/', req.url));
+    const baseOrigin = redirectUri.replace('/api/auth/google/callback', '');
+    return NextResponse.redirect(new URL('/', baseOrigin));
   } catch (err) {
     // Log server-side only - never expose error details in the redirect URL
     console.error('[Google OAuth] Callback error:', err instanceof Error ? err.message : err);
-    return NextResponse.redirect(new URL('/login?error=oauth_failed', req.url));
+    const baseOrigin = redirectUri.replace('/api/auth/google/callback', '');
+    return NextResponse.redirect(new URL('/login?error=oauth_failed', baseOrigin));
   }
 }
