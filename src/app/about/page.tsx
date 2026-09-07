@@ -116,22 +116,23 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Tech Stack */}
+      {/* Technical Architecture */}
       <section className="glass-panel rounded-2xl p-6 sm:p-8 border border-[rgba(187,191,191,0.10)] space-y-4">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <Layers className="w-5 h-5 text-[#05AD98]" />
-          Built With
+          Platform Architecture & Capabilities
         </h2>
         <div className="flex flex-wrap gap-2">
           {[
-            'Next.js 16', 'React 19', 'TypeScript', 'Prisma 7', 'Turso (libSQL)',
-            'Vercel Edge', 'Cloudflare Workers', 'Jina Reader API', 'Recharts',
-          ].map((tech) => (
+            'Edge Runtime Architecture', 'Real-Time Telemetry Pipeline', 'Semantic Vector Embedding',
+            'Autonomous Crawler Parsing', 'Zero-Latency Middleware', 'Cryptographic Attribution',
+            'agent.json Protocol Standard', 'Zero-Sampling Analytics',
+          ].map((capability) => (
             <span
-              key={tech}
+              key={capability}
               className="px-3 py-1.5 rounded-lg bg-[#111514] border border-[rgba(187,191,191,0.10)] text-xs text-[#BBBFBF] font-mono"
             >
-              {tech}
+              {capability}
             </span>
           ))}
         </div>

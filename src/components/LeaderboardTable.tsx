@@ -134,8 +134,8 @@ export default function LeaderboardTable({
         <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs bg-amber-500/8 border border-amber-500/20 text-amber-300">
           <Sparkles className="w-3.5 h-3.5 shrink-0" />
           <span>
-            <strong>Sample data</strong> - showing representative domains while live rankings load.
-            Scores are illustrative; real DB rankings appear once your Turso cron has run.
+            <strong>Sample data</strong> - showing representative benchmark domains while live rankings load.
+            Rankings update automatically as live audits complete.
           </span>
         </div>
       )}

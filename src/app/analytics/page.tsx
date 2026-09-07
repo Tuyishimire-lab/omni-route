@@ -49,23 +49,23 @@ export default async function AnalyticsPage() {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] text-xs font-semibold text-[#05AD98]">
             <BarChart3 className="w-3.5 h-3.5" />
-            <span>Real-Time Traffic Liquidity & Yield Network</span>
+            <span>Real-Time AI Crawler & Agent Observability</span>
           </div>
           <span className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-mono bg-[#111514] px-3 py-1 rounded-full border border-[rgba(5,173,152,0.25)]">
             <Database className="w-3.5 h-3.5" />
-            100% Ground Truth DB Data
+            Direct Observability (Zero Sampling)
           </span>
         </div>
 
         <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-          Traffic Liquidity & Conversion Analytics
+          AI Traffic & Agentic Conversion Analytics
         </h1>
         <p className="text-xs sm:text-sm text-[#BBBFBF] max-w-3xl leading-relaxed">
           Monitor AI crawler activity, answer-engine referrals, and autonomous agent transactions in real-time. All data is recorded directly from your site&apos;s tracking tag - no sampling, no modelling.
         </p>
       </div>
 
-      {/* High-Level Metrics (Pure Ground Truth) */}
+      {/* High-Level Metrics */}
       {!hasRealData && (
         <div className="glass-card rounded-3xl p-8 border border-[rgba(187,191,191,0.10)] text-center space-y-3">
           <Database className="w-8 h-8 text-[#878787] mx-auto" />
@@ -85,25 +85,25 @@ export default async function AnalyticsPage() {
         <MetricCard
           title="Total Telemetry Events"
           value={totalEvents}
-          change="Logged in Turso DB"
+          change="Real-time telemetry"
           isPositive={true}
           subtitle="Real machine interactions"
           icon={Cpu}
           accentColor="sky"
         />
         <MetricCard
-          title="Attested Settlement Volume"
+          title="Agent Transaction Volume"
           value={directGmv}
           change="Direct buyer orders"
           isPositive={true}
-          subtitle="Autonomous GMV recorded"
+          subtitle="Autonomous orders recorded"
           icon={TrendingUp}
           accentColor="emerald"
         />
         <MetricCard
           title="Agentic Conversion Rate"
           value={conversionRate}
-          change="AGENT_TX / Total Events"
+          change="Agent Orders / Total Visits"
           isPositive={enoughData}
           subtitle={enoughData ? 'High-intent transactions' : `Need ${MIN_EVENTS_FOR_RATES} events for reliable rate`}
           icon={Activity}
@@ -112,9 +112,9 @@ export default async function AnalyticsPage() {
         <MetricCard
           title="Monitored Brand Domains"
           value={`${monitoredDomains}`}
-          change="Live Turso index"
+          change="Verified domain index"
           isPositive={true}
-          subtitle="Active catalog nodes"
+          subtitle="Active catalog endpoints"
           icon={CheckCircle2}
           accentColor="amber"
         />
@@ -125,7 +125,7 @@ export default async function AnalyticsPage() {
         <div className="lg:col-span-6 glass-card rounded-3xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
           <h3 className="text-sm font-bold text-white flex items-center gap-2">
             <PieChart className="w-4 h-4 text-[#05AD98]" />
-            Traffic Influx Channels Distribution (Live DB)
+            Traffic Influx Channels Distribution
           </h3>
 
           <div className="space-y-4 text-xs">
@@ -174,8 +174,8 @@ export default async function AnalyticsPage() {
           </div>
 
           <div className="p-4 bg-[rgba(5,173,152,0.10)] rounded-xl border border-[rgba(5,173,152,0.20)] text-xs text-emerald-200">
-            <span className="font-semibold block mb-1">How OmniRoute Traffic Scoring Works:</span>
-            By serving machine-readable semantic vectors and cryptographic click attestations, inbound traffic is classified by intent and source. This makes automated API queries and agentic referrals attributable and auditable - replacing opaque ad-click tracking with verifiable signals.
+            <span className="font-semibold block mb-1">How CiteRoute Traffic Attribution Works:</span>
+            By serving machine-readable semantic vectors and agent-aware endpoint detection, inbound traffic is classified by intent and source. This makes automated crawler queries and agentic referrals attributable and auditable - replacing opaque ad metrics with verifiable signals.
           </div>
         </div>
       </div>

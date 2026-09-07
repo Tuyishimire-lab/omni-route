@@ -45,7 +45,7 @@ export default function ManifestPage() {
             </span>
             <div>
               <span className="font-semibold text-white block">Autonomous Checkout</span>
-              <span className="text-[#878787] text-[11px]">Zero-Click Escrow APIs</span>
+              <span className="text-[#878787] text-[11px]">Machine-Readable Endpoints</span>
             </div>
           </div>
         </div>

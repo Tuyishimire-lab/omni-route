@@ -43,7 +43,7 @@ export default async function LeaderboardPage() {
   }
 
   const dynamicStats = [
-    { label: 'Domains Ranked in Turso', value: `${stats.domainsRanked}+`, icon: Globe, color: 'text-[#05AD98]' },
+    { label: 'Domains Monitored & Ranked', value: `${stats.domainsRanked}+`, icon: Globe, color: 'text-[#05AD98]' },
     { label: 'Avg Network GEO Index', value: `${stats.avgGeoIndex || 87.2}`, icon: Activity, color: 'text-[#05AD98]' },
     { label: 'Historical Scans Indexed', value: `${stats.totalScans || 48}+`, icon: BarChart2, color: 'text-[#B8A04A]' }
   ];
@@ -67,11 +67,11 @@ export default async function LeaderboardPage() {
           <div className="flex items-center justify-center gap-4 text-[11px] text-[#878787]">
             <span className="flex items-center gap-1.5 text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Live Turso Cloud Sync
+              Live Network Sync
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3 text-[#B8A04A]" />
-              Auto-rescanned daily via Vercel Cron
+              Auto-rescanned daily
             </span>
           </div>
         </div>

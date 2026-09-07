@@ -112,7 +112,7 @@ export default function HomePage() {
         <MetricCard
           title="Domains Evaluated"
           value={liveStats.isLive ? `${liveStats.domainsRanked}+` : `${liveStats.domainsRanked}`}
-          change={liveStats.isLive ? 'Live Turso Database' : 'Loading live count…'}
+          change={liveStats.isLive ? 'Live Verified Index' : 'Updating count…'}
           isPositive={true}
           subtitle="Actively monitored index"
           icon={Globe2}
@@ -141,7 +141,7 @@ export default function HomePage() {
           value="4.2 ms"
           change="Sub-millisecond edge"
           isPositive={true}
-          subtitle="Cloudflare edge layer"
+          subtitle="Global Edge Network"
           icon={Cpu}
           accentColor="amber"
         />
@@ -187,12 +187,12 @@ export default function HomePage() {
             <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] flex items-center justify-center text-[#05AD98]">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-bold text-white">3. P2P Verified Traffic Liquidity</h3>
+            <h3 className="text-lg font-bold text-white">3. Verified AI Traffic & Crawler Attribution</h3>
             <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              A decentralized syndication mesh with cryptographic click attestation. Reduces dependence on Google/Meta ad spend by routing verified, high-intent agent and human referrals directly to your endpoints.
+              Direct telemetry snippets and edge middleware filters intercept 100% of headless AI crawlers (GPTBot, ClaudeBot, Perplexity) before page render, giving you actionable citation and referral analytics.
             </p>
             <Link href="/analytics" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
-              View Liquidity Stream <ArrowRight className="w-3.5 h-3.5" />
+              View Traffic Analytics <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
