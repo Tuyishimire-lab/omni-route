@@ -11,7 +11,7 @@ describe('User API Keys Management', () => {
   });
 
   it('creates an API key linked to a user and assigns appropriate tier rate limit', async () => {
-    vi.spyOn(prisma.apiKey, 'create').mockImplementation(async (args: any) => ({
+    (vi.spyOn(prisma.apiKey, 'create') as any).mockImplementation(async (args: any) => ({
       id: 'key-test-1',
       keyHash: args.data.keyHash,
       keyPrefix: args.data.keyPrefix,
@@ -66,7 +66,7 @@ describe('User API Keys Management', () => {
       },
     ];
 
-    vi.spyOn(prisma.apiKey, 'findMany').mockImplementation(async (args: any) => {
+    (vi.spyOn(prisma.apiKey, 'findMany') as any).mockImplementation(async (args: any) => {
       return mockDbKeys
         .filter((k) => k.userId === args.where.userId)
         .map(({ userId, ...rest }) => rest as any);
@@ -97,14 +97,14 @@ describe('User API Keys Management', () => {
       isActive: true,
     };
 
-    vi.spyOn(prisma.apiKey, 'findFirst').mockImplementation(async (args: any) => {
+    (vi.spyOn(prisma.apiKey, 'findFirst') as any).mockImplementation(async (args: any) => {
       if (args.where.id === existingKey.id && args.where.userId === existingKey.userId) {
         return existingKey as any;
       }
       return null;
     });
 
-    vi.spyOn(prisma.apiKey, 'delete').mockImplementation(async (args: any) => {
+    (vi.spyOn(prisma.apiKey, 'delete') as any).mockImplementation(async (args: any) => {
       if (args.where.id === existingKey.id) {
         return existingKey as any;
       }

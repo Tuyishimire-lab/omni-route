@@ -32,7 +32,7 @@ jobs:
           DATABASE_URL: 'file:./test.db'
 
       - name: Push Database Schema
-        run: pnpm exec prisma db push --skip-generate
+        run: pnpm exec prisma db push --accept-data-loss
         env:
           DATABASE_URL: 'file:./test.db'
 
