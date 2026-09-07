@@ -245,28 +245,26 @@ export default function ApiDocsPage() {
           </div>
         </div>
 
-        {/* 4. POST /api/indexnow */}
+        {/* 4. GET /api/v1/analytics */}
         <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-[rgba(187,191,191,0.10)] space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <span className="px-2.5 py-1 rounded-lg bg-[rgba(5,173,152,0.15)] text-[#05AD98] border border-[rgba(5,173,152,0.3)] font-mono text-xs font-bold">
-                POST
+              <span className="px-2.5 py-1 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30 font-mono text-xs font-bold">
+                GET
               </span>
-              <code className="text-base font-bold font-mono text-white">/api/indexnow</code>
+              <code className="text-base font-bold font-mono text-white">/api/v1/analytics</code>
             </div>
-            <span className="text-xs text-[#878787] font-mono">IndexNow Protocol</span>
+            <span className="text-xs text-[#878787] font-mono">Public / Authenticated</span>
           </div>
 
           <p className="text-xs sm:text-sm text-[#BBBFBF] leading-relaxed">
-            Notifies the IndexNow network (Bing, Yandex, Seznam, Naver) that URLs have been created or updated on your domain, triggering instant search bot discovery.
+            Returns real-time network telemetry: total AI crawler visits, unique cited domains, bot activity distributions (GPTBot, ClaudeBot, PerplexityBot), and citation trends.
           </p>
 
           <div className="space-y-2">
             <h4 className="text-xs font-bold text-white uppercase tracking-wider">Example cURL</h4>
             <div className="bg-[#060908] rounded-xl p-4 border border-[rgba(187,191,191,0.08)] font-mono text-xs text-[#BBBFBF] overflow-x-auto">
-              <pre>{`curl -X POST https://www.citeroute.com/api/indexnow \\
-  -H "Content-Type: application/json" \\
-  -d '{"urls": ["https://www.citeroute.com/docs", "https://www.citeroute.com/pricing"]}'`}</pre>
+              <pre>{`curl -X GET "https://www.citeroute.com/api/v1/analytics"`}</pre>
             </div>
           </div>
         </div>
