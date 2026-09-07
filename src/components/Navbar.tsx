@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Network, Menu, X, Key, LogIn, LogOut, Shield,
   ChevronDown, Globe, BarChart2, Trophy, Layers,
-  BookOpen, Code2, Radar,
+  BookOpen, Code2, Radar, Terminal,
 } from 'lucide-react';
 import ApiSettingsModal from './ApiSettingsModal';
 
@@ -54,8 +54,10 @@ const NAV: NavEntry[] = [
     group: {
       label: 'Developers',
       items: [
-        { name: 'Docs',       href: '/docs',     icon: <BookOpen className="w-4 h-4" />, desc: 'Integration guides & API reference' },
-        { name: 'agent.json', href: '/manifest', icon: <Code2    className="w-4 h-4" />, desc: 'Machine-readable agent manifest'    },
+        { name: 'Docs',          href: '/docs',     icon: <BookOpen className="w-4 h-4" />, desc: 'agent.json protocol specification' },
+        { name: 'API Reference', href: '/docs/api', icon: <Terminal className="w-4 h-4" />, desc: 'REST endpoints & request schemas' },
+        { name: 'API Keys',      href: '/api-keys', icon: <Key      className="w-4 h-4" />, desc: 'Generate & manage secret keys'    },
+        { name: 'agent.json',    href: '/manifest', icon: <Code2    className="w-4 h-4" />, desc: 'Machine-readable manifest studio' },
       ],
     },
   },
@@ -233,10 +235,14 @@ export default function Navbar() {
                           <Shield className="w-3.5 h-3.5 text-[#B8A04A]" /> Admin Dashboard
                         </Link>
                       )}
+                      <Link href="/api-keys" onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-white hover:bg-[rgba(187,191,191,0.06)] transition-colors">
+                        <Key className="w-3.5 h-3.5 text-[#05AD98]" /> API Keys
+                      </Link>
                       <button
                         onClick={() => { setIsUserMenuOpen(false); setIsSettingsOpen(true); }}
                         className="flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#BBBFBF] hover:text-white hover:bg-[rgba(187,191,191,0.06)] transition-colors w-full text-left">
-                        <Key className="w-3.5 h-3.5 text-[#878787]" /> API Settings
+                        <Key className="w-3.5 h-3.5 text-[#878787]" /> Third-Party AI Keys
                       </button>
                       <div className="my-1 border-t border-[rgba(187,191,191,0.06)]" />
                       <button onClick={handleLogout}

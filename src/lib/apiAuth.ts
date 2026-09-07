@@ -32,7 +32,8 @@ export function keyDisplayPrefix(keyString: string): string {
 export async function createApiKey(
   name: string,
   tier: 'free' | 'pro' | 'agency' | 'enterprise' = 'free',
-  domain?: string
+  domain?: string,
+  userId?: string
 ) {
   const key = generateKeyString('live');
   const rateLimit = TIER_LIMITS[tier] ?? 100;
@@ -45,11 +46,42 @@ export async function createApiKey(
       tier,
       domain: domain ?? null,
       rateLimit,
+      userId: userId ?? null,
     },
   });
 
   // Return the plaintext key exactly once - it is never retrievable again.
   return { ...apiKey, key };
+}
+
+export async function getUserApiKeys(userId: string) {
+  return prisma.apiKey.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      keyPrefix: true,
+      name: true,
+      tier: true,
+      domain: true,
+      rateLimit: true,
+      usageCount: true,
+      lastUsedAt: true,
+      createdAt: true,
+      isActive: true,
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+}
+
+export async function revokeUserApiKey(userId: string, keyId: string) {
+  const existing = await prisma.apiKey.findFirst({
+    where: { id: keyId, userId },
+  });
+  if (!existing) return null;
+
+  return prisma.apiKey.delete({
+    where: { id: keyId },
+  });
 }
 
 // ─── Key Validation ──────────────────────────────────────────────────────────
