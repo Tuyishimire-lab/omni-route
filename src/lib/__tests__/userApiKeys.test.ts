@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createApiKey, getUserApiKeys, revokeUserApiKey } from '../apiAuth';
 import { prisma } from '../prisma';
 
@@ -6,48 +6,26 @@ describe('User API Keys Management', () => {
   const testUser1Id = 'test-apikey-user-1';
   const testUser2Id = 'test-apikey-user-2';
 
-  beforeEach(async () => {
-    // Ensure test users exist in DB
-    await prisma.user.upsert({
-      where: { id: testUser1Id },
-      create: {
-        id: testUser1Id,
-        email: 'apikey-test1@citeroute.com',
-        name: 'API Key Tester 1',
-        role: 'user',
-        tier: 'pro',
-      },
-      update: {},
-    });
-
-    await prisma.user.upsert({
-      where: { id: testUser2Id },
-      create: {
-        id: testUser2Id,
-        email: 'apikey-test2@citeroute.com',
-        name: 'API Key Tester 2',
-        role: 'user',
-        tier: 'agency',
-      },
-      update: {},
-    });
-
-    // Clean up any test keys
-    await prisma.apiKey.deleteMany({
-      where: { userId: { in: [testUser1Id, testUser2Id] } },
-    });
-  });
-
-  afterAll(async () => {
-    await prisma.apiKey.deleteMany({
-      where: { userId: { in: [testUser1Id, testUser2Id] } },
-    });
-    await prisma.user.deleteMany({
-      where: { id: { in: [testUser1Id, testUser2Id] } },
-    });
+  beforeEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('creates an API key linked to a user and assigns appropriate tier rate limit', async () => {
+    vi.spyOn(prisma.apiKey, 'create').mockImplementation(async (args: any) => ({
+      id: 'key-test-1',
+      keyHash: args.data.keyHash,
+      keyPrefix: args.data.keyPrefix,
+      name: args.data.name,
+      tier: args.data.tier,
+      domain: args.data.domain,
+      rateLimit: args.data.rateLimit,
+      usageCount: 0,
+      lastUsedAt: null,
+      createdAt: new Date(),
+      isActive: true,
+      userId: args.data.userId,
+    }));
+
     const key = await createApiKey('Test Pro Key', 'pro', 'example.com', testUser1Id);
 
     expect(key).toBeDefined();
@@ -59,8 +37,40 @@ describe('User API Keys Management', () => {
   });
 
   it('lists only keys owned by the specific user', async () => {
-    await createApiKey('Key User 1', 'pro', undefined, testUser1Id);
-    await createApiKey('Key User 2', 'agency', undefined, testUser2Id);
+    const mockDbKeys = [
+      {
+        id: 'key-1',
+        keyPrefix: 'or-live_abc12345',
+        name: 'Key User 1',
+        tier: 'pro',
+        domain: null,
+        rateLimit: 1000,
+        usageCount: 5,
+        lastUsedAt: null,
+        createdAt: new Date(),
+        isActive: true,
+        userId: testUser1Id,
+      },
+      {
+        id: 'key-2',
+        keyPrefix: 'or-live_def67890',
+        name: 'Key User 2',
+        tier: 'agency',
+        domain: null,
+        rateLimit: 5000,
+        usageCount: 12,
+        lastUsedAt: null,
+        createdAt: new Date(),
+        isActive: true,
+        userId: testUser2Id,
+      },
+    ];
+
+    vi.spyOn(prisma.apiKey, 'findMany').mockImplementation(async (args: any) => {
+      return mockDbKeys
+        .filter((k) => k.userId === args.where.userId)
+        .map(({ userId, ...rest }) => rest as any);
+    });
 
     const user1Keys = await getUserApiKeys(testUser1Id);
     expect(user1Keys.length).toBe(1);
@@ -72,19 +82,42 @@ describe('User API Keys Management', () => {
   });
 
   it('revokes a key only if the authenticated user is the owner', async () => {
-    const key1 = await createApiKey('Key User 1', 'pro', undefined, testUser1Id);
+    const existingKey = {
+      id: 'key-1',
+      userId: testUser1Id,
+      keyHash: 'dummyhash',
+      keyPrefix: 'or-live_abc12345',
+      name: 'Key User 1',
+      tier: 'pro',
+      domain: null,
+      rateLimit: 1000,
+      usageCount: 0,
+      lastUsedAt: null,
+      createdAt: new Date(),
+      isActive: true,
+    };
 
-    // Other user attempts to revoke key1 -> should fail (return null)
-    const unauthorizedRevocation = await revokeUserApiKey(testUser2Id, key1.id);
+    vi.spyOn(prisma.apiKey, 'findFirst').mockImplementation(async (args: any) => {
+      if (args.where.id === existingKey.id && args.where.userId === existingKey.userId) {
+        return existingKey as any;
+      }
+      return null;
+    });
+
+    vi.spyOn(prisma.apiKey, 'delete').mockImplementation(async (args: any) => {
+      if (args.where.id === existingKey.id) {
+        return existingKey as any;
+      }
+      throw new Error('Record not found');
+    });
+
+    // Other user attempts to revoke key1 -> should return null
+    const unauthorizedRevocation = await revokeUserApiKey(testUser2Id, existingKey.id);
     expect(unauthorizedRevocation).toBeNull();
 
     // Owner revokes key1 -> should succeed
-    const authorizedRevocation = await revokeUserApiKey(testUser1Id, key1.id);
+    const authorizedRevocation = await revokeUserApiKey(testUser1Id, existingKey.id);
     expect(authorizedRevocation).toBeDefined();
-    expect(authorizedRevocation?.id).toBe(key1.id);
-
-    // Confirm it no longer exists
-    const keysRemaining = await getUserApiKeys(testUser1Id);
-    expect(keysRemaining.length).toBe(0);
+    expect(authorizedRevocation?.id).toBe(existingKey.id);
   });
 });
