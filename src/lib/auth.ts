@@ -51,7 +51,7 @@ function getJwtSecret(): Uint8Array {
 }
 
 const SESSION_COOKIE = 'omniroute_session';
-const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
+const SESSION_MAX_AGE = 60 * 60; // 1 hour (sliding refresh on active requests)
 
 export interface SessionPayload {
   userId: string;
@@ -99,7 +99,86 @@ export async function getSession(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
-  return verifySessionToken(token);
+
+  try {
+    const { payload } = await jwtVerify(token, getJwtSecret());
+    const session = payload as unknown as SessionPayload & { iat?: number; exp?: number };
+    if (session.role === 'admin') {
+      session.tier = 'enterprise';
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    const iat = session.iat ?? now;
+    const exp = session.exp ?? (iat + SESSION_MAX_AGE);
+    const totalLifetime = exp - iat;
+    const age = now - iat;
+
+    // Sliding refresh: if token is valid and > 50% through its lifetime, refresh it
+    // and verify that the user is still active in the database (preventing stale claims).
+    if (totalLifetime > 0 && age > totalLifetime / 2) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: session.userId },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            role: true,
+            tier: true,
+            avatarUrl: true,
+            isActive: true,
+          },
+        });
+
+        if (!user || !user.isActive) {
+          try {
+            cookieStore.delete(SESSION_COOKIE);
+          } catch {
+            // Ignore if in read-only cookie context
+          }
+          return null;
+        }
+
+        const refreshedSession: SessionPayload = {
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          tier: user.role === 'admin' ? 'enterprise' : user.tier,
+          avatarUrl: user.avatarUrl,
+        };
+
+        const refreshedToken = await createSessionToken(refreshedSession);
+        try {
+          cookieStore.set(SESSION_COOKIE, refreshedToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: SESSION_MAX_AGE,
+            path: '/',
+          });
+        } catch {
+          // If in a context where cookies cannot be mutated, ignore silently
+        }
+
+        return refreshedSession;
+      } catch (err) {
+        // If DB read fails during refresh, fall back to returning current verified session
+        console.warn('[auth] Failed to refresh session claims from DB:', err);
+      }
+    }
+
+    return {
+      userId: session.userId,
+      email: session.email,
+      name: session.name,
+      role: session.role,
+      tier: session.tier,
+      avatarUrl: session.avatarUrl,
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function destroySession(): Promise<void> {
@@ -221,13 +300,19 @@ export async function upsertOAuthUser(profile: {
   let user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
   if (user) {
-    // Update OAuth info and login
+    // Preserve primary account provider consistency:
+    // 1. If the user registered via email, preserve provider: 'email' and do not set providerId.
+    // 2. If the user registered via OAuth (e.g. google), do not silently clobber provider to another OAuth provider.
+    // 3. Update providerId only when logging in with the matching provider or if no provider was previously set.
+    const isSameProvider = user.provider === profile.provider;
+    const shouldUpdateProvider = !user.provider || isSameProvider;
+
     user = await prisma.user.update({
       where: { id: user.id },
       data: {
         avatarUrl: profile.avatarUrl || user.avatarUrl,
-        provider: user.provider === 'email' ? user.provider : profile.provider,
-        providerId: profile.providerId,
+        provider: shouldUpdateProvider ? profile.provider : user.provider,
+        providerId: shouldUpdateProvider ? profile.providerId : user.providerId,
         lastLoginAt: new Date(),
       },
     });

@@ -93,12 +93,28 @@ describe('rateLimiter - checkRateLimit', () => {
     expect(result.retryAfter).toBeGreaterThan(0);
   });
 
-  it('fails open when database encounters an unexpected error', async () => {
+  it('falls back to in-memory rate limiting when database encounters an error', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     vi.spyOn(prisma.rateLimitRecord, 'findUnique').mockRejectedValue(new Error('DB connection timed out'));
 
-    const result = await checkRateLimit('test-user-error', 'scan', 60_000, 10);
-    expect(result.allowed).toBe(true);
-    expect(result.remaining).toBe(1);
+    // First request should be allowed via fallback with correct remaining count
+    const result1 = await checkRateLimit('test-fallback-user', 'scan', 60_000, 3);
+    expect(result1.allowed).toBe(true);
+    expect(result1.remaining).toBe(2);
+
+    // Consume remaining slots
+    const result2 = await checkRateLimit('test-fallback-user', 'scan', 60_000, 3);
+    expect(result2.allowed).toBe(true);
+    expect(result2.remaining).toBe(1);
+
+    const result3 = await checkRateLimit('test-fallback-user', 'scan', 60_000, 3);
+    expect(result3.allowed).toBe(true);
+    expect(result3.remaining).toBe(0);
+
+    // Exceeded requests must be blocked even when DB is down (fail-secure)
+    const result4 = await checkRateLimit('test-fallback-user', 'scan', 60_000, 3);
+    expect(result4.allowed).toBe(false);
+    expect(result4.remaining).toBe(0);
+    expect(result4.retryAfter).toBeGreaterThan(0);
   });
 });

@@ -27,6 +27,23 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=63072000; includeSubDomains; preload',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://va.vercel-scripts.com${process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''}`,
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' blob: data: https://avatars.githubusercontent.com https://lh3.googleusercontent.com https://www.google-analytics.com https://www.googletagmanager.com",
+              "font-src 'self' data:",
+              "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://*.googletagmanager.com https://r.jina.ai https://*.turso.io",
+              "frame-src 'self' https://accounts.google.com",
+              "frame-ancestors 'none'",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              ...(process.env.NODE_ENV === 'development' ? [] : ['upgrade-insecure-requests']),
+            ].join('; '),
+          },
         ],
       },
       // The tracking snippet must be embeddable cross-origin

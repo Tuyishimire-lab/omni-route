@@ -95,10 +95,66 @@ export async function checkRateLimit(
       resetMs: existing.windowStart.getTime() + windowMs - now.getTime(),
     };
   } catch (err) {
-    // Fail open - never block a user due to a rate limiter DB error
-    console.error('[rateLimiter] DB error, failing open:', err);
-    return { allowed: true, remaining: 1, resetMs: 60_000 };
+    // Fail-secure fallback: use in-memory sliding-window limiter instead of blind fail-open.
+    // This ensures that database downtime cannot be exploited to send unbounded requests.
+    console.error('[rateLimiter] DB error, falling back to in-memory rate limiter:', err);
+    return checkFallbackRateLimit(identifier, action, windowMs, maxRequests);
   }
+}
+
+// ── In-Memory Fallback Rate Limiter ─────────────────────────────────────────
+const fallbackRecords = new Map<string, number[]>();
+const MAX_FALLBACK_RECORDS = 5000;
+
+function checkFallbackRateLimit(
+  identifier: string,
+  action: string,
+  windowMs: number,
+  maxRequests: number
+): RateLimitResult {
+  const key = `${action}:${identifier}`;
+  const now = Date.now();
+  const windowStart = now - windowMs;
+
+  // Prune expired records to prevent memory leaks if map grows large
+  if (fallbackRecords.size > MAX_FALLBACK_RECORDS) {
+    for (const [k, timestamps] of fallbackRecords.entries()) {
+      const valid = timestamps.filter((t) => t > windowStart);
+      if (valid.length === 0) {
+        fallbackRecords.delete(k);
+      } else {
+        fallbackRecords.set(k, valid);
+      }
+    }
+  }
+
+  let timestamps = fallbackRecords.get(key) || [];
+  timestamps = timestamps.filter((t) => t > windowStart);
+
+  if (timestamps.length >= maxRequests) {
+    const oldest = timestamps[0];
+    const resetMs = Math.max(0, oldest + windowMs - now);
+    return {
+      allowed: false,
+      remaining: 0,
+      resetMs,
+      retryAfter: Math.ceil(resetMs / 1000),
+    };
+  }
+
+  timestamps.push(now);
+  fallbackRecords.set(key, timestamps);
+
+  return {
+    allowed: true,
+    remaining: maxRequests - timestamps.length,
+    resetMs: windowMs,
+  };
+}
+
+/** Helper for unit testing to reset in-memory fallback state */
+export function _resetFallbackRateLimits(): void {
+  fallbackRecords.clear();
 }
 
 /** Extract a client identifier from common Vercel/proxy headers */
