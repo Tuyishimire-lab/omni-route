@@ -4,9 +4,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Key, Plus, Trash2, ToggleLeft, ToggleRight, Shield, RefreshCw,
-  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity
+  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity, Search
 } from 'lucide-react';
 import TrafficTelemetry from '../../components/TrafficTelemetry';
+import ScanExplorer from '../../components/admin/ScanExplorer';
+import UserDirectory from '../../components/admin/UserDirectory';
 import { formatTelemetryTimestamp } from '../../lib/timestamp';
 
 interface ApiKeyRecord {
@@ -53,6 +55,9 @@ export default function AdminPage() {
   const [newKeyTier, setNewKeyTier] = useState<'free' | 'pro' | 'agency' | 'enterprise'>('free');
   const [newKeyDomain, setNewKeyDomain] = useState('');
   const [createdKey, setCreatedKey] = useState<string | null>(null);
+
+  // Active Admin Tab
+  const [activeTab, setActiveTab] = useState<'scans' | 'users' | 'keys' | 'telemetry'>('scans');
 
   // Check auth on mount
   useEffect(() => {
@@ -224,224 +229,298 @@ export default function AdminPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] text-xs font-semibold text-[#05AD98] mb-2">
             <Shield className="w-3.5 h-3.5" />
-            <span>Admin Dashboard</span>
+            <span>Admin Console</span>
           </div>
-          <h1 className="text-2xl font-extrabold text-white">API Key Management</h1>
-          <p className="text-xs text-[#878787] mt-1">Signed in as <span className="text-[#05AD98] font-mono">{user.email}</span></p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">System Administration</h1>
+          <p className="text-xs text-[#878787] mt-1">
+            Logged in as <span className="text-[#05AD98] font-mono">{user.email}</span> (Administrator)
+          </p>
         </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b border-[rgba(187,191,191,0.12)] pb-3 overflow-x-auto">
         <button
-          onClick={fetchKeys}
-          disabled={isLoading}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1A2020] text-[#BBBFBF] border border-[rgba(187,191,191,0.12)] text-xs font-semibold hover:text-white hover:border-[#05AD98] transition-all"
+          onClick={() => setActiveTab('scans')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+            activeTab === 'scans'
+              ? 'bg-[rgba(5,173,152,0.15)] text-[#05AD98] border border-[rgba(5,173,152,0.30)] shadow-sm'
+              : 'text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.03)] border border-transparent'
+          }`}
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
+          <Search className="w-3.5 h-3.5" />
+          <span>Global Scan Explorer</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('users')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+            activeTab === 'users'
+              ? 'bg-[rgba(5,173,152,0.15)] text-[#05AD98] border border-[rgba(5,173,152,0.30)] shadow-sm'
+              : 'text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.03)] border border-transparent'
+          }`}
+        >
+          <Users className="w-3.5 h-3.5" />
+          <span>User &amp; Subscription Directory</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('keys')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+            activeTab === 'keys'
+              ? 'bg-[rgba(5,173,152,0.15)] text-[#05AD98] border border-[rgba(5,173,152,0.30)] shadow-sm'
+              : 'text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.03)] border border-transparent'
+          }`}
+        >
+          <Key className="w-3.5 h-3.5" />
+          <span>API Key Management</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('telemetry')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+            activeTab === 'telemetry'
+              ? 'bg-[rgba(5,173,152,0.15)] text-[#05AD98] border border-[rgba(5,173,152,0.30)] shadow-sm'
+              : 'text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.03)] border border-transparent'
+          }`}
+        >
+          <Activity className="w-3.5 h-3.5" />
+          <span>Telemetry &amp; Sites</span>
         </button>
       </div>
 
-      {/* Stats */}
-      {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {[
-            { label: 'Total Keys', value: stats.total, icon: Key, color: 'text-sky-400' },
-            { label: 'Active', value: stats.active, icon: ToggleRight, color: 'text-[#05AD98]' },
-            { label: 'Inactive', value: stats.inactive, icon: ToggleLeft, color: 'text-rose-400' },
-            { label: 'Tiers', value: stats.byTier.map((t) => `${t.count} ${t.tier}`).join(', ') || '-', icon: Users, color: 'text-[#B8A04A]' },
-          ].map((s, i) => (
-            <div key={i} className="glass-panel rounded-xl p-4 border border-[rgba(187,191,191,0.08)] space-y-1">
-              <div className="flex items-center gap-2">
-                <s.icon className={`w-4 h-4 ${s.color}`} />
-                <span className="text-[10px] uppercase tracking-wider text-[#878787] font-semibold">{s.label}</span>
-              </div>
-              <p className="text-lg font-extrabold text-white font-mono">{s.value}</p>
+      {/* Tab 1: Global Scan Explorer */}
+      {activeTab === 'scans' && <ScanExplorer />}
+
+      {/* Tab 2: User Directory */}
+      {activeTab === 'users' && <UserDirectory />}
+
+      {/* Tab 3: API Key Management */}
+      {activeTab === 'keys' && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold text-white">API Keys</h2>
+              <p className="text-xs text-[#878787]">Manage system-wide developer and customer API access</p>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Create Key Form */}
-      <div className="glass-panel rounded-2xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
-        <h2 className="text-sm font-bold text-white flex items-center gap-2">
-          <Plus className="w-4 h-4 text-[#05AD98]" />
-          Generate New API Key
-        </h2>
-
-        <form onSubmit={createKey} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
-          <div>
-            <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Key Name *</label>
-            <input
-              type="text"
-              value={newKeyName}
-              onChange={(e) => setNewKeyName(e.target.value)}
-              placeholder="My Production Key"
-              className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
-            />
-          </div>
-
-          <div>
-            <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Tier</label>
-            <select
-              value={newKeyTier}
-              onChange={(e) => setNewKeyTier(e.target.value as 'free' | 'pro' | 'agency' | 'enterprise')}
-              className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
+            <button
+              onClick={fetchKeys}
+              disabled={isLoading}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1A2020] text-[#BBBFBF] border border-[rgba(187,191,191,0.12)] text-xs font-semibold hover:text-white hover:border-[#05AD98] transition-all"
             >
-              <option value="free">Free (100 req/hr)</option>
-              <option value="pro">Pro (1,000 req/hr)</option>
-              <option value="agency">Agency (5,000 req/hr)</option>
-              <option value="enterprise">Enterprise (10,000 req/hr)</option>
-            </select>
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh Keys
+            </button>
           </div>
 
-          <div>
-            <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Domain (optional)</label>
-            <input
-              type="text"
-              value={newKeyDomain}
-              onChange={(e) => setNewKeyDomain(e.target.value)}
-              placeholder="example.com"
-              className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-xs font-bold flex items-center justify-center gap-1.5"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Create Key
-          </button>
-        </form>
-
-        {/* Created key banner */}
-        {createdKey && (
-          <div className="mt-3 p-4 rounded-xl bg-[rgba(5,173,152,0.08)] border border-[rgba(5,173,152,0.3)] space-y-2">
-            <p className="text-xs text-[#05AD98] font-semibold">✅ API Key created - copy it now, it won&apos;t be shown again in full:</p>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs font-mono text-white bg-[#0A0E0E] rounded-lg px-3 py-2 border border-[rgba(187,191,191,0.10)] truncate">
-                {createdKey}
-              </code>
-              <button
-                onClick={() => copyToClipboard(createdKey)}
-                className="px-3 py-2 rounded-lg bg-[#1A2020] text-[#05AD98] border border-[rgba(5,173,152,0.3)] text-xs font-semibold"
-              >
-                {copiedKey === createdKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
+          {/* Stats */}
+          {stats && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { label: 'Total Keys', value: stats.total, icon: Key, color: 'text-sky-400' },
+                { label: 'Active', value: stats.active, icon: ToggleRight, color: 'text-[#05AD98]' },
+                { label: 'Inactive', value: stats.inactive, icon: ToggleLeft, color: 'text-rose-400' },
+                { label: 'Tiers', value: stats.byTier.map((t) => `${t.count} ${t.tier}`).join(', ') || '-', icon: Users, color: 'text-[#B8A04A]' },
+              ].map((s, i) => (
+                <div key={i} className="glass-panel rounded-xl p-4 border border-[rgba(187,191,191,0.08)] space-y-1">
+                  <div className="flex items-center gap-2">
+                    <s.icon className={`w-4 h-4 ${s.color}`} />
+                    <span className="text-[10px] uppercase tracking-wider text-[#878787] font-semibold">{s.label}</span>
+                  </div>
+                  <p className="text-lg font-extrabold text-white font-mono">{s.value}</p>
+                </div>
+              ))}
             </div>
-          </div>
-        )}
-      </div>
+          )}
 
-      {error && (
-        <div className="flex items-center gap-2 text-xs text-rose-400 px-4">
-          <AlertCircle className="w-3.5 h-3.5" />
-          {error}
+          {/* Create Key Form */}
+          <div className="glass-panel rounded-2xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
+            <h2 className="text-sm font-bold text-white flex items-center gap-2">
+              <Plus className="w-4 h-4 text-[#05AD98]" />
+              Generate New API Key
+            </h2>
+
+            <form onSubmit={createKey} className="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
+              <div>
+                <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Key Name *</label>
+                <input
+                  type="text"
+                  value={newKeyName}
+                  onChange={(e) => setNewKeyName(e.target.value)}
+                  placeholder="My Production Key"
+                  className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Tier</label>
+                <select
+                  value={newKeyTier}
+                  onChange={(e) => setNewKeyTier(e.target.value as 'free' | 'pro' | 'agency' | 'enterprise')}
+                  className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
+                >
+                  <option value="free">Free (100 req/hr)</option>
+                  <option value="pro">Pro (1,000 req/hr)</option>
+                  <option value="agency">Agency (5,000 req/hr)</option>
+                  <option value="enterprise">Enterprise (10,000 req/hr)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-[10px] text-[#878787] uppercase tracking-wider block mb-1">Domain (optional)</label>
+                <input
+                  type="text"
+                  value={newKeyDomain}
+                  onChange={(e) => setNewKeyDomain(e.target.value)}
+                  placeholder="example.com"
+                  className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none focus:border-[#05AD98]"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-xs font-bold flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Key
+              </button>
+            </form>
+
+            {/* Created key banner */}
+            {createdKey && (
+              <div className="mt-3 p-4 rounded-xl bg-[rgba(5,173,152,0.08)] border border-[rgba(5,173,152,0.30)] space-y-2">
+                <p className="text-xs text-[#05AD98] font-semibold">API Key created - copy it now, it will not be shown again in full:</p>
+                <div className="flex items-center gap-2">
+                  <code className="flex-1 text-xs font-mono text-white bg-[#0A0E0E] rounded-lg px-3 py-2 border border-[rgba(187,191,191,0.10)] truncate">
+                    {createdKey}
+                  </code>
+                  <button
+                    onClick={() => copyToClipboard(createdKey)}
+                    className="px-3 py-2 rounded-lg bg-[#1A2020] text-[#05AD98] border border-[rgba(5,173,152,0.30)] text-xs font-semibold"
+                  >
+                    {copiedKey === createdKey ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 text-xs text-rose-400 px-4">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {error}
+            </div>
+          )}
+
+          {/* Keys Table */}
+          <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
+            <div className="grid grid-cols-[1fr_80px_100px_80px_100px_80px] gap-2 px-5 py-3 bg-[#111514]/60 border-b border-[rgba(187,191,191,0.10)] text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
+              <span>Name / Key</span>
+              <span className="text-center">Tier</span>
+              <span className="text-center">Rate Limit</span>
+              <span className="text-center">Usage</span>
+              <span className="text-center">Status</span>
+              <span className="text-center">Actions</span>
+            </div>
+
+            {keys.length === 0 && !isLoading && (
+              <div className="p-8 text-center text-[#878787] text-xs">
+                No API keys found. Create your first key above.
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="p-8 text-center text-[#878787] text-xs flex items-center justify-center gap-2">
+                <RefreshCw className="w-4 h-4 animate-spin text-[#05AD98]" />
+                Loading keys...
+              </div>
+            )}
+
+            {keys.map((k) => (
+              <div
+                key={k.id}
+                className="grid grid-cols-[1fr_80px_100px_80px_100px_80px] gap-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.06)] hover:bg-[#111514]/30 transition-colors items-center"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-white truncate">{k.name}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <code className="text-[10px] font-mono text-[#878787] truncate">{k.keyPrefix}...</code>
+                    <button
+                      onClick={() => copyToClipboard(k.keyPrefix)}
+                      className="text-[#878787] hover:text-[#05AD98] transition-colors shrink-0"
+                    >
+                      {copiedKey === k.keyPrefix ? <Check className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-[#878787] mt-1">
+                    {k.domain && <span className="font-mono text-[#05AD98]">{k.domain}</span>}
+                    <span>Created {formatTelemetryTimestamp(k.createdAt).date}</span>
+                    <span>·</span>
+                    <span>Last used: {k.lastUsedAt ? `${formatTelemetryTimestamp(k.lastUsedAt).date} (${formatTelemetryTimestamp(k.lastUsedAt).relative})` : 'Never'}</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-center">
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tierColors[k.tier] || tierColors.free}`}>
+                    {tierIcons[k.tier]}
+                    {k.tier}
+                  </span>
+                </div>
+
+                <div className="text-center text-xs font-mono text-[#BBBFBF]">
+                  {k.rateLimit.toLocaleString()}/hr
+                </div>
+
+                <div className="text-center text-xs font-mono text-[#BBBFBF]">
+                  {k.usageCount.toLocaleString()}
+                </div>
+
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => toggleKey(k.id, !k.isActive)}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all ${
+                      k.isActive
+                        ? 'text-[#05AD98] bg-[rgba(5,173,152,0.10)] border-[rgba(5,173,152,0.25)]'
+                        : 'text-rose-400 bg-[rgba(244,63,94,0.08)] border-[rgba(244,63,94,0.25)]'
+                    }`}
+                  >
+                    {k.isActive ? <ToggleRight className="w-3.5 h-3.5" /> : <ToggleLeft className="w-3.5 h-3.5" />}
+                    {k.isActive ? 'Active' : 'Disabled'}
+                  </button>
+                </div>
+
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => deleteKey(k.id)}
+                    className="p-1.5 rounded-lg text-[#878787] hover:text-rose-400 hover:bg-[rgba(244,63,94,0.08)] transition-all"
+                    title="Delete key"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Keys Table */}
-      <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
-        <div className="grid grid-cols-[1fr_80px_100px_80px_100px_80px] gap-2 px-5 py-3 bg-[#111514]/60 border-b border-[rgba(187,191,191,0.10)] text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
-          <span>Name / Key</span>
-          <span className="text-center">Tier</span>
-          <span className="text-center">Rate Limit</span>
-          <span className="text-center">Usage</span>
-          <span className="text-center">Status</span>
-          <span className="text-center">Actions</span>
-        </div>
+      {/* Tab 4: Telemetry & Sites */}
+      {activeTab === 'telemetry' && (
+        <div className="space-y-8">
+          <TrackedDomains />
 
-        {keys.length === 0 && !isLoading && (
-          <div className="p-8 text-center text-[#878787] text-xs">
-            No API keys found. Create your first key above.
-          </div>
-        )}
-
-        {isLoading && (
-          <div className="p-8 text-center text-[#878787] text-xs flex items-center justify-center gap-2">
-            <RefreshCw className="w-4 h-4 animate-spin text-[#05AD98]" />
-            Loading keys...
-          </div>
-        )}
-
-        {keys.map((k) => (
-          <div
-            key={k.id}
-            className="grid grid-cols-[1fr_80px_100px_80px_100px_80px] gap-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.06)] hover:bg-[#111514]/30 transition-colors items-center"
-          >
-            <div className="min-w-0">
-              <p className="text-sm font-bold text-white truncate">{k.name}</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <code className="text-[10px] font-mono text-[#878787] truncate">{k.keyPrefix}…</code>
-                <button
-                  onClick={() => copyToClipboard(k.keyPrefix)}
-                  className="text-[#878787] hover:text-[#05AD98] transition-colors shrink-0"
-                >
-                  {copiedKey === k.keyPrefix ? <Check className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
-                </button>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-[#878787] mt-1">
-                {k.domain && <span className="font-mono text-[#05AD98]">🔒 {k.domain}</span>}
-                <span>Created {formatTelemetryTimestamp(k.createdAt).date}</span>
-                <span>·</span>
-                <span>Last used: {k.lastUsedAt ? `${formatTelemetryTimestamp(k.lastUsedAt).date} (${formatTelemetryTimestamp(k.lastUsedAt).relative})` : 'Never'}</span>
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center gap-2">
+              <Activity className="w-5 h-5 text-[#05AD98]" />
+              <div>
+                <h2 className="text-base font-bold text-white">Live Telemetry &amp; Influx Stream</h2>
+                <p className="text-xs text-[#878787]">Real-time attestation stream across all monitored domains</p>
               </div>
             </div>
-
-            <div className="flex justify-center">
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${tierColors[k.tier] || tierColors.free}`}>
-                {tierIcons[k.tier]}
-                {k.tier}
-              </span>
-            </div>
-
-            <div className="text-center text-xs font-mono text-[#BBBFBF]">
-              {k.rateLimit.toLocaleString()}/hr
-            </div>
-
-            <div className="text-center text-xs font-mono text-[#BBBFBF]">
-              {k.usageCount.toLocaleString()}
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                onClick={() => toggleKey(k.id, !k.isActive)}
-                className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all ${
-                  k.isActive
-                    ? 'text-[#05AD98] bg-[rgba(5,173,152,0.10)] border-[rgba(5,173,152,0.25)]'
-                    : 'text-rose-400 bg-[rgba(244,63,94,0.08)] border-[rgba(244,63,94,0.25)]'
-                }`}
-              >
-                {k.isActive ? <ToggleRight className="w-3.5 h-3.5" /> : <ToggleLeft className="w-3.5 h-3.5" />}
-                {k.isActive ? 'Active' : 'Disabled'}
-              </button>
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                onClick={() => deleteKey(k.id)}
-                className="p-1.5 rounded-lg text-[#878787] hover:text-rose-400 hover:bg-[rgba(244,63,94,0.08)] transition-all"
-                title="Delete key"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* ── Tracked Domains ─────────────────────────────────────────────── */}
-      <TrackedDomains />
-
-      {/* ── Live Telemetry Feed (Admin Stream) ───────────────────────────── */}
-      <div className="space-y-3 pt-2">
-        <div className="flex items-center gap-2">
-          <Activity className="w-5 h-5 text-[#05AD98]" />
-          <div>
-            <h2 className="text-base font-bold text-white">Live Telemetry &amp; Influx Stream</h2>
-            <p className="text-xs text-[#878787]">Real-time attestation stream across all monitored domains</p>
+            <TrafficTelemetry />
           </div>
         </div>
-        <TrafficTelemetry />
-      </div>
+      )}
     </div>
   );
 }
