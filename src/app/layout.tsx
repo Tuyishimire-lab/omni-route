@@ -105,10 +105,12 @@ export default function RootLayout({
               <span className="text-slate-600">/</span>
               <span>Generative Engine & Agent Observability</span>
             </div>
-            <div className="flex items-center gap-6 text-[#878787]">
+            <div className="flex flex-wrap items-center justify-center gap-5 text-[#878787]">
               <a href="/docs" className="hover:text-[#05AD98] transition-colors">Docs</a>
               <a href="/pricing" className="hover:text-[#05AD98] transition-colors">Pricing</a>
               <a href="/about" className="hover:text-[#05AD98] transition-colors">About</a>
+              <a href="/privacy" className="hover:text-[#05AD98] transition-colors">Privacy Policy</a>
+              <a href="/terms" className="hover:text-[#05AD98] transition-colors">Terms of Service</a>
             </div>
             <p className="text-[#878787]">© 2026 CiteRoute. All rights reserved.</p>
           </div>
