@@ -18,7 +18,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Domain parameter is required' }, { status: 400 });
   }
 
-  const cleanDomain = rawDomain.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  const rawClean = rawDomain.toLowerCase().replace(/^https?:\/\//, '').split('/')[0];
+  const bareDomain = rawClean.replace(/^www\./, '');
+  const wwwDomain = `www.${bareDomain}`;
+  const domainVariants = Array.from(new Set([rawDomain, rawClean, bareDomain, wwwDomain])).filter(Boolean);
+
   const source = searchParams.get('source')?.trim() || '';
   const type = searchParams.get('type')?.trim() || '';
   const format = searchParams.get('format');
@@ -27,7 +31,7 @@ export async function GET(req: NextRequest) {
   const skip = (page - 1) * limit;
 
   const where: Prisma.TelemetryEventWhereInput = {
-    domain: cleanDomain,
+    domain: { in: domainVariants },
   };
 
   if (source) {
@@ -79,7 +83,7 @@ export async function GET(req: NextRequest) {
       status: 200,
       headers: {
         'Content-Type': 'text/csv; charset=utf-8',
-        'Content-Disposition': `attachment; filename="telemetry-${cleanDomain}-${new Date().toISOString().slice(0, 10)}.csv"`,
+        'Content-Disposition': `attachment; filename="telemetry-${bareDomain}-${new Date().toISOString().slice(0, 10)}.csv"`,
       },
     });
   }
@@ -95,18 +99,18 @@ export async function GET(req: NextRequest) {
     }),
     prisma.telemetryEvent.groupBy({
       by: ['source'],
-      where: { domain: cleanDomain },
+      where: { domain: { in: domainVariants } },
       _count: { id: true },
       orderBy: { _count: { id: 'desc' } },
       take: 10,
     }),
     prisma.telemetryEvent.findFirst({
-      where: { domain: cleanDomain },
+      where: { domain: { in: domainVariants } },
       orderBy: { timestamp: 'asc' },
       select: { timestamp: true },
     }),
     prisma.telemetryEvent.findFirst({
-      where: { domain: cleanDomain },
+      where: { domain: { in: domainVariants } },
       orderBy: { timestamp: 'desc' },
       select: { timestamp: true },
     }),
@@ -119,7 +123,7 @@ export async function GET(req: NextRequest) {
   }));
 
   return NextResponse.json({
-    domain: cleanDomain,
+    domain: rawDomain,
     events,
     pagination: {
       total,

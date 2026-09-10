@@ -415,15 +415,18 @@ export interface DomainAnalytics {
  * traffic from TelemetryEvent rows written by the tracking snippet.
  */
 export async function getDomainAnalytics(domain: string): Promise<DomainAnalytics | null> {
-  const cleanDomain = domain.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  const rawClean = domain.toLowerCase().replace(/^https?:\/\//, '').split('/')[0];
+  const bareDomain = rawClean.replace(/^www\./, '');
+  const wwwDomain = `www.${bareDomain}`;
+  const domainVariants = Array.from(new Set([domain, rawClean, bareDomain, wwwDomain])).filter(Boolean);
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   try {
     const [domainRow, scoreHistory, recentEvents] = await Promise.all([
-      prisma.domain.findUnique({ where: { domain: cleanDomain } }),
-      getDomainHistory(cleanDomain, 14),
+      prisma.domain.findFirst({ where: { domain: { in: domainVariants } } }),
+      getDomainHistory(bareDomain, 14),
       prisma.telemetryEvent.findMany({
-        where: { domain: cleanDomain, timestamp: { gte: weekAgo } },
+        where: { domain: { in: domainVariants }, timestamp: { gte: weekAgo } },
         orderBy: { timestamp: 'desc' },
         take: 500,
       }),
@@ -460,7 +463,7 @@ export async function getDomainAnalytics(domain: string): Promise<DomainAnalytic
     }
 
     return {
-      domain: cleanDomain,
+      domain: domainRow.domain,
       geoScore: domainRow.latestGeoScore,
       status: domainRow.status,
       trend: domainRow.trend as 'up' | 'down' | 'flat',
