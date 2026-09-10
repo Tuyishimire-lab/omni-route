@@ -4,11 +4,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Key, Plus, Trash2, ToggleLeft, ToggleRight, Shield, RefreshCw,
-  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity, Search
+  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity, Search, ExternalLink
 } from 'lucide-react';
 import TrafficTelemetry from '../../components/TrafficTelemetry';
 import ScanExplorer from '../../components/admin/ScanExplorer';
 import UserDirectory from '../../components/admin/UserDirectory';
+import SiteTelemetryModal from '../../components/admin/SiteTelemetryModal';
 import { formatTelemetryTimestamp } from '../../lib/timestamp';
 
 interface ApiKeyRecord {
@@ -538,6 +539,7 @@ function TrackedDomains() {
   const [rows, setRows] = React.useState<TrackedDomain[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [inspectingDomain, setInspectingDomain] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     fetch('/api/admin/tracked-sites')
@@ -558,7 +560,7 @@ function TrackedDomains() {
             <Users className="w-4 h-4 text-[#05AD98]" />
             Tracked Domains
           </h2>
-          <p className="text-xs text-[#878787] mt-0.5">All domains that have sent AI traffic events</p>
+          <p className="text-xs text-[#878787] mt-0.5">All domains that have sent AI traffic events - click Inspect to view raw crawler hits</p>
         </div>
         <span className="text-xs text-[#878787] bg-[#111514] border border-[rgba(187,191,191,0.10)] px-2.5 py-1 rounded-full">
           {rows.length} domains
@@ -591,6 +593,7 @@ function TrackedDomains() {
                 <th className="px-4 py-3 text-left">Last Seen</th>
                 <th className="px-4 py-3 text-left">Owner</th>
                 <th className="px-4 py-3 text-left">Registered</th>
+                <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[rgba(187,191,191,0.05)]">
@@ -637,11 +640,39 @@ function TrackedDomains() {
                       <span className="text-[#878787]">-</span>
                     )}
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setInspectingDomain(row.domain)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-[rgba(5,173,152,0.12)] text-[#05AD98] border border-[rgba(5,173,152,0.30)] hover:bg-[rgba(5,173,152,0.25)] transition-all"
+                      >
+                        <Activity className="w-3.5 h-3.5" />
+                        <span>Inspect Telemetry</span>
+                      </button>
+                      <a
+                        href={`/analytics/${encodeURIComponent(row.domain)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-1.5 rounded-xl text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.06)] border border-transparent hover:border-[rgba(187,191,191,0.15)] transition-all"
+                        title="Open Full Domain Analytics"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Domain Telemetry Modal */}
+      {inspectingDomain && (
+        <SiteTelemetryModal
+          domain={inspectingDomain}
+          onClose={() => setInspectingDomain(null)}
+        />
       )}
     </div>
   );

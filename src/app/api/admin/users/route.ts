@@ -71,13 +71,23 @@ export async function GET(req: NextRequest) {
     prisma.user.count({ where: { isActive: false } }),
   ]);
 
+  // Ensure any account with role === 'admin' is aligned with 'enterprise' tier
+  const normalizedUsers = users.map((u) => {
+    if (u.role === 'admin' && u.tier === 'free') {
+      // Asynchronously update in DB to keep permanent consistency
+      prisma.user.update({ where: { id: u.id }, data: { tier: 'enterprise' } }).catch(() => {});
+      return { ...u, tier: 'enterprise' as const };
+    }
+    return u;
+  });
+
   const byTier: Record<string, number> = { free: 0, pro: 0, agency: 0, enterprise: 0 };
   tierCounts.forEach((t) => {
     byTier[t.tier] = t._count.id;
   });
 
   return NextResponse.json({
-    users,
+    users: normalizedUsers,
     pagination: {
       total,
       page,

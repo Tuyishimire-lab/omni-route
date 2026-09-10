@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET as getScans } from '../../app/api/admin/scans/route';
 import { GET as getUsers, PATCH as patchUsers } from '../../app/api/admin/users/route';
+import { GET as getTelemetry } from '../../app/api/admin/telemetry/route';
 import { prisma } from '../prisma';
 import * as authModule from '../auth';
 
@@ -208,6 +209,107 @@ describe('Admin API Endpoints Authorization and Handlers', () => {
       const data = await res.json();
       expect(data.success).toBe(true);
       expect(data.user.tier).toBe('agency');
+    });
+  });
+
+  describe('GET /api/admin/telemetry (Site-Specific Inspector)', () => {
+    it('returns 403 Forbidden for unauthenticated users', async () => {
+      vi.spyOn(authModule, 'getSession').mockResolvedValue(null);
+
+      const req = new NextRequest('http://localhost:3000/api/admin/telemetry?domain=stripe.com');
+      const res = await getTelemetry(req);
+      expect(res.status).toBe(403);
+    });
+
+    it('returns 400 Bad Request when domain is missing', async () => {
+      vi.spyOn(authModule, 'getSession').mockResolvedValue({
+        userId: 'admin-1',
+        email: 'admin@citeroute.com',
+        name: 'Admin',
+        role: 'admin',
+        tier: 'enterprise',
+      });
+
+      const req = new NextRequest('http://localhost:3000/api/admin/telemetry');
+      const res = await getTelemetry(req);
+      expect(res.status).toBe(400);
+      const data = await res.json();
+      expect(data.error).toMatch(/domain parameter is required/i);
+    });
+
+    it('returns domain telemetry events and crawler breakdown for admin', async () => {
+      vi.spyOn(authModule, 'getSession').mockResolvedValue({
+        userId: 'admin-1',
+        email: 'admin@citeroute.com',
+        name: 'Admin',
+        role: 'admin',
+        tier: 'enterprise',
+      });
+
+      const mockEvents = [
+        {
+          id: 'ev-1',
+          timestamp: new Date('2026-09-10T12:00:00Z'),
+          type: 'AI_CITATION',
+          source: 'Perplexity Pro Sonar',
+          domain: 'stripe.com',
+          destinationUrl: 'https://stripe.com/.well-known/agent.json',
+          intent: 'Direct Citation Search',
+          geoScoreAtTime: 85,
+          settlementValue: null,
+        },
+      ];
+
+      vi.spyOn(prisma.telemetryEvent, 'count').mockResolvedValue(1);
+      vi.spyOn(prisma.telemetryEvent, 'findMany').mockResolvedValue(mockEvents as any);
+      vi.spyOn(prisma.telemetryEvent, 'groupBy').mockResolvedValue([
+        { source: 'Perplexity Pro Sonar', _count: { id: 1 } },
+      ] as any);
+      vi.spyOn(prisma.telemetryEvent, 'findFirst').mockResolvedValue(mockEvents[0] as any);
+
+      const req = new NextRequest('http://localhost:3000/api/admin/telemetry?domain=stripe.com');
+      const res = await getTelemetry(req);
+      expect(res.status).toBe(200);
+
+      const data = await res.json();
+      expect(data.domain).toBe('stripe.com');
+      expect(data.events).toHaveLength(1);
+      expect(data.stats.topBot).toBe('Perplexity Pro Sonar');
+      expect(data.stats.botBreakdown[0].percentage).toBe(100);
+    });
+
+    it('handles CSV export for domain telemetry', async () => {
+      vi.spyOn(authModule, 'getSession').mockResolvedValue({
+        userId: 'admin-1',
+        email: 'admin@citeroute.com',
+        name: 'Admin',
+        role: 'admin',
+        tier: 'enterprise',
+      });
+
+      const mockEvents = [
+        {
+          id: 'ev-1',
+          timestamp: new Date('2026-09-10T12:00:00Z'),
+          type: 'AI_CITATION',
+          source: 'GPTBot (OpenAI)',
+          domain: 'stripe.com',
+          destinationUrl: 'https://stripe.com',
+          intent: 'Search Indexing',
+          geoScoreAtTime: 90,
+          settlementValue: null,
+        },
+      ];
+
+      vi.spyOn(prisma.telemetryEvent, 'findMany').mockResolvedValue(mockEvents as any);
+
+      const req = new NextRequest('http://localhost:3000/api/admin/telemetry?domain=stripe.com&format=csv');
+      const res = await getTelemetry(req);
+      expect(res.status).toBe(200);
+      expect(res.headers.get('Content-Type')).toContain('text/csv');
+      const text = await res.text();
+      expect(text).toContain('Event ID,Domain,Timestamp (UTC)');
+      expect(text).toContain('"GPTBot (OpenAI)"');
     });
   });
 });
