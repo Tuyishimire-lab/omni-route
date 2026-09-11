@@ -53,6 +53,8 @@ export default function MySitesPage() {
   const [sites, setSites] = useState<SiteData[]>([]);
   const [loading, setLoading] = useState(true);
   const [authed, setAuthed] = useState(false);
+  const [userTier, setUserTier] = useState<string>('free');
+  const [showUpgradeSuccess, setShowUpgradeSuccess] = useState(false);
   const [addDomain, setAddDomain] = useState('');
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
@@ -73,8 +75,16 @@ export default function MySitesPage() {
     fetch('/api/auth/me').then(r => r.json()).then(d => {
       if (!d.user) { router.push('/login?next=/my-sites'); return; }
       setAuthed(true);
+      setUserTier(d.user.tier || 'free');
       fetchSites();
     });
+
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('upgraded') === 'true') {
+        setShowUpgradeSuccess(true);
+      }
+    }
   }, [router, fetchSites]);
 
   const addSite = async () => {
@@ -123,19 +133,66 @@ export default function MySitesPage() {
         <span className="text-white">My Sites</span>
       </div>
 
+      {/* Upgrade Success Notification */}
+      {showUpgradeSuccess && (
+        <div className="p-4 rounded-2xl bg-[rgba(5,173,152,0.12)] border border-[rgba(5,173,152,0.35)] flex items-center justify-between gap-4 animate-fadeIn">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98] shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white">Subscription Successfully Activated!</h3>
+              <p className="text-xs text-[#BBBFBF]">
+                Your account is now on the <span className="text-[#05AD98] font-bold capitalize">{userTier}</span> plan. Your verified site limits and AI analytics are fully unlocked.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setShowUpgradeSuccess(false)}
+            className="text-xs text-[#878787] hover:text-white px-2.5 py-1 rounded-lg border border-[rgba(187,191,191,0.15)] hover:border-white transition-all cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
-            My <span className="gradient-text">Sites</span>
-          </h1>
-          <p className="text-sm text-[#878787] mt-1">
-            Sites with the OmniRoute Tag installed. AI traffic data is updated in real time.
+          <div className="flex items-center gap-2 mb-1.5">
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">
+              My <span className="gradient-text">Sites</span>
+            </h1>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[rgba(5,173,152,0.12)] border border-[rgba(5,173,152,0.3)] text-[#05AD98]">
+              {userTier} Plan
+            </span>
+          </div>
+          <p className="text-sm text-[#878787]">
+            Sites with the CiteRoute Tag installed. AI traffic data is updated in real time.
           </p>
         </div>
-        <button onClick={fetchSites} className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[rgba(187,191,191,0.15)] text-sm text-[#878787] hover:text-white hover:border-[rgba(5,173,152,0.30)] transition-all">
-          <RefreshCw className="w-3.5 h-3.5" />Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          {userTier !== 'free' ? (
+            <a
+              href="/api/billing/portal"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#111514] border border-[rgba(187,191,191,0.15)] text-xs text-[#BBBFBF] hover:text-white hover:border-[#05AD98] transition-all"
+            >
+              <span>Manage Billing</span>
+              <ExternalLink className="w-3 h-3 text-[#05AD98]" />
+            </a>
+          ) : (
+            <Link
+              href="/pricing"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[rgba(5,173,152,0.15)] border border-[rgba(5,173,152,0.3)] text-xs font-bold text-[#05AD98] hover:bg-[rgba(5,173,152,0.25)] transition-all"
+            >
+              <Zap className="w-3 h-3" />
+              <span>Upgrade Plan</span>
+            </Link>
+          )}
+          <button onClick={fetchSites} className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[rgba(187,191,191,0.15)] text-xs text-[#878787] hover:text-white hover:border-[rgba(5,173,152,0.30)] transition-all cursor-pointer">
+            <RefreshCw className="w-3.5 h-3.5" />Refresh
+          </button>
+        </div>
       </div>
 
       {/* Add site panel */}

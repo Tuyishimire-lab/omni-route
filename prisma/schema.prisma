@@ -124,8 +124,19 @@ model User {
   apiKeys          ApiKey[]
   registeredSites  RegisteredSite[]
 
+  // Lemon Squeezy Subscription Details
+  lemonCustomerId          String?
+  lemonSubscriptionId      String?
+  lemonVariantId           String?
+  subscriptionStatus       String?   // active | on_trial | paused | past_due | unpaid | cancelled | expired
+  subscriptionRenewsAt     DateTime?
+  subscriptionEndsAt       DateTime?
+  lemonPortalUrl           String?
+
   @@index([email])
   @@index([provider, providerId])
+  @@index([lemonCustomerId])
+  @@index([lemonSubscriptionId])
 }
 
 // Sites where the user has installed & verified the OmniRoute tag.

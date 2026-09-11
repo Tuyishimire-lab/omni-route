@@ -79,7 +79,14 @@ describe('auth - upsertOAuthUser provider consistency', () => {
       createdAt: new Date(),
       lastLoginAt: null,
       isActive: true,
-    });
+      lemonCustomerId: null,
+      lemonSubscriptionId: null,
+      lemonVariantId: null,
+      subscriptionStatus: null,
+      subscriptionRenewsAt: null,
+      subscriptionEndsAt: null,
+      lemonPortalUrl: null,
+    } as any);
 
     const updateSpy = vi.spyOn(prisma.user, 'update').mockResolvedValue({
       id: 'usr-email-1',
@@ -95,7 +102,14 @@ describe('auth - upsertOAuthUser provider consistency', () => {
       createdAt: new Date(),
       lastLoginAt: new Date(),
       isActive: true,
-    });
+      lemonCustomerId: null,
+      lemonSubscriptionId: null,
+      lemonVariantId: null,
+      subscriptionStatus: null,
+      subscriptionRenewsAt: null,
+      subscriptionEndsAt: null,
+      lemonPortalUrl: null,
+    } as any);
 
 
     const result = await upsertOAuthUser({
