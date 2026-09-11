@@ -112,7 +112,7 @@ export default function PricingPage() {
               The CiteRoute index is a unique ground-truth dataset - which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
             </p>
           </div>
-          <Link href="mailto:enterprise@citeroute.com" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
+          <Link href="mailto:tuyishime1angel@gmail.com?subject=CiteRoute%20Enterprise%20Data%20Subscriptions" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
             Talk to us <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
