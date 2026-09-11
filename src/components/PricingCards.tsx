@@ -117,7 +117,30 @@ export default function PricingCards() {
         setAuthChecked(true);
       })
       .catch(() => setAuthChecked(true));
-  }, []);
+
+    if (typeof window !== 'undefined') {
+      const setupLemonSqueezy = () => {
+        const win = window as unknown as {
+          createLemonSqueezy?: () => void;
+          LemonSqueezy?: {
+            Setup: (opts: { eventHandler: (event: { event: string }) => void }) => void;
+          };
+        };
+        win.createLemonSqueezy?.();
+        win.LemonSqueezy?.Setup({
+          eventHandler: (event) => {
+            if (event.event === 'Checkout.Success') {
+              router.push('/my-sites?upgraded=true');
+            }
+          },
+        });
+      };
+
+      setupLemonSqueezy();
+      const timer = setTimeout(setupLemonSqueezy, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [router]);
 
   const handleCheckout = async (tier: 'pro' | 'agency') => {
     setError(null);
@@ -140,7 +163,20 @@ export default function PricingCards() {
       }
 
       if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+        const win = window as unknown as {
+          LemonSqueezy?: {
+            Url?: {
+              Open: (url: string) => void;
+            };
+          };
+        };
+
+        if (win.LemonSqueezy?.Url?.Open) {
+          win.LemonSqueezy.Url.Open(data.checkoutUrl);
+          setLoadingTier(null);
+        } else {
+          window.location.href = data.checkoutUrl;
+        }
       } else {
         throw new Error('No checkout URL received');
       }

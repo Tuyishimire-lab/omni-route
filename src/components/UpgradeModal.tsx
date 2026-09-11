@@ -84,7 +84,21 @@ export default function UpgradeModal({
       }
 
       if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+        const win = window as unknown as {
+          LemonSqueezy?: {
+            Url?: {
+              Open: (url: string) => void;
+            };
+          };
+        };
+
+        if (win.LemonSqueezy?.Url?.Open) {
+          win.LemonSqueezy.Url.Open(data.checkoutUrl);
+          setIsUpgrading(false);
+          onClose();
+        } else {
+          window.location.href = data.checkoutUrl;
+        }
       } else {
         throw new Error('No checkout URL received');
       }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import OnboardingWizard from '../components/OnboardingWizard';
@@ -82,6 +83,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col antialiased" style={{ background: '#0A0E0E', color: '#FFFFFF' }}>
         <GoogleAnalytics />
+        <Script src="https://assets.lemonsqueezy.com/lemon.js" strategy="afterInteractive" />
 
         {/* Skip to main content - WCAG 2.1 AA keyboard nav requirement */}
         <a

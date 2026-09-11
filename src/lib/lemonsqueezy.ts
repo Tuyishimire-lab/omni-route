@@ -108,6 +108,11 @@ export async function createLemonCheckout(params: CreateCheckoutParams): Promise
             tier: params.tier,
           },
         },
+        checkout_options: {
+          embed: true,
+          media: true,
+          logo: true,
+        },
         product_options: {
           redirect_url: redirectUrl,
         },
