@@ -101,7 +101,7 @@ export async function saveScanToDB(
   return domain;
 }
 
-import { DEFAULT_LEADERBOARD_ENTRIES } from './defaultLeaderboard';
+import { DEFAULT_LEADERBOARD_ENTRIES, LeaderboardEntry } from './defaultLeaderboard';
 
 // ─── Leaderboard ──────────────────────────────────────────────────────────────
 
@@ -112,8 +112,10 @@ export async function getLeaderboard(category?: string) {
     const domains = await prisma.domain.findMany({
       where: { ...where, scanCount: { gte: 1 } },
       orderBy: { latestGeoScore: 'desc' },
-      take: 50,
+      take: 250,
     });
+
+    const dbDomainMap = new Map<string, LeaderboardEntry>();
 
     if (domains && domains.length > 0) {
       // Fetch the latest scan per domain to determine live vs fallback scoring
@@ -127,27 +129,51 @@ export async function getLeaderboard(category?: string) {
         if (!liveMap.has(s.domain)) liveMap.set(s.domain, s.isLiveScan);
       }
 
-      return domains.map((d: typeof domains[number], i: number) => ({
-        rank: i + 1,
-        domain: d.domain,
-        category: d.category,
-        geoScore: d.latestGeoScore,
-        citationWinRate: d.latestCitationRate,
-        zeroClickResilience: d.latestZeroClickResilience,
-        trend: d.trend as 'up' | 'down' | 'flat',
-        trendDelta: d.trendDelta,
-        scanCount: d.scanCount,
-        isLiveScanned: liveMap.get(d.domain) ?? false,
-        lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
-      }));
+      for (const d of domains) {
+        dbDomainMap.set(d.domain.toLowerCase(), {
+          rank: 0,
+          domain: d.domain,
+          category: d.category || 'AI/Tech',
+          geoScore: d.latestGeoScore,
+          citationWinRate: d.latestCitationRate,
+          zeroClickResilience: d.latestZeroClickResilience,
+          trend: (d.trend as 'up' | 'down' | 'flat') || 'flat',
+          trendDelta: d.trendDelta || 0,
+          scanCount: d.scanCount,
+          isLiveScanned: liveMap.get(d.domain) ?? false,
+          lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
+        });
+      }
     }
+
+    // Merge with default seed entries (live DB data takes precedence)
+    const combinedMap = new Map<string, LeaderboardEntry>();
+    for (const [dom, entry] of dbDomainMap.entries()) {
+      combinedMap.set(dom, entry);
+    }
+    for (const seed of DEFAULT_LEADERBOARD_ENTRIES) {
+      if (!combinedMap.has(seed.domain.toLowerCase())) {
+        combinedMap.set(seed.domain.toLowerCase(), seed);
+      }
+    }
+
+    let allEntries = Array.from(combinedMap.values());
+    if (category && category !== 'All') {
+      allEntries = allEntries.filter(
+        (e) => e.category.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    // Sort by geoScore descending and assign rank 1..N
+    allEntries.sort((a, b) => b.geoScore - a.geoScore);
+    return allEntries.map((e, idx) => ({ ...e, rank: idx + 1 }));
   } catch (e) {
     console.warn('[getLeaderboard] DB query fallback to defaults:', e);
   }
 
   // Resilient fallback to comprehensive pre-seeded directory
   if (category && category !== 'All') {
-    return DEFAULT_LEADERBOARD_ENTRIES.filter((e) => e.category === category).map((e, i) => ({
+    return DEFAULT_LEADERBOARD_ENTRIES.filter((e) => e.category.toLowerCase() === category.toLowerCase()).map((e, i) => ({
       ...e,
       rank: i + 1,
     }));
@@ -275,17 +301,32 @@ export async function getWatchlistDomains(sessionId: string) {
 // ─── Stats for homepage / leaderboard header ──────────────────────────────────
 
 export async function getGlobalStats() {
-  const [domainCount, avgScore, eventCount] = await Promise.all([
-    prisma.domain.count(),
-    prisma.domain.aggregate({ _avg: { latestGeoScore: true } }),
-    prisma.scanEvent.count(),
-  ]);
+  const seedCount = DEFAULT_LEADERBOARD_ENTRIES.length;
+  const seedTotalScans = DEFAULT_LEADERBOARD_ENTRIES.reduce((acc, curr) => acc + curr.scanCount, 0);
+  const seedAvgScore = Math.round(
+    DEFAULT_LEADERBOARD_ENTRIES.reduce((acc, curr) => acc + curr.geoScore, 0) / Math.max(1, seedCount)
+  );
 
-  return {
-    domainsRanked: domainCount,
-    avgGeoIndex: Math.round(avgScore._avg.latestGeoScore ?? 0),
-    totalScans: eventCount,
-  };
+  try {
+    const [domainCount, avgScore, eventCount] = await Promise.all([
+      prisma.domain.count(),
+      prisma.domain.aggregate({ _avg: { latestGeoScore: true } }),
+      prisma.scanEvent.count(),
+    ]);
+
+    return {
+      domainsRanked: Math.max(domainCount, seedCount),
+      avgGeoIndex: Math.round(avgScore._avg.latestGeoScore ?? seedAvgScore) || seedAvgScore,
+      totalScans: Math.max(eventCount, seedTotalScans),
+    };
+  } catch (e) {
+    console.warn('[getGlobalStats] DB query fallback to defaults:', e);
+    return {
+      domainsRanked: seedCount,
+      avgGeoIndex: seedAvgScore,
+      totalScans: seedTotalScans,
+    };
+  }
 }
 
 // ─── Analytics Telemetry & Channel Aggregations ──────────────────────────────

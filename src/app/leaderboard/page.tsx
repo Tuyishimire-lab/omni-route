@@ -2,6 +2,7 @@ import React from 'react';
 import LeaderboardTable from '../../components/LeaderboardTable';
 import { BarChart2, Activity, Globe, Zap, Clock } from 'lucide-react';
 import { getGlobalStats, getLeaderboard } from '../../lib/db';
+import { DEFAULT_LEADERBOARD_ENTRIES } from '../../lib/defaultLeaderboard';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -14,7 +15,13 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function LeaderboardPage() {
-  let stats = { domainsRanked: 48, avgGeoIndex: 87, totalScans: 48 };
+  const seedCount = DEFAULT_LEADERBOARD_ENTRIES.length;
+  const seedTotalScans = DEFAULT_LEADERBOARD_ENTRIES.reduce((acc, curr) => acc + curr.scanCount, 0);
+  const seedAvgGeo = Math.round(
+    DEFAULT_LEADERBOARD_ENTRIES.reduce((acc, curr) => acc + curr.geoScore, 0) / Math.max(1, seedCount)
+  );
+
+  let stats = { domainsRanked: seedCount, avgGeoIndex: seedAvgGeo, totalScans: seedTotalScans };
   let initialEntries: Array<{
     rank: number;
     domain: string;
@@ -44,8 +51,8 @@ export default async function LeaderboardPage() {
 
   const dynamicStats = [
     { label: 'Domains Monitored & Ranked', value: `${stats.domainsRanked}+`, icon: Globe, color: 'text-[#05AD98]' },
-    { label: 'Avg Network GEO Index', value: `${stats.avgGeoIndex || 87.2}`, icon: Activity, color: 'text-[#05AD98]' },
-    { label: 'Historical Scans Indexed', value: `${stats.totalScans || 48}+`, icon: BarChart2, color: 'text-[#B8A04A]' }
+    { label: 'Avg Network GEO Index', value: `${stats.avgGeoIndex || seedAvgGeo}`, icon: Activity, color: 'text-[#05AD98]' },
+    { label: 'Historical Scans Indexed', value: `${stats.totalScans || seedTotalScans}+`, icon: BarChart2, color: 'text-[#B8A04A]' }
   ];
 
   return (
