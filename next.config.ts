@@ -53,6 +53,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/dashboard',
+        destination: '/my-sites',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

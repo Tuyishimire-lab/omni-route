@@ -137,6 +137,9 @@ export async function sendPasswordResetEmail({
       subject: 'Reset your CiteRoute password',
       html,
       text,
+      headers: {
+        'X-Entity-Ref-ID': `reset-${Date.now()}-${to}`,
+      },
     });
 
     if (error) {
@@ -162,9 +165,9 @@ export async function sendWelcomeEmail({
   userName,
 }: SendWelcomeEmailParams): Promise<{ success: boolean; id?: string; error?: string }> {
   const resend = getResendClient();
-  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute <onboarding@resend.dev>';
+  const fromEmail = process.env.WELCOME_FROM_EMAIL || 'CiteRoute <hello@citeroute.com>';
   const recipientName = userName ? userName : 'there';
-  const dashboardUrl = 'https://www.citeroute.com/dashboard';
+  const dashboardUrl = 'https://www.citeroute.com/my-sites';
 
   // Development / test fallback when RESEND_API_KEY is not configured
   if (!resend) {
@@ -188,25 +191,26 @@ export async function sendWelcomeEmail({
 
   const html = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Welcome to CiteRoute</title>
 </head>
-<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#050707;padding:40px 16px;">
+<body style="margin:0;padding:0;background-color:#070A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#070A0A;padding:40px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width:540px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.2);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <table role="presentation" width="100%" style="max-width:560px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.25);border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.6);">
           <!-- Header -->
           <tr>
             <td style="padding:32px 32px 20px 32px;text-align:center;border-bottom:1px solid rgba(187,191,191,0.08);">
-              <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
+              <div style="font-size:22px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
                 CITE<span style="color:#05AD98;">ROUTE</span>
               </div>
-              <div style="font-size:11px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
-                Generative Engine & Agent Observability
+              <div style="font-size:12px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
+                Generative Engine & AI Citation Observability
               </div>
             </td>
           </tr>
@@ -218,7 +222,7 @@ export async function sendWelcomeEmail({
                 Welcome to CiteRoute, ${recipientName}!
               </h1>
               <p style="margin:0 0 20px 0;font-size:14px;line-height:1.6;color:#CBD5E1;">
-                Search is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.
+                Search is shifting rapidly from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.
               </p>
 
               <!-- 3-Step Guide -->
@@ -252,15 +256,19 @@ export async function sendWelcomeEmail({
               <!-- CTA Button -->
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin:28px 0;">
                 <tr>
-                  <td align="center" style="border-radius:10px;background:linear-gradient(135deg,#05AD98,#038a79);">
-                    <a href="${dashboardUrl}" target="_blank" style="display:inline-block;padding:14px 32px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
-                      Open Your Dashboard
+                  <td align="center" style="border-radius:10px;background-color:#05AD98;">
+                    <a href="${dashboardUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 32px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
+                      Open Your Sites & Dashboard
                     </a>
                   </td>
                 </tr>
               </table>
 
-              <p style="margin:24px 0 0 0;font-size:12px;line-height:1.5;color:#64748B;">
+              <p style="margin:20px 0 0 0;font-size:12px;line-height:1.6;color:#878787;">
+                Or navigate directly: <a href="${dashboardUrl}" style="color:#05AD98;text-decoration:none;">${dashboardUrl}</a>
+              </p>
+
+              <p style="margin:20px 0 0 0;font-size:12px;line-height:1.5;color:#878787;">
                 Need assistance setting up your domain or configuring crawler rules? Reply directly to this email or reach us anytime at <a href="mailto:tuyishime1angel@gmail.com" style="color:#05AD98;text-decoration:none;">tuyishime1angel@gmail.com</a>.
               </p>
             </td>
@@ -268,9 +276,12 @@ export async function sendWelcomeEmail({
 
           <!-- Footer -->
           <tr>
-            <td style="padding:20px 32px 28px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
-              <p style="margin:0 0 6px 0;font-size:11px;color:#64748B;">
-                CiteRoute Platform | Generative Engine & Agent Observability
+            <td style="padding:22px 32px 28px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
+              <p style="margin:0 0 6px 0;font-size:11px;color:#878787;">
+                CiteRoute Platform &middot; Generative Engine & AI Observability
+              </p>
+              <p style="margin:0 0 6px 0;font-size:10px;color:#64748B;">
+                You received this transactional email because you registered an account on <a href="https://www.citeroute.com" style="color:#878787;text-decoration:underline;">citeroute.com</a>.
               </p>
               <p style="margin:0;font-size:10px;color:#475569;">
                 &copy; ${new Date().getFullYear()} CiteRoute. All rights reserved.
@@ -285,16 +296,21 @@ export async function sendWelcomeEmail({
 </html>
   `;
 
-  const text = `Welcome to CiteRoute, ${recipientName}!\n\nSearch is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.\n\nQuick Start Guide:\n1. Run a GEO Scan: Audit your domain to uncover your baseline citation rate and vector readiness.\n2. Install the Snippet: Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.\n3. Track Citations: Watch crawler visits transform into citations, brand mentions, and referral traffic.\n\nOpen your dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com`;
+  const text = `Welcome to CiteRoute, ${recipientName}!\n\nSearch is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.\n\nQuick Start Guide:\n1. Run a GEO Scan: Audit your domain to uncover your baseline citation rate and vector readiness.\n2. Install the Snippet: Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.\n3. Track Citations: Watch crawler visits transform into citations, brand mentions, and referral traffic.\n\nOpen your sites and dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com\n\n© ${new Date().getFullYear()} CiteRoute. All rights reserved.`;
 
   try {
+    const subject = userName ? `Welcome to CiteRoute, ${userName}` : 'Welcome to CiteRoute';
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
       replyTo: 'tuyishime1angel@gmail.com',
-      subject: 'Welcome to CiteRoute | Generative Engine Observability',
+      subject,
       html,
       text,
+      headers: {
+        'X-Entity-Ref-ID': `welcome-${Date.now()}-${to}`,
+        'List-Unsubscribe': '<mailto:tuyishime1angel@gmail.com?subject=unsubscribe>',
+      },
     });
 
     if (error) {
@@ -330,9 +346,9 @@ export async function sendWeeklyDigestEmail({
   domains,
 }: SendWeeklyDigestParams): Promise<{ success: boolean; id?: string; error?: string }> {
   const resend = getResendClient();
-  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute <alerts@resend.dev>';
+  const fromEmail = process.env.DIGEST_FROM_EMAIL || process.env.ALERT_FROM_EMAIL || 'CiteRoute Digest <digest@citeroute.com>';
   const recipientName = userName ? userName : 'there';
-  const dashboardUrl = 'https://www.citeroute.com/dashboard';
+  const dashboardUrl = 'https://www.citeroute.com/my-sites';
 
   if (!resend) {
     console.log('\n======================================================');
@@ -382,24 +398,25 @@ export async function sendWeeklyDigestEmail({
 
   const html = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Your Weekly CiteRoute GEO Digest</title>
 </head>
-<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#050707;padding:40px 16px;">
+<body style="margin:0;padding:0;background-color:#070A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#070A0A;padding:40px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width:560px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.2);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+        <table role="presentation" width="100%" style="max-width:560px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.25);border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.6);">
           <!-- Header -->
           <tr>
             <td style="padding:30px 32px 20px 32px;text-align:center;border-bottom:1px solid rgba(187,191,191,0.08);">
-              <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
+              <div style="font-size:22px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
                 CITE<span style="color:#05AD98;">ROUTE</span>
               </div>
-              <div style="font-size:11px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
+              <div style="font-size:12px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
                 Weekly AI Observability Digest
               </div>
             </td>
@@ -443,21 +460,28 @@ export async function sendWeeklyDigestEmail({
               <!-- CTA Button -->
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin:26px 0;">
                 <tr>
-                  <td align="center" style="border-radius:10px;background:linear-gradient(135deg,#05AD98,#038a79);">
-                    <a href="${dashboardUrl}" target="_blank" style="display:inline-block;padding:13px 28px;font-size:13px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
+                  <td align="center" style="border-radius:10px;background-color:#05AD98;">
+                    <a href="${dashboardUrl}" target="_blank" rel="noopener noreferrer" style="display:inline-block;padding:14px 30px;font-size:13px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
                       View Live Telemetry Dashboard
                     </a>
                   </td>
                 </tr>
               </table>
+
+              <p style="margin:20px 0 0 0;font-size:12px;line-height:1.6;color:#878787;">
+                Or visit: <a href="${dashboardUrl}" style="color:#05AD98;text-decoration:none;">${dashboardUrl}</a>
+              </p>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="padding:20px 32px 26px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
-              <p style="margin:0 0 6px 0;font-size:11px;color:#64748B;">
-                CiteRoute Platform | Generative Engine & Agent Observability
+            <td style="padding:22px 32px 26px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
+              <p style="margin:0 0 6px 0;font-size:11px;color:#878787;">
+                CiteRoute Platform &middot; Generative Engine & AI Citation Observability
+              </p>
+              <p style="margin:0 0 6px 0;font-size:10px;color:#64748B;">
+                You are receiving this weekly digest because you opted into monitoring on <a href="https://www.citeroute.com" style="color:#878787;text-decoration:underline;">citeroute.com</a>.
               </p>
               <p style="margin:0;font-size:10px;color:#475569;">
                 &copy; ${new Date().getFullYear()} CiteRoute. All rights reserved.
@@ -476,7 +500,7 @@ export async function sendWeeklyDigestEmail({
     .map((d) => `- ${d.domain}: GEO Score ${d.geoScore}/100 (${d.trendDelta >= 0 ? '+' : ''}${d.trendDelta} pts), Citations: ${d.citationRate}%`)
     .join('\n');
 
-  const text = `Your Weekly CiteRoute GEO Performance Update\n\nHello ${recipientName},\n\nHere is how your monitored domains performed across ChatGPT, Claude, and Perplexity this week:\n\n${textSummary}\n\nView your live dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com`;
+  const text = `Your Weekly CiteRoute GEO Performance Update\n\nHello ${recipientName},\n\nHere is how your monitored domains performed across ChatGPT, Claude, and Perplexity this week:\n\n${textSummary}\n\nView your live dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com\n\n© ${new Date().getFullYear()} CiteRoute. All rights reserved.`;
 
   try {
     const { data, error } = await resend.emails.send({
@@ -486,6 +510,10 @@ export async function sendWeeklyDigestEmail({
       subject: `Weekly GEO Digest: ${domains[0]?.domain || 'Your Monitored Domains'} Performance`,
       html,
       text,
+      headers: {
+        'X-Entity-Ref-ID': `digest-${Date.now()}-${to}`,
+        'List-Unsubscribe': '<mailto:tuyishime1angel@gmail.com?subject=unsubscribe>',
+      },
     });
 
     if (error) {
