@@ -110,17 +110,9 @@ function LoginForm() {
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs text-[#878787] flex items-center gap-1.5">
-                <Lock className="w-3 h-3" /> Password
-              </label>
-              <Link
-                href="/forgot-password"
-                className="text-xs text-[#05AD98] hover:underline transition-colors"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <label className="text-xs text-[#878787] block mb-1.5 flex items-center gap-1.5">
+              <Lock className="w-3 h-3" /> Password
+            </label>
             <input
               type="password"
               value={password}
@@ -130,6 +122,14 @@ function LoginForm() {
               minLength={8}
               className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-[#05AD98] placeholder-[#878787]/50"
             />
+            <div className="flex justify-end pt-2">
+              <Link
+                href="/forgot-password"
+                className="text-xs text-[#878787] hover:text-[#05AD98] transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
           </div>
 
           {error && (
