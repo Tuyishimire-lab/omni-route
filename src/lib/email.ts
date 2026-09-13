@@ -133,7 +133,7 @@ export async function sendPasswordResetEmail({
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
-      reply_to: 'tuyishime1angel@gmail.com',
+      replyTo: 'tuyishime1angel@gmail.com',
       subject: 'Reset your CiteRoute password',
       html,
       text,
