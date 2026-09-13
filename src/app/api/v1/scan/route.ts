@@ -5,14 +5,15 @@ import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
 import { getSession } from '../../../../lib/auth';
 import { prisma } from '../../../../lib/prisma';
 
-async function verifyScanAllowance(ip: string) {
-  const session = await getSession();
+type SessionPayload = Awaited<ReturnType<typeof getSession>>;
+
+async function verifyScanAllowance(ip: string, session: SessionPayload) {
   let tier = 'free';
   let trackingId = `ip:${ip}`;
 
   if (session) {
     if (session.role === 'admin') {
-      return { allowed: true };
+      return { allowed: true, tier: 'admin' };
     }
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
@@ -24,7 +25,7 @@ async function verifyScanAllowance(ip: string) {
 
   // Pro, Agency, Enterprise get unlimited scans
   if (tier !== 'free') {
-    return { allowed: true };
+    return { allowed: true, tier };
   }
 
   // Free / anonymous: 10 scans per 30-day window
@@ -33,13 +34,14 @@ async function verifyScanAllowance(ip: string) {
   if (!monthlyCheck.allowed) {
     return {
       allowed: false,
+      tier,
       error: 'You have reached your monthly limit of 10 free GEO scans. Upgrade to Pro for unlimited scans.',
       code: 'TIER_SCAN_LIMIT',
       upgradeTier: 'pro',
     };
   }
 
-  return { allowed: true };
+  return { allowed: true, tier };
 }
 
 export async function POST(req: NextRequest) {
@@ -57,7 +59,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const quotaCheck = await verifyScanAllowance(ip);
+    // Resolve session once - reused for quota check and bypassCache gating
+    const session = await getSession();
+
+    const quotaCheck = await verifyScanAllowance(ip, session);
     if (!quotaCheck.allowed) {
       return NextResponse.json(
         { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier },
@@ -75,7 +80,14 @@ export async function POST(req: NextRequest) {
     }
 
     const sessionId = body?.sessionId;
-    const bypassCache = Boolean(body?.bypassCache);
+
+    // bypassCache is a Pro+ feature - free and anonymous users cannot force
+    // a live re-crawl on every request (it would exhaust Jina Reader quota).
+    const isPrivileged = session?.role === 'admin' || (quotaCheck.tier !== 'free');
+    const bypassCache = isPrivileged && Boolean(body?.bypassCache);
+    if (!isPrivileged && body?.bypassCache) {
+      console.info('[scan] bypassCache requested by free/anonymous user - downgraded to cached response');
+    }
 
     const report = await crawlAndAnalyzeUrl(url, { bypassCache });
 
@@ -128,9 +140,15 @@ export async function GET(req: NextRequest) {
     }
 
     const sessionId = req.nextUrl.searchParams.get('sessionId') ?? undefined;
-    const bypassCache =
+
+    // bypassCache is a Pro+ feature (same rule as POST)
+    const session = await getSession();
+    const tier = session?.tier ?? 'free';
+    const isPrivileged = session?.role === 'admin' || (tier !== 'free');
+    const bypassCache = isPrivileged && (
       req.nextUrl.searchParams.get('refresh') === 'true' ||
-      req.nextUrl.searchParams.get('force') === 'true';
+      req.nextUrl.searchParams.get('force') === 'true'
+    );
 
     const report = await crawlAndAnalyzeUrl(targetUrl, { bypassCache });
 
