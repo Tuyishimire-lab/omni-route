@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Network, Menu, X, Key, LogIn, LogOut, Shield,
   ChevronDown, Globe, BarChart2, Trophy, Layers,
-  BookOpen, Code2, Radar, Terminal,
+  BookOpen, Code2, Radar, Terminal, Bot,
 } from 'lucide-react';
 import ApiSettingsModal from './ApiSettingsModal';
 
@@ -58,6 +58,7 @@ const NAV: NavEntry[] = [
         { name: 'API Reference', href: '/docs/api', icon: <Terminal className="w-4 h-4" />, desc: 'REST endpoints & request schemas' },
         { name: 'API Keys',      href: '/api-keys', icon: <Key      className="w-4 h-4" />, desc: 'Generate & manage secret keys'    },
         { name: 'agent.json',    href: '/manifest', icon: <Code2    className="w-4 h-4" />, desc: 'Machine-readable manifest studio' },
+        { name: 'llms.txt Generator', href: '/tools/llms-txt-generator', icon: <Bot className="w-4 h-4" />, desc: 'AI robots.txt & llms.txt builder' },
       ],
     },
   },

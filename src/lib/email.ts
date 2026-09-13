@@ -151,3 +151,161 @@ export async function sendPasswordResetEmail({
     return { success: false, error: message };
   }
 }
+
+export interface SendWelcomeEmailParams {
+  to: string;
+  userName?: string;
+}
+
+export async function sendWelcomeEmail({
+  to,
+  userName,
+}: SendWelcomeEmailParams): Promise<{ success: boolean; id?: string; error?: string }> {
+  const resend = getResendClient();
+  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute <onboarding@resend.dev>';
+  const recipientName = userName ? userName : 'there';
+  const dashboardUrl = 'https://www.citeroute.com/dashboard';
+
+  // Development / test fallback when RESEND_API_KEY is not configured
+  if (!resend) {
+    console.log('\n======================================================');
+    console.log(' [CiteRoute Onboarding] Welcome Email Triggered');
+    console.log(` To: ${to}`);
+    console.log(` Recipient: ${recipientName}`);
+    console.log(` Dashboard URL: ${dashboardUrl}`);
+    console.log(' (Set RESEND_API_KEY in .env.local to deliver live emails)');
+    console.log('======================================================\n');
+
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        success: false,
+        error: 'RESEND_API_KEY is not set in production environment.',
+      };
+    }
+
+    return { success: true, id: 'dev-welcome-id' };
+  }
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to CiteRoute</title>
+</head>
+<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#050707;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:540px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.2);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+          <!-- Header -->
+          <tr>
+            <td style="padding:32px 32px 20px 32px;text-align:center;border-bottom:1px solid rgba(187,191,191,0.08);">
+              <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
+                CITE<span style="color:#05AD98;">ROUTE</span>
+              </div>
+              <div style="font-size:11px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
+                Generative Engine & Agent Observability
+              </div>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding:32px 32px 24px 32px;">
+              <h1 style="margin:0 0 16px 0;font-size:22px;font-weight:700;color:#FFFFFF;line-height:1.3;">
+                Welcome to CiteRoute, ${recipientName}!
+              </h1>
+              <p style="margin:0 0 20px 0;font-size:14px;line-height:1.6;color:#CBD5E1;">
+                Search is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.
+              </p>
+
+              <!-- 3-Step Guide -->
+              <div style="background-color:#0A0E0E;border:1px solid rgba(187,191,191,0.12);border-radius:12px;padding:20px;margin:24px 0;">
+                <div style="font-size:12px;font-weight:700;color:#05AD98;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;">
+                  Quick Start Guide
+                </div>
+                
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td valign="top" style="width:24px;padding-right:12px;font-size:13px;font-weight:700;color:#05AD98;">1.</td>
+                    <td style="padding-bottom:12px;font-size:13px;line-height:1.5;color:#E2E8F0;">
+                      <strong>Run a GEO Scan:</strong> Audit your domain to uncover your baseline citation rate, zero-click resilience, and vector readiness.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" style="width:24px;padding-right:12px;font-size:13px;font-weight:700;color:#05AD98;">2.</td>
+                    <td style="padding-bottom:12px;font-size:13px;line-height:1.5;color:#E2E8F0;">
+                      <strong>Install the Snippet:</strong> Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" style="width:24px;padding-right:12px;font-size:13px;font-weight:700;color:#05AD98;">3.</td>
+                    <td style="font-size:13px;line-height:1.5;color:#E2E8F0;">
+                      <strong>Track Citations:</strong> Watch crawler visits transform into citations, brand mentions, and referral traffic.
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- CTA Button -->
+              <table role="presentation" cellspacing="0" cellpadding="0" style="margin:28px 0;">
+                <tr>
+                  <td align="center" style="border-radius:10px;background:linear-gradient(135deg,#05AD98,#038a79);">
+                    <a href="${dashboardUrl}" target="_blank" style="display:inline-block;padding:14px 32px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
+                      Open Your Dashboard
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:24px 0 0 0;font-size:12px;line-height:1.5;color:#64748B;">
+                Need assistance setting up your domain or configuring crawler rules? Reply directly to this email or reach us anytime at <a href="mailto:tuyishime1angel@gmail.com" style="color:#05AD98;text-decoration:none;">tuyishime1angel@gmail.com</a>.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 32px 28px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
+              <p style="margin:0 0 6px 0;font-size:11px;color:#64748B;">
+                CiteRoute Platform | Generative Engine & Agent Observability
+              </p>
+              <p style="margin:0;font-size:10px;color:#475569;">
+                &copy; ${new Date().getFullYear()} CiteRoute. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+
+  const text = `Welcome to CiteRoute, ${recipientName}!\n\nSearch is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.\n\nQuick Start Guide:\n1. Run a GEO Scan: Audit your domain to uncover your baseline citation rate and vector readiness.\n2. Install the Snippet: Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.\n3. Track Citations: Watch crawler visits transform into citations, brand mentions, and referral traffic.\n\nOpen your dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com`;
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to,
+      replyTo: 'tuyishime1angel@gmail.com',
+      subject: 'Welcome to CiteRoute | Generative Engine Observability',
+      html,
+      text,
+    });
+
+    if (error) {
+      console.error('[email] Welcome email Resend delivery error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, id: data?.id };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown email dispatch error';
+    console.error('[email] Exception while sending welcome email:', err);
+    return { success: false, error: message };
+  }
+}

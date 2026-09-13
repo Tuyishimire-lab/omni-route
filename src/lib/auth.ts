@@ -1,6 +1,7 @@
 import { prisma } from './prisma';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
+import { sendWelcomeEmail } from './email';
 
 // ─── Password Hashing (bcryptjs - pure JS, works in serverless) ─────────────
 
@@ -229,6 +230,11 @@ export async function registerUser(
     },
   });
 
+  // Dispatch welcome onboarding email asynchronously
+  sendWelcomeEmail({ to: user.email, userName: user.name }).catch((err) => {
+    console.error('[auth/register] Failed to dispatch welcome email:', err);
+  });
+
   const session: SessionPayload = {
     userId: user.id,
     email: user.email,
@@ -332,6 +338,11 @@ export async function upsertOAuthUser(profile: {
         tier: isFirstUser ? 'enterprise' : 'free',
         lastLoginAt: new Date(),
       },
+    });
+
+    // Dispatch welcome onboarding email asynchronously for new OAuth signup
+    sendWelcomeEmail({ to: user.email, userName: user.name }).catch((err) => {
+      console.error('[auth/oauth] Failed to dispatch welcome email:', err);
     });
   }
 
