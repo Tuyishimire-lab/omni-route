@@ -126,7 +126,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const quotaCheck = await verifyScanAllowance(ip);
+    // Resolve session once - reused for quota check and bypassCache gating
+    const session = await getSession();
+
+    const quotaCheck = await verifyScanAllowance(ip, session);
     if (!quotaCheck.allowed) {
       return NextResponse.json(
         { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier },
@@ -142,13 +145,12 @@ export async function GET(req: NextRequest) {
     const sessionId = req.nextUrl.searchParams.get('sessionId') ?? undefined;
 
     // bypassCache is a Pro+ feature (same rule as POST)
-    const session = await getSession();
-    const tier = session?.tier ?? 'free';
-    const isPrivileged = session?.role === 'admin' || (tier !== 'free');
+    const isPrivileged = session?.role === 'admin' || (quotaCheck.tier !== 'free');
     const bypassCache = isPrivileged && (
       req.nextUrl.searchParams.get('refresh') === 'true' ||
       req.nextUrl.searchParams.get('force') === 'true'
     );
+
 
     const report = await crawlAndAnalyzeUrl(targetUrl, { bypassCache });
 
