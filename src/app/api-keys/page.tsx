@@ -466,7 +466,7 @@ print(res.json()["data"]["overallGeoScore"])`}
                     </button>
                   </div>
                   <p className="text-[11px] text-[#B8A04A] leading-relaxed">
-                    ⚠️ <strong>Important:</strong> Copy and store this secret key safely now. For security purposes, it will never be displayed again.
+                    <strong>Important:</strong> Copy and store this secret key safely now. For security purposes, it will never be displayed again.
                   </p>
                 </div>
 

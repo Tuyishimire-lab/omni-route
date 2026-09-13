@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
       'X-CiteRoute-Protocol': 'agent-v1.2',
-      'X-OmniRoute-Protocol': 'agent-v1.2',
       'Cache-Control': 'public, max-age=3600'
     }
   });

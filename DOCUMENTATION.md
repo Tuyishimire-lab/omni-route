@@ -1,24 +1,24 @@
-# OmniRoute Protocol — Master Project Documentation
+# CiteRoute — Master Project Documentation
 
 > **Version:** 2.0.0  
 > **Status:** Active / Production-Ready  
 > **Mainnet Standard:** `v2.0-MAINNET`  
-> **Repository Location:** `scratch/omniroute-app`  
+> **Repository Location:** `scratch/CiteRoute-app`  
 > **Last Updated:** August 2026
 
 ---
 
 ## 1. Executive Summary & Vision
 
-**OmniRoute** is the autonomous Generative Engine Optimization (GEO) and synthetic-to-human traffic routing protocol built for the post-search AI economy.
+**CiteRoute** is the autonomous Generative Engine Optimization (GEO) and synthetic-to-human traffic routing protocol built for the post-search AI economy.
 
 ### The Macroeconomic Problem
 * **The Zero-Click Shift:** AI answer engines (ChatGPT, Perplexity, Claude, Apple Intelligence) are cannibalizing traditional search clicks (>65% of queries now end without a blue-link click).
 * **Ad Spend Inflation:** Paid acquisition CAC across Meta and Google has risen by 24%+ YoY due to tracking signal loss.
 * **The Rise of Machine-to-Machine Intent:** By 2027+, over 40% of digital product discovery and commerce will be conducted by autonomous AI buyer agents operating on behalf of humans.
 
-### OmniRoute’s Solution
-OmniRoute creates an infrastructure bridge between digital properties and AI systems:
+### CiteRoute's Solution
+CiteRoute creates an infrastructure bridge between digital properties and AI systems:
 1. Optimizing semantic vector authority so brands are cited as primary sources by LLMs.
 2. Publishing machine-readable `agent.json` gateway manifests for zero-friction autonomous purchases.
 3. Providing real-time telemetry and cryptographic proof-of-human referral liquidity.
@@ -30,7 +30,7 @@ OmniRoute creates an infrastructure bridge between digital properties and AI sys
 
 ```mermaid
 flowchart TD
-    A[Brand Website / Domain] -->|Dynamic Edge Sync| B[OmniRoute Knowledge Core]
+    A[Brand Website / Domain] -->|Dynamic Edge Sync| B[CiteRoute Knowledge Core]
     
     subgraph "Optimization & Gateway Engines"
     B --> C1[GEO Optimization Engine: Vector Structuring & Citation Authority]
@@ -44,7 +44,7 @@ flowchart TD
     C3 -->|Competitive Share-of-Voice| D3[Marketing & Growth Analytics]
     C4 -->|Historical Authority Tracking| D4[Enterprise Portfolio Management]
     
-    D1 & D2 & D3 & D4 -->|Attribution & Conversion Telemetry| E[OmniRoute Live Traffic Analytics]
+    D1 & D2 & D3 & D4 -->|Attribution & Conversion Telemetry| E[CiteRoute Live Traffic Analytics]
 ```
 
 ---

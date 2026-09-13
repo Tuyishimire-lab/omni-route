@@ -375,7 +375,7 @@ export async function sendWeeklyDigestEmail({
           ? `<span style="color:#05AD98;font-weight:bold;">▲ +${d.trendDelta} pts</span>`
           : d.trendDelta < 0
           ? `<span style="color:#F59E0B;font-weight:bold;">▼ ${d.trendDelta} pts</span>`
-          : `<span style="color:#94A3B8;">— Flat</span>`;
+          : `<span style="color:#94A3B8;">- Flat</span>`;
 
       return `
       <tr style="border-bottom:1px solid rgba(187,191,191,0.08);">

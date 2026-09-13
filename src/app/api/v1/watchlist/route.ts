@@ -13,16 +13,45 @@ export const dynamic = 'force-dynamic';
  */
 
 async function getUserWatchlist(userId: string): Promise<string[]> {
+  // 1. Try new relational table first
+  const entries = await prisma.watchlistEntry.findMany({
+    where: { userId },
+    orderBy: { addedAt: 'desc' },
+    select: { domain: true },
+  });
+  if (entries.length > 0) return entries.map(e => e.domain);
+
+  // 2. Legacy fallback with inline backfill
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { watchlist: true } });
   try {
-    return user?.watchlist ? JSON.parse(user.watchlist) : [];
-  } catch {
-    return [];
-  }
+    const legacy: string[] = user?.watchlist ? JSON.parse(user.watchlist) : [];
+    if (legacy.length > 0) {
+      await prisma.$transaction([
+        ...legacy.map(domain =>
+          prisma.watchlistEntry.upsert({
+            where: { userId_domain: { userId, domain } },
+            create: { userId, domain },
+            update: {},
+          })
+        ),
+        prisma.user.update({ where: { id: userId }, data: { watchlist: '[]' } }),
+      ]);
+      return legacy;
+    }
+  } catch { /* malformed JSON */ }
+  return [];
 }
 
-async function setUserWatchlist(userId: string, domains: string[]) {
-  await prisma.user.update({ where: { id: userId }, data: { watchlist: JSON.stringify(domains) } });
+async function addUserWatchlistEntry(userId: string, domain: string) {
+  await prisma.watchlistEntry.upsert({
+    where: { userId_domain: { userId, domain } },
+    create: { userId, domain },
+    update: {},
+  });
+}
+
+async function removeUserWatchlistEntry(userId: string, domain: string) {
+  await prisma.watchlistEntry.deleteMany({ where: { userId, domain } });
 }
 
 export async function GET(req: NextRequest) {
@@ -95,9 +124,10 @@ export async function POST(req: NextRequest) {
             upgradeTier: check.upgradeTier,
           }, { status: 403 });
         }
-        await setUserWatchlist(session.userId, [domain, ...current]);
+        await addUserWatchlistEntry(session.userId, domain);
       }
-      return NextResponse.json({ watchlist: current.includes(domain) ? current : [domain, ...current], source: 'user' });
+      const updated = await getUserWatchlist(session.userId);
+      return NextResponse.json({ watchlist: updated, source: 'user' });
     }
 
     if (!sessionId) return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
@@ -129,8 +159,8 @@ export async function DELETE(req: NextRequest) {
 
     const session = await getSession();
     if (session) {
-      const updated = (await getUserWatchlist(session.userId)).filter((d) => d !== domain);
-      await setUserWatchlist(session.userId, updated);
+      await removeUserWatchlistEntry(session.userId, domain);
+      const updated = await getUserWatchlist(session.userId);
       return NextResponse.json({ watchlist: updated, source: 'user' });
     }
 

@@ -138,7 +138,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
             <p className="text-[11px] text-[#878787]">
               {isDemo ? (
                 <>
-                  Illustrative demo — not real traffic.{' '}
+                  Illustrative demo - not real traffic.{' '}
                   <Link href="/analytics" className="text-[#05AD98] hover:underline">
                     View your real data on Analytics →
                   </Link>

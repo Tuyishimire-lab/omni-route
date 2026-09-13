@@ -82,20 +82,33 @@ describe('scoreCalculator', () => {
   });
 
   describe('buildEngineBreakdown', () => {
-    it('generates all 4 engine scores with valid ranges and sentiment', () => {
-      const engines = buildEngineBreakdown(82, 1000);
-      expect(engines).toHaveLength(4);
+    it('returns empty array when no live results are provided', () => {
+      const engines = buildEngineBreakdown(82, 0, []);
+      expect(engines).toHaveLength(0);
+    });
+
+    it('returns only engines that have live results', () => {
+      const liveResults = [
+        { engine: 'perplexity' as const, isLiveQuery: true, isCited: true, confidence: 0.9, citationSnippet: 'stripe.com is known for payments' },
+        { engine: 'chatgpt' as const, isLiveQuery: true, isCited: false, confidence: 0.3 },
+        // claude has isLiveQuery: false - should be excluded
+        { engine: 'claude' as const, isLiveQuery: false, isCited: false, confidence: 0, error: 'API key invalid' },
+      ];
+      const engines = buildEngineBreakdown(82, 0, liveResults);
+      expect(engines).toHaveLength(2); // only the two with isLiveQuery: true
 
       const perplexity = engines.find((e) => e.engine === 'perplexity')!;
+      expect(perplexity.isLiveQuery).toBe(true);
       expect(perplexity.sentimentRating).toBe('High Authority');
       expect(perplexity.citationProbability).toBeGreaterThan(70);
+      expect(perplexity.citationSnippet).toBe('stripe.com is known for payments');
 
       for (const e of engines) {
         expect(e.score).toBeGreaterThanOrEqual(0);
         expect(e.score).toBeLessThanOrEqual(100);
         expect(e.citationProbability).toBeGreaterThanOrEqual(0);
         expect(e.citationProbability).toBeLessThanOrEqual(100);
-        expect(e.lastCrawledAgent).toBeTruthy();
+        expect(e.isLiveQuery).toBe(true);
       }
     });
   });

@@ -184,7 +184,7 @@ export default function AgentJsonEditor() {
             onClick={() => applyTemplate('default')}
             className="px-2.5 py-1 rounded-lg bg-[#111514] border border-[rgba(187,191,191,0.12)] text-xs text-[#BBBFBF] hover:text-white hover:border-[#05AD98] transition-colors"
           >
-            OmniRoute Standard
+            CiteRoute Standard
           </button>
           {Object.entries(INDUSTRY_TEMPLATES).map(([key, t]) => (
             <button
@@ -493,7 +493,7 @@ export default function AgentJsonEditor() {
               {deployPlatform === 'nextjs' && 'Create file at app/.well-known/agent.json/route.ts in your Next.js project:'}
               {deployPlatform === 'cloudflare' && 'Paste into Cloudflare Workers / Edge Gateway:'}
               {deployPlatform === 'fastapi' && 'Add route to your FastAPI / Python backend:'}
-              {deployPlatform === 'edgeworker' && 'Full Cloudflare Worker with AI bot detection + telemetry reporting to OmniRoute:'}
+              {deployPlatform === 'edgeworker' && 'Full Cloudflare Worker with AI bot detection + telemetry reporting to CiteRoute:'}
             </span>
             <button
               onClick={() => handleCopy(getDeployCode(), 'deploy')}

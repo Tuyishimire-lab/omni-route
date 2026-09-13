@@ -14,7 +14,7 @@ describe('Middleware Detection & Verification Header Logic', () => {
     expect(isMiddlewareDetected).toBe(true);
   });
 
-  it('preserves backward compatibility with legacy x-omniroute-tracked header', () => {
+  it('preserves backward compatibility with legacy x-omniroute-tracked header (CiteRoute formerly OmniRoute)', () => {
     const headers = new Headers();
     headers.set('x-omniroute-tracked', '1');
 
@@ -27,7 +27,7 @@ describe('Middleware Detection & Verification Header Logic', () => {
     expect(isMiddlewareDetected).toBe(true);
   });
 
-  it('rejects responses without CiteRoute or OmniRoute middleware headers', () => {
+  it('rejects responses without CiteRoute middleware headers', () => {
     const headers = new Headers();
     headers.set('content-type', 'text/html');
 

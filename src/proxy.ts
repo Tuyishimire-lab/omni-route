@@ -1,5 +1,5 @@
 /**
- * OmniRoute Traffic Capture Proxy
+ * CiteRoute Traffic Capture Proxy
  * ────────────────────────────────
  * This is the Next.js 16+ middleware file (renamed from middleware.ts to proxy.ts).
  * See node_modules/next/dist/docs/.../file-conventions/proxy.md.
@@ -23,7 +23,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest, NextFetchEvent, NextProxy } from 'next/server';
 
-/** Minimal UA-based pre-filter — mirrors the logic in agentTraffic.ts.
+/** Minimal UA-based pre-filter - mirrors the logic in agentTraffic.ts.
  *  Full classification happens in /api/v1/track so we keep this file
  *  edge-safe (no Node.js-only imports).
  */
@@ -45,7 +45,7 @@ function looksLikeNonHuman(ua: string): boolean {
   return knownBots.some((b) => u.includes(b));
 }
 
-/** Answer engines that refer traffic — the referrer alone is enough signal. */
+/** Answer engines that refer traffic - the referrer alone is enough signal. */
 const ANSWER_ENGINE_HOSTS = [
   'chatgpt.com', 'chat.openai.com', 'perplexity.ai',
   'claude.ai', 'gemini.google.com', 'copilot.microsoft.com',

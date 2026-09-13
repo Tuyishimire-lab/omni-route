@@ -44,7 +44,7 @@ describe('agentProtocol - Specifications & Schema', () => {
     expect(script).toContain('export default {');
     expect(script).toContain('/.well-known/agent.json');
     expect(script).toContain('X-CiteRoute-Protocol');
-    expect(script).toContain('X-OmniRoute-Protocol');
+    expect(script).toContain('X-CiteRoute-Protocol');
   });
 
   it('generates valid edge worker with AI bot detection and telemetry', () => {

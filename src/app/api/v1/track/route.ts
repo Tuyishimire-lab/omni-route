@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
  * POST /api/v1/track
  *
  * Records a REAL traffic event, classified server-side from request headers.
- * Called by the OmniRoute tracking snippet installed on customer sites
+ * Called by the CiteRoute tracking snippet installed on customer sites
  * (or by their edge worker / middleware proxying request headers).
  *
  * Body: { path?: string, sessionId?: string }
@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const ip = getClientIp(req);
-    // Skip rate-limiting for internal proxy calls — they come from our own
+    // Skip rate-limiting for internal proxy calls - they come from our own
     // edge function, not an external client, so they can't be abused.
     const isInternalProxyCall =
       req.headers.get('x-citeroute-proxy') === '1' ||
@@ -41,10 +41,10 @@ export async function POST(req: NextRequest) {
     // the internal fetch() UA would be the edge runtime, not the actual bot.
     const userAgent = req.headers.get('x-forwarded-user-agent') ?? req.headers.get('user-agent');
     // Referrer priority:
-    //  1. pageReferrer from JS payload — the original AI engine URL captured by
+    //  1. pageReferrer from JS payload - the original AI engine URL captured by
     //     document.referrer in the browser (most accurate for human click-throughs).
-    //  2. x-forwarded-referer — set by proxy.ts for server-side bot captures.
-    //  3. Raw HTTP Referer — fallback (will be the customer's own page URL for
+    //  2. x-forwarded-referer - set by proxy.ts for server-side bot captures.
+    //  3. Raw HTTP Referer - fallback (will be the customer's own page URL for
     //     cross-origin beacon requests, so least useful for classification).
     const referer =
       (typeof body.pageReferrer === 'string' && body.pageReferrer.trim() ? body.pageReferrer.trim() : null) ??

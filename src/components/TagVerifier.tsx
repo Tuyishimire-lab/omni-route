@@ -87,8 +87,8 @@ export default function TagVerifier() {
                 status === 'warn'    ? 'text-amber-400'  :
                 status === 'missing' ? 'text-red-400'    : 'text-[#878787]'
               }`}>
-                {status === 'ok'      && (result.method === 'edge-middleware' ? 'Edge Middleware detected — 100% AI bot coverage ✓' : 'Tag detected — all good ✓')}
-                {status === 'warn'    && 'Tag found — check site= parameter'}
+                {status === 'ok'      && (result.method === 'edge-middleware' ? 'Edge Middleware detected - 100% AI bot coverage' : 'Tag detected - all good')}
+                {status === 'warn'    && 'Tag found - check site= parameter'}
                 {status === 'missing' && 'Tag or middleware not detected'}
                 {status === 'error'   && 'Could not check this domain'}
               </p>
@@ -106,13 +106,13 @@ export default function TagVerifier() {
               <>
                 {result.method === 'edge-middleware' ? (
                   <>
-                    <Detail label="Verified via" value="Edge / Server Middleware (Zero Client JS) ✓" ok />
+                    <Detail label="Verified via" value="Edge / Server Middleware (Zero Client JS)" ok />
                     <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-xs text-emerald-200 leading-relaxed">
                       Active edge middleware verified. Headless AI crawlers (GPTBot, ClaudeBot, PerplexityBot) and search indexers are captured server-side with zero latency added to page delivery.
                     </div>
                   </>
                 ) : result.method === 'heartbeat' ? (
-                  <Detail label="Verified via" value="Live tag ping ✓" ok />
+                  <Detail label="Verified via" value="Live tag ping" ok />
                 ) : (
                   <Detail label="Method" value={result.method === 'query-param' ? '?site= parameter (recommended)' : result.method === 'data-attribute' ? 'data-citeroute-endpoint attribute' : 'Bare tag (Host header fallback)'} ok />
                 )}

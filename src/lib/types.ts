@@ -3,11 +3,16 @@ export type EngineType = 'perplexity' | 'chatgpt' | 'claude' | 'gemini';
 export interface EngineScore {
   engine: EngineType;
   name: string;
-  score: number; // 0 - 100
-  citationProbability: number; // percentage e.g. 78%
-  indexedChunks: number;
+  /** Blended GEO score for this engine (0-100). Derived from structural analysis
+   * when no API key is provided; blended with live confidence when a key is used. */
+  score: number;
+  /** Estimated citation probability (0-100%) based on score. Live-calibrated when API key is available. */
+  citationProbability: number;
   sentimentRating: 'High Authority' | 'Moderate' | 'Low / Excluded';
-  lastCrawledAgent: string;
+  /** True when score and citationProbability came from a real live engine API query */
+  isLiveQuery?: boolean;
+  /** Excerpt from live engine response mentioning the domain, if any */
+  citationSnippet?: string;
 }
 
 export interface EntityNode {
@@ -15,6 +20,24 @@ export interface EntityNode {
   type: 'Brand' | 'Product' | 'Industry' | 'Key Feature' | 'Competitor';
   confidence: number;
   groundedInKG: boolean;
+}
+
+/**
+ * Result returned by a real AI engine API query for a domain.
+ * Used to enrich EngineScore with live data when the user has configured API keys.
+ */
+export interface EngineQueryResult {
+  engine: EngineType;
+  /** True = live API call succeeded; false = API call failed / no key */
+  isLiveQuery: boolean;
+  /** Whether the engine's response explicitly mentioned or cited the domain */
+  isCited: boolean;
+  /** Raw confidence derived from response quality (0–1) */
+  confidence: number;
+  /** Short excerpt from the engine response mentioning the domain */
+  citationSnippet?: string;
+  /** Error message if the API call failed */
+  error?: string;
 }
 
 export interface Recommendation {
@@ -55,6 +78,8 @@ export interface GeoAuditReport {
   recommendations: Recommendation[];
   summary: string;
   liveMetadata?: LiveExtractionMetadata;
+  /** 'live_crawl' = Jina crawl succeeded; 'structural_estimate' = domain-hash fallback */
+  dataSource?: 'live_crawl' | 'structural_estimate';
 }
 
 export interface ScoreHistoryPoint {

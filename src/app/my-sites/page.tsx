@@ -202,7 +202,7 @@ export default function MySitesPage() {
           Add a site
         </p>
         <p className="text-xs text-[#878787]">
-          The OmniRoute Tag must be installed and live on your site first.{' '}
+          The CiteRoute Tag must be installed and live on your site first.{' '}
           <Link href="/docs/install" className="text-[#05AD98] hover:underline">Install guide →</Link>
         </p>
         <div className="flex gap-2">
@@ -241,7 +241,7 @@ export default function MySitesPage() {
           <Globe className="w-12 h-12 text-[#05AD98] mx-auto opacity-40" />
           <p className="text-white font-semibold">No sites yet</p>
           <p className="text-xs text-[#878787] max-w-sm mx-auto">
-            Install the OmniRoute Tag on your site, verify it above, then add it here to see your AI traffic data.
+            Install the CiteRoute Tag on your site, verify it above, then add it here to see your AI traffic data.
           </p>
           <Link href="/docs/install" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-sm font-bold">
             Install Tag <ChevronRight className="w-4 h-4" />

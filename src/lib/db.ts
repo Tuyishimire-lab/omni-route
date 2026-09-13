@@ -21,7 +21,11 @@ export async function getCachedScanReport(
     });
     if (!event) return null;
     if (Date.now() - event.scannedAt.getTime() > SCAN_CACHE_TTL_MS) return null;
-    return JSON.parse(event.rawReport!) as GeoAuditReport;
+    const report = JSON.parse(event.rawReport!) as GeoAuditReport;
+    // Engine breakdown is a live enrichment — never serve it from cache.
+    // Old cached blobs may have fabricated engine data; always clear it here.
+    report.engineBreakdown = [];
+    return report;
   } catch (e) {
     console.warn('[scanCache] DB cache read failed, will re-crawl:', e);
     return null;
@@ -235,28 +239,56 @@ export async function getBulkDomainHistory(
   return grouped;
 }
 
-// ─── Watchlist (session-scoped) ───────────────────────────────────────────────
+// ─── Watchlist (session-scoped, relational) ────────────────────────────────────
+// Reads from WatchlistEntry table. Falls back to the legacy JSON string column
+// for sessions created before the migration so existing users don't lose data.
 
 export async function getWatchlist(sessionId: string): Promise<string[]> {
+  // 1. Try new relational table first
+  const entries = await prisma.watchlistEntry.findMany({
+    where: { sessionId },
+    orderBy: { addedAt: 'desc' },
+    select: { domain: true },
+  });
+  if (entries.length > 0) return entries.map(e => e.domain);
+
+  // 2. Legacy fallback - migrate inline on first read
   const session = await prisma.session.findUnique({ where: { id: sessionId } });
   if (!session) return [];
   try {
-    return JSON.parse(session.watchlist) as string[];
-  } catch {
-    return [];
-  }
+    const legacy: string[] = JSON.parse(session.watchlist);
+    if (legacy.length > 0) {
+      // Backfill: write legacy domains into WatchlistEntry, then clear the column
+      await prisma.$transaction([
+        ...legacy.map(domain =>
+          prisma.watchlistEntry.upsert({
+            where: { sessionId_domain: { sessionId, domain } },
+            create: { sessionId, domain },
+            update: {},
+          })
+        ),
+        prisma.session.update({ where: { id: sessionId }, data: { watchlist: '[]' } }),
+      ]);
+      return legacy;
+    }
+  } catch { /* malformed JSON - ignore */ }
+  return [];
 }
 
 export async function addToWatchlist(sessionId: string, domain: string) {
-  const current = await getWatchlist(sessionId);
-  if (current.includes(domain)) return current;
-  const updated = [domain, ...current];
+  // Ensure session row exists
   await prisma.session.upsert({
     where: { id: sessionId },
-    create: { id: sessionId, watchlist: JSON.stringify(updated) },
-    update: { watchlist: JSON.stringify(updated) },
+    create: { id: sessionId },
+    update: {},
   });
-  return updated;
+  // Upsert the entry (idempotent)
+  await prisma.watchlistEntry.upsert({
+    where: { sessionId_domain: { sessionId, domain } },
+    create: { sessionId, domain },
+    update: {},
+  });
+  return getWatchlist(sessionId);
 }
 
 export async function removeFromWatchlist(sessionId: string, domain: string) {
@@ -412,11 +444,9 @@ export async function getAnalyticsSummary() {
       avgOrderValue,
       monitoredDomains: globalStats.domainsRanked,
       conversionRate: `${convRate}%`,
-      fraudBlocked: sufficientData ? '100.0%' : 'n/a',
-      effectiveCac: sufficientData ? '$4.18' : 'n/a',
-      agentLtv: sufficientData
-        ? (avgOrderValue > 0 ? `$${avgOrderValue * 3}` : 'n/a')
-        : 'n/a',
+      fraudBlocked: 'n/a',   // requires dedicated fraud-signal pipeline
+      effectiveCac: 'n/a',   // requires conversion attribution integration
+      agentLtv: sufficientData && avgOrderValue > 0 ? `$${avgOrderValue * 3}` : 'n/a',
       channels,
       events: (eventsList || []).map((e: TelemetryEventRow) => ({
         id: e.id,

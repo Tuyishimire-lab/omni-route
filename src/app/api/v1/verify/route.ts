@@ -18,7 +18,7 @@ export interface VerifyResult {
 /**
  * GET /api/v1/verify?domain=yourdomain.com
  *
- * Fetches the customer homepage server-side and checks whether the OmniRoute
+ * Fetches the customer homepage server-side and checks whether the CiteRoute
  * tracking tag or edge middleware is present. Returns diagnostics for the verify widget.
  */
 export async function GET(req: NextRequest) {

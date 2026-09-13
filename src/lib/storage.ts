@@ -1,6 +1,6 @@
 import { WatchedDomain, GeoAuditReport, ScoreHistoryPoint } from './types';
 
-const WATCHLIST_STORAGE_KEY = 'omniroute_watched_domains_v2';
+const WATCHLIST_STORAGE_KEY = 'citeroute_watched_domains_v2';
 
 // Generate synthetic 7-day history seeded around a given score
 function generateSeedHistory(baseScore: number, days = 7): ScoreHistoryPoint[] {

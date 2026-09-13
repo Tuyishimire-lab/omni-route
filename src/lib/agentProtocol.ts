@@ -282,7 +282,6 @@ export default {
           "Access-Control-Allow-Origin": "*",
           "Cache-Control": "public, max-age=3600, s-maxage=86400",
           "X-CiteRoute-Protocol": "agent-v1.2",
-          "X-OmniRoute-Protocol": "agent-v1.2",
           "X-Agent-Transactions": "supported"
         }
       });
@@ -310,7 +309,6 @@ export async function GET() {
       'Access-Control-Allow-Origin': '*',
       'Cache-Control': 'public, max-age=3600, s-maxage=86400',
       'X-CiteRoute-Protocol': 'agent-v1.2',
-      'X-OmniRoute-Protocol': 'agent-v1.2',
     },
   });
 }`;
@@ -333,8 +331,7 @@ def get_agent_manifest():
         headers={
             "Access-Control-Allow-Origin": "*",
             "Cache-Control": "public, max-age=3600",
-            "X-CiteRoute-Protocol": "agent-v1.2",
-            "X-OmniRoute-Protocol": "agent-v1.2"
+            "X-CiteRoute-Protocol": "agent-v1.2"
         }
     )
 `;
@@ -427,7 +424,6 @@ export default {
           'Access-Control-Allow-Origin': '*',
           'Cache-Control': 'public, max-age=3600, s-maxage=86400',
           'X-CiteRoute-Protocol': 'agent-v1.2',
-          'X-OmniRoute-Protocol': 'agent-v1.2',
           'X-Bot-Detected': bot ? bot.name : 'none',
         },
       });

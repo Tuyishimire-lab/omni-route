@@ -1,7 +1,9 @@
 /**
- * OmniRoute Security & Protection Module
- * Handles SSRF mitigation, URL sanitization, in-memory caching, and API rate-limiting.
+ * CiteRoute Security & Protection Module
+ * Handles SSRF mitigation, URL sanitization, and in-memory scan caching.
+ * Rate limiting is handled by the DB-backed rateLimiter.ts module.
  */
+
 
 // Blocked internal / private IP patterns and hostnames
 const BLOCKED_HOSTNAMES = new Set([
@@ -147,50 +149,5 @@ export class MemoryCache<T> {
   }
 }
 
-// ── Simple Sliding Window Rate Limiter ────────────────────────────────────
-
-interface RateLimitRecord {
-  timestamps: number[];
-}
-
-export class RateLimiter {
-  private records = new Map<string, RateLimitRecord>();
-  private windowMs: number;
-  private maxRequests: number;
-
-  constructor(windowMs = 60 * 1000, maxRequests = 20) {
-    this.windowMs = windowMs;
-    this.maxRequests = maxRequests;
-  }
-
-  check(identifier: string): { allowed: boolean; remaining: number; resetMs: number } {
-    const now = Date.now();
-    const windowStart = now - this.windowMs;
-
-    let record = this.records.get(identifier);
-    if (!record) {
-      record = { timestamps: [] };
-      this.records.set(identifier, record);
-    }
-
-    // Filter out timestamps older than the sliding window
-    record.timestamps = record.timestamps.filter((ts) => ts > windowStart);
-
-    if (record.timestamps.length >= this.maxRequests) {
-      const oldest = record.timestamps[0];
-      const resetMs = oldest + this.windowMs - now;
-      return { allowed: false, remaining: 0, resetMs: Math.max(0, resetMs) };
-    }
-
-    record.timestamps.push(now);
-    return {
-      allowed: true,
-      remaining: this.maxRequests - record.timestamps.length,
-      resetMs: this.windowMs,
-    };
-  }
-}
-
-// Export singleton instances for application-wide reuse
+// Export singleton for application-wide scan result caching
 export const scanReportCache = new MemoryCache<import('./types').GeoAuditReport>(150, 1000 * 60 * 20); // 20 mins cache
-export const publicApiRateLimiter = new RateLimiter(60 * 1000, 30); // 30 requests per minute per IP

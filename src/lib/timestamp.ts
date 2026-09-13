@@ -1,5 +1,5 @@
 /**
- * OmniRoute Timestamp & Date Formatting Utility
+ * CiteRoute Timestamp & Date Formatting Utility
  * Provides human-readable dates, times, days of week, and relative offsets.
  */
 

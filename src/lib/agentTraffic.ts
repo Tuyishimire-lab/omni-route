@@ -1,6 +1,6 @@
 /**
- * OmniRoute Agent Traffic Classifier
- * ─────────────────────────────────
+ * CiteRoute Agent Traffic Classifier
+ * ────────────────────────────────────
  * Classifies inbound requests as human, AI-agent, or AI-crawler based on
  * User-Agent and referer signals. This is the data-collection core of the
  * product: every classified event feeds real telemetry (TelemetryEvent rows)
@@ -88,7 +88,7 @@ const AGENT_MARKERS = [
 
 /**
  * Hosting / CI / infra user-agent patterns that contain headless markers
- * but are NOT AI agents — they are the deployment platform itself.
+ * but are NOT AI agents - they are the deployment platform itself.
  * These must be excluded before checking AGENT_MARKERS.
  *
  * IMPORTANT: Be as specific as possible here. Over-broad patterns silently
@@ -125,7 +125,7 @@ export function classifyRequest(userAgent: string | null, referer: string | null
   const ua = (userAgent ?? '').toLowerCase();
   const ref = (referer ?? '').toLowerCase();
 
-  // 1a. Google AI Mode — must be checked BEFORE the generic referrer loop because
+  // 1a. Google AI Mode - must be checked BEFORE the generic referrer loop because
   //     AI Mode referrals come from google.com (same as regular search). The udm=50
   //     parameter is Google's internal identifier for AI Mode searches.
   //     e.g. https://www.google.com/search?q=stripe+pricing&udm=50

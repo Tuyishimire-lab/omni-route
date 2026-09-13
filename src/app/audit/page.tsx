@@ -13,11 +13,24 @@ function AuditContent() {
   const [domainInput, setDomainInput] = useState(initialDomain);
   const [activeReport, setActiveReport] = useState<GeoAuditReport | null>(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [scanMode, setScanMode] = useState<'live' | 'instant'>('live');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // Burst protection: short countdown (30 req/min anti-abuse window)
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
+  // Monthly quota exhaustion: hard wall until next billing period or upgrade
+  const [quotaExhausted, setQuotaExhausted] = useState<{ upgradeTier: string } | null>(null);
+
+  // Tick down the retry counter every second so the user sees a live countdown
+  useEffect(() => {
+    if (rateLimitRetryAfter === null || rateLimitRetryAfter <= 0) return;
+    const timer = setTimeout(() => {
+      setRateLimitRetryAfter((prev) => (prev !== null && prev > 1 ? prev - 1 : null));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [rateLimitRetryAfter]);
 
   const fetchScan = async (target: string) => {
+    // Don't attempt a scan if the monthly quota is known to be exhausted
+    if (quotaExhausted) return;
     setIsScanning(true);
     setErrorMessage(null);
     setRateLimitRetryAfter(null);
@@ -31,8 +44,15 @@ function AuditContent() {
       if (data.success && data.data) {
         setActiveReport(data.data);
       } else if (res.status === 429) {
-        const retryAfter = parseInt(res.headers.get('Retry-After') ?? '60', 10);
-        setRateLimitRetryAfter(Number.isFinite(retryAfter) ? retryAfter : 60);
+        if (data.code === 'TIER_SCAN_LIMIT') {
+          // Monthly quota exhausted - hard wall, no countdown
+          setQuotaExhausted({ upgradeTier: data.upgradeTier ?? 'pro' });
+        } else {
+          // Burst protection - show countdown from Retry-After header
+          const retryAfterHeader = res.headers.get('Retry-After');
+          const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : null;
+          setRateLimitRetryAfter(retryAfter && Number.isFinite(retryAfter) ? retryAfter : null);
+        }
       } else {
         setErrorMessage(data.error || 'Failed to scan domain');
       }
@@ -54,7 +74,7 @@ function AuditContent() {
 
   const handleScan = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!domainInput.trim()) return;
+    if (!domainInput.trim() || quotaExhausted) return;
     fetchScan(domainInput.trim());
   };
 
@@ -99,8 +119,8 @@ function AuditContent() {
           </div>
           <button
             type="submit"
-            disabled={isScanning}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50"
+            disabled={isScanning || !!quotaExhausted}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isScanning ? (
               <>
@@ -116,13 +136,40 @@ function AuditContent() {
           </button>
         </form>
 
-        {rateLimitRetryAfter !== null && (
+        {/* Monthly quota exhausted - hard wall with upgrade CTA */}
+        {quotaExhausted && (
+          <div className="p-4 bg-rose-500/10 border border-rose-500/25 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-rose-300 mb-0.5">Monthly scan limit reached</p>
+              <p className="text-rose-400/80">
+                Free accounts include <strong>10 GEO scans per month</strong>. Your limit has been reached for this billing period.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <a
+                href="/pricing"
+                className="px-3 py-1.5 rounded-lg bg-[#05AD98] text-white font-semibold hover:bg-[#038a79] transition-colors whitespace-nowrap"
+              >
+                Upgrade to Pro
+              </a>
+              <a href="/register" className="text-rose-300 underline hover:text-rose-200 whitespace-nowrap">
+                Sign up free
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* Burst protection - short countdown */}
+        {!quotaExhausted && rateLimitRetryAfter !== null && (
           <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-300 flex items-center justify-between gap-3">
             <span>
-              Scan limit reached - free scans are capped at 30/minute. Try again in{' '}
-              <strong className="font-mono">{rateLimitRetryAfter}s</strong>, or create an API key for higher limits.
+              Too many scans in a short window. Next scan available in{' '}
+              <strong className="font-mono">{rateLimitRetryAfter}s</strong>
+              {' '}&mdash; or{' '}
+              <a href="/register" className="underline hover:text-amber-200">create a free account</a>
+              {' '}for higher limits.
             </span>
-            <a href="/register" className="shrink-0 underline hover:text-amber-200">Get free key</a>
+            <a href="/pricing" className="shrink-0 underline hover:text-amber-200 whitespace-nowrap">View plans</a>
           </div>
         )}
 
@@ -138,14 +185,16 @@ function AuditContent() {
           {samplePresets.map((preset) => (
             <button
               key={preset.domain}
+              disabled={!!quotaExhausted}
               onClick={() => {
+                if (quotaExhausted) return;
                 setDomainInput(preset.domain);
                 fetchScan(preset.domain);
               }}
-              className={`px-2.5 sm:px-3 py-1 rounded-lg border text-xs font-mono transition-all ${
+              className={`px-2.5 sm:px-3 py-1 rounded-lg border text-xs font-mono transition-all disabled:cursor-not-allowed ${
                 activeReport?.domain === preset.domain
                   ? 'bg-[rgba(5,173,152,0.20)] text-[#05AD98] border-[rgba(5,173,152,0.4)] font-semibold'
-                  : 'bg-[#111514]/60 text-[#878787] border-[rgba(187,191,191,0.10)] hover:text-white'
+                  : 'bg-[#111514]/60 text-[#878787] border-[rgba(187,191,191,0.10)] hover:text-white disabled:opacity-40'
               }`}
             >
               {preset.name}

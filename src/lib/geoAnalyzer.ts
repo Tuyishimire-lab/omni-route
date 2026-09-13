@@ -16,8 +16,9 @@ export function analyzeDomainGEO(rawDomain: string): GeoAuditReport {
     .trim() || 'example.com';
 
   const subscores = computeDeterministicGeoSubscores(cleanDomain);
-  const hash = hashDomain(cleanDomain);
-  const engineBreakdown = buildEngineBreakdown(subscores.overallGeoScore, hash % 4000);
+  // Engine breakdown requires real API keys - returns empty array here.
+  // The UI shows the "Connect engine API keys" callout when this is empty.
+  const engineBreakdown = buildEngineBreakdown(subscores.overallGeoScore, 0, []);
 
   const domainNameCapitalized = cleanDomain.split('.')[0].charAt(0).toUpperCase() + cleanDomain.split('.')[0].slice(1);
   const detectedEntities = buildDetectedEntities(domainNameCapitalized, subscores.overallGeoScore);

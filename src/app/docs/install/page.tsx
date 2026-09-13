@@ -163,7 +163,7 @@ const CLIENT_SNIPPETS: Record<string, { file: string; code: string; note: string
   return (
     <html lang="en">
       <head>
-        {/* OmniRoute Tag - native script tag so it appears in raw HTML */}
+        {/* CiteRoute Tag - native script tag so it appears in raw HTML */}
         <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com" />
       </head>
       <body>{children}</body>
@@ -181,7 +181,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        {/* OmniRoute Tag */}
+        {/* CiteRoute Tag */}
         <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com" />
       </Head>
       <Component {...pageProps} />

@@ -1,15 +1,15 @@
-# OmniRoute
+# CiteRoute
 
 **Generative Engine Optimization (GEO) and AI-traffic analytics for the post-search web.**
 
-OmniRoute tells you how visible your domain is to AI answer engines (ChatGPT, Perplexity, Claude, Gemini), and — uniquely — measures the AI agent traffic *actually hitting your site*.
+CiteRoute tells you how visible your domain is to AI answer engines (ChatGPT, Perplexity, Claude, Gemini), and - uniquely - measures the AI agent traffic *actually hitting your site*.
 
 ## What it does
 
 | Capability | How it works |
 |---|---|
 | **GEO Audit** (`/audit`) | Live-crawls any URL via [Jina Reader](https://jina.ai/reader/), extracts real signals (JSON-LD schemas, heading structure, content depth, entity markup) and computes a transparent weighted score. Falls back to a clearly-labeled deterministic estimate when a site can't be crawled. |
-| **Agent Traffic Analytics** | Install one `<script>` tag; OmniRoute classifies every visitor server-side as human, AI training crawler, AI search crawler, autonomous agent, or answer-engine referral — then records real telemetry to your dashboard. |
+| **Agent Traffic Analytics** | Install one `<script>` tag; CiteRoute classifies every visitor server-side as human, AI training crawler, AI search crawler, autonomous agent, or answer-engine referral - then records real telemetry to your dashboard. |
 | **Watchlist** (`/watchlist`) | Continuous score tracking with history sparklines and trend deltas across your domain portfolio. |
 | **Leaderboard** (`/leaderboard`) | Public ranking of domains by GEO authority. |
 | **agent.json Generator** (`/manifest`) | Produce machine-readable manifests so autonomous buyer agents can discover and transact with your products. |
@@ -40,8 +40,8 @@ Requires Node ≥ 22 and pnpm ≥ 10.
 Add one line to any site you want to monitor:
 
 ```html
-<script async src="https://your-omniroute-deployment/api/v1/track.js"
-        data-omniroute-endpoint="https://your-omniroute-deployment"></script>
+<script async src="https://your-citeroute-deployment/api/v1/track.js"
+        data-citeroute-endpoint="https://your-citeroute-deployment"></script>
 ```
 
 No cookies, no PII. Classification happens server-side from request headers.
@@ -77,4 +77,4 @@ vercel deploy --prod
 
 ---
 
-© 2026 OmniRoute Protocol — see DOCUMENTATION.md for the full product spec.
+© 2026 CiteRoute — see DOCUMENTATION.md for the full product spec.

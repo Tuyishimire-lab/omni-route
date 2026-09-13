@@ -159,17 +159,17 @@ export default async function AnalyticsPage() {
             <div className="p-3.5 bg-[#111514]/60 rounded-xl border border-[rgba(187,191,191,0.10)]">
               <span className="text-[#878787] block">Effective Blended CAC</span>
               <span className="text-2xl font-bold font-mono text-[#05AD98] mt-1 block">
-                {summary?.effectiveCac || '$4.18'}
+                {summary?.effectiveCac || 'n/a'}
               </span>
-              <span className="text-[10px] text-[#878787] mt-0.5 block">-88% vs Paid Google Ads</span>
+              <span className="text-[10px] text-[#878787] mt-0.5 block">Requires conversion attribution pipeline</span>
             </div>
 
             <div className="p-3.5 bg-[#111514]/60 rounded-xl border border-[rgba(187,191,191,0.10)]">
               <span className="text-[#878787] block">Agent Lifetime Value (LTV)</span>
               <span className="text-2xl font-bold font-mono text-[#05AD98] mt-1 block">
-                {summary?.agentLtv || '$1,240'}
+                {summary?.agentLtv || 'n/a'}
               </span>
-              <span className="text-[10px] text-[#878787] mt-0.5 block">High recurring bot frequency</span>
+              <span className="text-[10px] text-[#878787] mt-0.5 block">Based on tracked order events</span>
             </div>
           </div>
 

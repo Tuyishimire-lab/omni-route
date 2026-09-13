@@ -27,17 +27,15 @@ describe('analyzeDomainGEO (deterministic fallback scorer)', () => {
     }
   });
 
-  it('includes all four engine breakdowns', () => {
+  it('engine breakdown is empty when no API keys are provided', () => {
     const report = analyzeDomainGEO('example.com');
-    expect(report.engineBreakdown).toHaveLength(4);
-    const engines = report.engineBreakdown.map((e) => e.engine);
-    expect(engines).toContain('perplexity');
-    expect(engines).toContain('chatgpt');
-    expect(engines).toContain('claude');
-    expect(engines).toContain('gemini');
+    // buildEngineBreakdown only returns live results - without API keys it is always empty.
+    // The UI shows the "Connect engine API keys" callout instead.
+    expect(report.engineBreakdown).toHaveLength(0);
   });
 
-  it('engine scores are within valid range', () => {
+  it('engine scores are within valid range when live results exist', () => {
+    // When the array is empty (no keys), the loop body never runs - that is the expected state.
     const report = analyzeDomainGEO('test.org');
     for (const engine of report.engineBreakdown) {
       expect(engine.score).toBeGreaterThanOrEqual(0);

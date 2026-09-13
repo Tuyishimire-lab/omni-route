@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            text: `⚠️ OmniRoute GEO score drop${drops.length > 1 ? 's' : ''} detected`,
+            text: `CiteRoute GEO score drop${drops.length > 1 ? 's' : ''} detected`,
             drops: drops.map((d) => ({
               domain: d.domain,
               previous: d.previousScore,

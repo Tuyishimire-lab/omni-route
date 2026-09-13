@@ -129,10 +129,12 @@ export async function crawlAndAnalyzeUrl(
   // cache is just a fast-path for warm instances.
   if (!options.bypassCache) {
     const dbCached = await getCachedScanReport(cleanDomain).catch(() => null);
-    if (dbCached) return dbCached;
+    if (dbCached) return dbCached; // engineBreakdown already cleared by getCachedScanReport
+
     const cached = scanReportCache.get(cleanDomain);
     if (cached) {
-      return cached;
+      // Engine breakdown is a live enrichment - strip it from in-memory cache too
+      return { ...cached, engineBreakdown: [] };
     }
   }
 
@@ -166,7 +168,10 @@ export async function crawlAndAnalyzeUrl(
 
   // ── GEO Score computation via unified scoreCalculator ────────────────────
   const subscores = computeLiveGeoSubscores(liveMeta, cleanDomain);
-  const engineBreakdown = buildEngineBreakdown(subscores.overallGeoScore, liveMeta.wordCount);
+  // Engine breakdown requires real API keys - always empty from the crawl path.
+  // The client enriches this separately by calling /api/v1/engine-query with
+  // the user's stored API keys, then merging the results into the report.
+  const engineBreakdown = buildEngineBreakdown(subscores.overallGeoScore, 0, []);
   const detectedEntities = buildDetectedEntities(brandName, subscores.overallGeoScore);
   const recommendations = buildRecommendations({
     cleanDomain,

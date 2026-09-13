@@ -62,7 +62,10 @@ model ScanEvent {
 model Session {
   id          String   @id  // nanoid from browser
   createdAt   DateTime @default(now())
+  // @deprecated: use WatchlistEntry relation instead. Kept for rollback safety.
   watchlist   String   @default("[]") // JSON array of domain strings
+
+  watchlistEntries WatchlistEntry[]
 }
 
 // Live machine-to-machine traffic & citation events
@@ -113,6 +116,7 @@ model User {
   passwordHash  String?                    // null for OAuth-only users
   role          String    @default("user") // user | admin
   tier          String    @default("free") // free | pro | enterprise
+  // @deprecated: use WatchlistEntry relation instead. Kept for rollback safety.
   watchlist     String    @default("[]")   // JSON array of domain strings
   avatarUrl     String?
   provider      String    @default("email") // email | google | github
@@ -123,6 +127,7 @@ model User {
 
   apiKeys          ApiKey[]
   registeredSites  RegisteredSite[]
+  watchlistEntries WatchlistEntry[]
 
   // Lemon Squeezy Subscription Details
   lemonCustomerId          String?
@@ -139,7 +144,7 @@ model User {
   @@index([lemonSubscriptionId])
 }
 
-// Sites where the user has installed & verified the OmniRoute tag.
+// Sites where the user has installed & verified the CiteRoute tag.
 // Distinct from watchlist (which monitors any domain for GEO score).
 // A domain can only be registered once per user.
 // Adding requires server-side re-verification that the tag is live.
@@ -182,4 +187,25 @@ model RateLimitRecord {
   @@unique([identifier, action])
   @@index([identifier, action])
   @@index([windowStart])
+}
+
+// Relational watchlist entries — replaces the legacy JSON string columns on User and Session.
+// A single row represents one domain tracked by one user or anonymous session.
+model WatchlistEntry {
+  id        String   @id @default(cuid())
+  domain    String   // e.g. "stripe.com"
+  addedAt   DateTime @default(now())
+
+  // Either userId OR sessionId must be set, not both
+  userId    String?
+  sessionId String?
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, domain])
+  @@unique([sessionId, domain])
+  @@index([userId])
+  @@index([sessionId])
+  @@index([domain])
 }

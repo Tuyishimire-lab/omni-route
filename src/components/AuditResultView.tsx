@@ -22,7 +22,63 @@ import {
   FileCode,
   CheckCheck,
   Share2,
+  Key,
+  Zap,
+  X,
 } from 'lucide-react';
+
+// ── Connect Engines Callout ────────────────────────────────────────────────
+// Shown below the engine breakdown cards when no live API data is available.
+// Explains that the engine works independently and optionally supports API keys.
+function ConnectEnginesCallout({ domain }: { domain: string }) {
+  const [dismissed, setDismissed] = React.useState(() => {
+    try { return localStorage.getItem('citeroute_engines_callout_dismissed') === '1'; } catch { return false; }
+  });
+
+  if (dismissed) return null;
+
+  const handleDismiss = () => {
+    try { localStorage.setItem('citeroute_engines_callout_dismissed', '1'); } catch {}
+    setDismissed(true);
+  };
+
+  return (
+    <div className="mt-4 rounded-2xl border border-[rgba(5,173,152,0.20)] bg-[rgba(5,173,152,0.04)] p-4 flex items-start gap-3">
+      <div className="w-8 h-8 rounded-xl bg-[rgba(5,173,152,0.12)] flex items-center justify-center shrink-0">
+        <Key className="w-4 h-4 text-[#05AD98]" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-white mb-1 flex items-center gap-1.5">
+          <Zap className="w-3 h-3 text-[#05AD98]" />
+          CiteRoute&apos;s engine is running independently
+        </p>
+        <p className="text-[11px] text-[#878787] leading-relaxed">
+          The scores above are derived from CiteRoute&apos;s own structural analysis of{' '}
+          <span className="text-[#BBBFBF] font-mono">{domain}</span> - live crawl signals,
+          schema density, entity clarity, and semantic structure. No external API keys are required.
+          <br />
+          <span className="text-[#BBBFBF]">
+            Optionally, connect your Perplexity, OpenAI, Anthropic, or Gemini API keys to layer
+            real per-engine citation data directly on top of these scores.
+          </span>
+        </p>
+        <a
+          href="/dashboard/engine-settings"
+          className="inline-flex items-center gap-1 mt-2 text-[11px] text-[#05AD98] hover:underline font-semibold"
+        >
+          Connect engine API keys <ArrowUpRight className="w-3 h-3" />
+        </a>
+      </div>
+      <button
+        onClick={handleDismiss}
+        aria-label="Dismiss"
+        className="shrink-0 text-[#878787] hover:text-white transition-colors mt-0.5"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
 
 interface AuditResultViewProps {
   report: GeoAuditReport;
@@ -307,45 +363,70 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
         </div>
       </div>
 
-      {/* Engine-by-Engine Performance Breakdown */}
+      {/* Foundation Model & Generative Answer Engine Diagnostics */}
       <div>
         <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
           <Cpu className="w-4 h-4 sm:w-5 sm:h-5 text-[#05AD98]" />
-          Foundation Model & Generative Answer Engine Diagnostics
+          Foundation Model &amp; Generative Answer Engine Diagnostics
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          {report.engineBreakdown.map((engine) => (
-            <div key={engine.engine} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(187,191,191,0.10)] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-semibold text-xs sm:text-sm text-white">{engine.name}</span>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${getScoreColor(engine.score)}`}>
-                  {engine.score}/100
-                </span>
-              </div>
+        {report.engineBreakdown.length > 0 ? (
+          <>
+            <div className={`grid grid-cols-1 gap-3 sm:gap-4 ${report.engineBreakdown.length === 1 ? 'sm:grid-cols-1 max-w-sm' : report.engineBreakdown.length === 2 ? 'sm:grid-cols-2' : report.engineBreakdown.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4'}`}>
+              {report.engineBreakdown.map((engine) => (
+                <div key={engine.engine} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(5,173,152,0.30)] space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-xs sm:text-sm text-white">{engine.name}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${getScoreColor(engine.score)}`}>
+                        {engine.score}/100
+                      </span>
+                    </div>
+                  </div>
 
-              <div className="space-y-1.5 text-xs text-[#BBBFBF]">
-                <div className="flex justify-between">
-                  <span className="text-[#878787]">Citation Probability:</span>
-                  <span className="font-mono font-semibold text-[#05AD98]">{engine.citationProbability}%</span>
+                  <div className="space-y-1.5 text-xs text-[#BBBFBF]">
+                    <div className="flex justify-between">
+                      <span className="text-[#878787]">Citation Probability:</span>
+                      <span className="font-mono font-semibold text-[#05AD98]">{engine.citationProbability}%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#878787]">Authority Tier:</span>
+                      <span className="font-medium text-slate-200">{engine.sentimentRating}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-0.5">
+                      <span className="text-[#878787]">Data Source:</span>
+                      <span className="flex items-center gap-1 text-[#05AD98] font-semibold text-[10px]">
+                        Live API Query
+                      </span>
+                    </div>
+                  </div>
+
+                  {engine.citationSnippet && (
+                    <div className="mt-1 px-2 py-1.5 rounded-lg bg-[rgba(5,173,152,0.06)] border border-[rgba(5,173,152,0.15)] text-[10px] text-[#BBBFBF] leading-relaxed italic">
+                      &ldquo;{engine.citationSnippet}&rdquo;
+                    </div>
+                  )}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-[#878787]">Indexed Embeddings:</span>
-                  <span className="font-mono text-slate-200">{engine.indexedChunks.toLocaleString()} chunks</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#878787]">Authority Tier:</span>
-                  <span className="font-medium text-slate-200">{engine.sentimentRating}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-[#878787]">Active Crawler:</span>
-                  <span className="font-mono text-[11px] text-[#878787]">{engine.lastCrawledAgent}</span>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+
+            {/* Partial coverage note if fewer than 4 engines are connected */}
+            {report.engineBreakdown.length < 4 && (
+              <p className="mt-3 text-[11px] text-[#878787]">
+                Showing {report.engineBreakdown.length} of 4 engines.{' '}
+                <a href="/dashboard/engine-settings" className="text-[#05AD98] hover:underline">
+                  Connect more API keys
+                </a>{' '}
+                to see diagnostics for Perplexity, OpenAI, Anthropic, and Gemini.
+              </p>
+            )}
+          </>
+        ) : (
+          <ConnectEnginesCallout domain={cleanDomain} />
+        )}
       </div>
+
 
       {/* Detected Entity Knowledge Graph Anchor */}
       <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-[rgba(187,191,191,0.10)]">

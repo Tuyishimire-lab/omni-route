@@ -44,14 +44,14 @@ function getJwtSecret(): Uint8Array {
     }
     // Dev-only fallback - safe because NODE_ENV !== 'production'
     console.warn('[auth] WARNING: JWT_SECRET is not set. Using insecure dev fallback. Set JWT_SECRET in .env.local.');
-    _jwtSecret = new TextEncoder().encode('omniroute-dev-secret-DO-NOT-USE-IN-PROD');
+    _jwtSecret = new TextEncoder().encode('citeroute-dev-secret-DO-NOT-USE-IN-PROD');
   } else {
     _jwtSecret = new TextEncoder().encode(secret);
   }
   return _jwtSecret;
 }
 
-const SESSION_COOKIE = 'omniroute_session';
+const SESSION_COOKIE = 'citeroute_session';
 const SESSION_MAX_AGE = 60 * 60; // 1 hour (sliding refresh on active requests)
 
 export interface SessionPayload {
