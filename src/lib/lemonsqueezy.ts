@@ -113,6 +113,8 @@ export async function createLemonCheckout(params: CreateCheckoutParams): Promise
           embed: true,
           media: true,
           logo: true,
+          dark: true,
+          button_color: '#05AD98',
           skip_trial: params.skipTrial ?? false,
         },
         product_options: {
