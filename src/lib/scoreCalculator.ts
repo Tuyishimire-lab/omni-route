@@ -164,17 +164,31 @@ export function buildEngineBreakdown(
 
 /**
  * Synthesize detected semantic entities grounded in the Knowledge Graph.
+ * Confidence values are derived from overallGeoScore - higher structural
+ * signal density = higher grounding certainty for primary entities.
+ * These are structural inference scores, not live entity resolution results.
  */
 export function buildDetectedEntities(
   brandName: string,
   overallGeoScore: number
 ): EntityNode[] {
+  // Primary brand entity: scales with score (strong schema signals = high confidence)
+  const brandConf = parseFloat(Math.min(0.99, 0.68 + overallGeoScore * 0.0034).toFixed(2));
+  // Product entity: slightly lower ceiling, same driver
+  const productConf = parseFloat(Math.min(0.95, 0.60 + overallGeoScore * 0.0033).toFixed(2));
+  // Industry/category: inferred from domain context, capped lower
+  const industryConf = parseFloat(Math.min(0.88, 0.55 + overallGeoScore * 0.0033).toFixed(2));
+  // Key feature: conditional on score exceeding 75 threshold
+  const featureConf = parseFloat(Math.min(0.90, 0.52 + overallGeoScore * 0.0035).toFixed(2));
+  // Competitor: lowest ceiling - inferred category classification only
+  const competitorConf = parseFloat(Math.min(0.84, 0.46 + overallGeoScore * 0.0033).toFixed(2));
+
   return [
-    { name: brandName, type: 'Brand', confidence: 0.98, groundedInKG: overallGeoScore > 60 },
-    { name: `${brandName} Digital Platform & Solutions`, type: 'Product', confidence: 0.91, groundedInKG: overallGeoScore > 70 },
-    { name: 'Generative Search & Knowledge Graph', type: 'Industry', confidence: 0.86, groundedInKG: true },
-    { name: 'Direct Agentic Settlement Protocols', type: 'Key Feature', confidence: 0.84, groundedInKG: overallGeoScore > 75 },
-    { name: 'Legacy Centralized Search Indexes', type: 'Competitor', confidence: 0.79, groundedInKG: true },
+    { name: brandName, type: 'Brand', confidence: brandConf, groundedInKG: overallGeoScore > 60 },
+    { name: `${brandName} Digital Platform & Solutions`, type: 'Product', confidence: productConf, groundedInKG: overallGeoScore > 70 },
+    { name: 'Generative Search & Knowledge Graph', type: 'Industry', confidence: industryConf, groundedInKG: true },
+    { name: 'Direct Agentic Settlement Protocols', type: 'Key Feature', confidence: featureConf, groundedInKG: overallGeoScore > 75 },
+    { name: 'Legacy Centralized Search Indexes', type: 'Competitor', confidence: competitorConf, groundedInKG: true },
   ];
 }
 

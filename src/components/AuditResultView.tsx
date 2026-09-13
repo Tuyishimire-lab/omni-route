@@ -290,6 +290,21 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
             <p className="text-xs text-[#878787] mt-3 sm:mt-4">
               Scanned domain: <span className="text-[#05AD98] font-mono font-medium">{report.domain}</span>
             </p>
+
+            {/* Data source badge */}
+            <div className="mt-2">
+              {report.dataSource === 'live_crawl' ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[rgba(5,173,152,0.10)] text-[#05AD98] border border-[rgba(5,173,152,0.20)]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Live Crawl
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/25" title="Live crawl was not available. Score is derived from structural domain analysis.">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  Structural Estimate
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Granular Sub-indices */}

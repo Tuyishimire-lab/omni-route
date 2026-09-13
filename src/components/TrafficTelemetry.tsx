@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { LiveTelemetryEvent } from '../lib/types';
-import { getInitialTelemetry } from '../lib/mockTelemetry';
 import { formatTelemetryTimestamp } from '../lib/timestamp';
 import { Activity, Radio, RefreshCw } from 'lucide-react';
 
@@ -50,15 +49,10 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
       if (json?.data?.events && json.data.events.length > 0) {
         setEvents(json.data.events);
         setIsDemo(false);
-      } else if (eventsRef.current.length === 0) {
-        setEvents(getInitialTelemetry(8));
       }
       setLastRefreshed(new Date());
     } catch {
-      if (eventsRef.current.length === 0) {
-        setEvents(getInitialTelemetry(8));
-        setLastRefreshed(new Date());
-      }
+      // Network failure - keep whatever events are already shown
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +67,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
       setLastRefreshed(new Date());
       return;
     }
+    // No server-provided events - fetch from API, show empty state if none exist
     fetchEvents();
   }, [initialEvents, fetchEvents]);
 
@@ -122,13 +117,8 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               Live Autonomous Traffic &amp; Attestation Feed
-              {isDemo && (
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                  Demo Data
-                </span>
-              )}
-              {/* Pulse dot only shown when actively streaming */}
-              {isLive && !isLoading && (
+              {/* Pulse dot only shown when actively streaming real events */}
+              {isLive && !isLoading && events.length > 0 && (
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -136,14 +126,7 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
               )}
             </h3>
             <p className="text-[11px] text-[#878787]">
-              {isDemo ? (
-                <>
-                  Illustrative demo - not real traffic.{' '}
-                  <Link href="/analytics" className="text-[#05AD98] hover:underline">
-                    View your real data on Analytics →
-                  </Link>
-                </>
-              ) : lastRefreshed ? (
+              {lastRefreshed ? (
                 <>
                   Real-time stream · last refreshed{' '}
                   <span className="text-[#BBBFBF]">{lastRefreshed.toLocaleTimeString()}</span>
