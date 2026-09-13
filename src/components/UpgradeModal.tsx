@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Zap, X, ArrowRight, ShieldCheck, Sparkles, Loader2 } from 'lucide-react';
 
@@ -25,6 +25,18 @@ export default function UpgradeModal({
 }: UpgradeModalProps) {
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [upgradeError, setUpgradeError] = useState<string | null>(null);
+  const [hasUsedTrial, setHasUsedTrial] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/api/auth/me')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.user?.hasUsedTrial) setHasUsedTrial(true);
+        })
+        .catch(() => {});
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -184,11 +196,17 @@ export default function UpgradeModal({
             {isUpgrading ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                <span>Redirecting...</span>
+                <span>Opening Checkout...</span>
               </>
             ) : (
               <>
-                <span>{targetTier === 'enterprise' ? 'Contact Sales' : `Start 14-day ${tierDetails.name} Trial`}</span>
+                <span>
+                  {targetTier === 'enterprise'
+                    ? 'Contact Sales'
+                    : hasUsedTrial
+                    ? `Upgrade to ${tierDetails.name}`
+                    : `Start 14-day ${tierDetails.name} Trial`}
+                </span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}

@@ -73,6 +73,7 @@ export interface CreateCheckoutParams {
   name?: string;
   tier: 'pro' | 'agency';
   redirectUrl?: string;
+  skipTrial?: boolean;
 }
 
 /**
@@ -112,6 +113,7 @@ export async function createLemonCheckout(params: CreateCheckoutParams): Promise
           embed: true,
           media: true,
           logo: true,
+          skip_trial: params.skipTrial ?? false,
         },
         product_options: {
           redirect_url: redirectUrl,

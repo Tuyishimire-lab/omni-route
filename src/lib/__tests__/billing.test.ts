@@ -101,7 +101,9 @@ describe('Lemon Squeezy Billing Engine', () => {
         tier: 'free',
       });
 
-      global.fetch = vi.fn().mockResolvedValue({
+      vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+
+      const fetchMock = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({
           data: {
@@ -111,6 +113,7 @@ describe('Lemon Squeezy Billing Engine', () => {
           },
         }),
       } as unknown as Response);
+      global.fetch = fetchMock;
 
       const req = new NextRequest('http://localhost:3000/api/billing/checkout', {
         method: 'POST',
@@ -122,6 +125,52 @@ describe('Lemon Squeezy Billing Engine', () => {
       const data = await res.json();
       expect(data.success).toBe(true);
       expect(data.checkoutUrl).toBe('https://citeroute.lemonsqueezy.com/checkout/buy/test_session_id');
+
+      const fetchBody = JSON.parse(fetchMock.mock.calls[0][1].body);
+      expect(fetchBody.data.attributes.checkout_options.skip_trial).toBe(false);
+    });
+
+    it('passes skip_trial: true when user has already used a trial', async () => {
+      vi.spyOn(authModule, 'getSession').mockResolvedValue({
+        userId: 'user_trial_user',
+        email: 'user@example.com',
+        name: 'Jane Doe',
+        role: 'user',
+        tier: 'free',
+      });
+
+      vi.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        id: 'user_trial_user',
+        email: 'user@example.com',
+        name: 'Jane Doe',
+        lemonSubscriptionId: 'sub_prev_123',
+        subscriptionStatus: 'cancelled',
+      } as any);
+
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          data: {
+            attributes: {
+              url: 'https://citeroute.lemonsqueezy.com/checkout/buy/paid_session_id',
+            },
+          },
+        }),
+      } as unknown as Response);
+      global.fetch = fetchMock;
+
+      const req = new NextRequest('http://localhost:3000/api/billing/checkout', {
+        method: 'POST',
+        body: JSON.stringify({ tier: 'pro' }),
+      });
+
+      const res = await checkoutRoute(req);
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.success).toBe(true);
+
+      const fetchBody = JSON.parse(fetchMock.mock.calls[0][1].body);
+      expect(fetchBody.data.attributes.checkout_options.skip_trial).toBe(true);
     });
   });
 

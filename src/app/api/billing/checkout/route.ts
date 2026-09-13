@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '../../../../lib/auth';
 import { createLemonCheckout } from '../../../../lib/lemonsqueezy';
+import { prisma } from '../../../../lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,11 +25,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const user = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        lemonSubscriptionId: true,
+        subscriptionStatus: true,
+      },
+    });
+
+    // If the account has ever had a subscription or trial, skip the trial so they pay immediately
+    const hasUsedTrial = Boolean(user?.lemonSubscriptionId || user?.subscriptionStatus);
+
     const { checkoutUrl } = await createLemonCheckout({
       userId: session.userId,
       email: session.email,
       name: session.name,
       tier,
+      skipTrial: hasUsedTrial,
     });
 
     return NextResponse.json({ success: true, checkoutUrl });

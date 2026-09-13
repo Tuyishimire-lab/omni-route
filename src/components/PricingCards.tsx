@@ -11,6 +11,7 @@ interface UserSession {
   name: string;
   role: string;
   tier: string;
+  hasUsedTrial?: boolean;
 }
 
 const PLANS = [
@@ -295,17 +296,27 @@ export default function PricingCards() {
                       {isLoading ? (
                         <>
                           <Loader2 className="w-4 h-4 animate-spin text-white" />
-                          <span>Connecting...</span>
+                          <span>Opening Checkout...</span>
                         </>
                       ) : (
                         <>
-                          <span>{plan.id === 'agency' ? 'Start Agency Trial' : 'Start 14-day Trial'}</span>
+                          <span>
+                            {user?.hasUsedTrial
+                              ? plan.id === 'agency'
+                                ? 'Upgrade to Agency'
+                                : 'Upgrade to Pro'
+                              : plan.id === 'agency'
+                              ? 'Start Agency Trial'
+                              : 'Start 14-day Trial'}
+                          </span>
                           <ArrowRight className="w-3.5 h-3.5" />
                         </>
                       )}
                     </button>
                     <p className="text-[10px] text-center text-[#878787] mt-2">
-                      14 days free &bull; Cancel anytime
+                      {user?.hasUsedTrial
+                        ? `${plan.price} billed monthly &bull; Cancel anytime`
+                        : '14 days free &bull; Cancel anytime'}
                     </p>
                   </div>
                 )}
