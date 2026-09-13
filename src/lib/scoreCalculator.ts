@@ -111,11 +111,6 @@ export function computeDeterministicGeoSubscores(cleanDomain: string): GeoSubsco
 }
 
 /**
- * Build engine breakdowns for Perplexity, ChatGPT, Claude, and Gemini.
- * When `liveResults` are provided (from real engine API calls), merge them in
- * so the affected engines show real data instead of offset-math estimates.
- */
-/**
  * Build engine diagnostics from real API results only.
  * Only engines for which the user has provided a key (and the query succeeded)
  * are included. Returns an empty array when no keys are configured - the UI

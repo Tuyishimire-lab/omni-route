@@ -5,7 +5,6 @@ import {
   buildDetectedEntities,
   buildRecommendations,
   buildScoreSummary,
-  hashDomain,
 } from './scoreCalculator';
 
 export function analyzeDomainGEO(rawDomain: string): GeoAuditReport {
@@ -38,5 +37,6 @@ export function analyzeDomainGEO(rawDomain: string): GeoAuditReport {
     detectedEntities,
     recommendations,
     summary,
+    dataSource: 'structural_estimate' as const,
   };
 }

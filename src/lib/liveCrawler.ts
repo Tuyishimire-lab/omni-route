@@ -192,6 +192,7 @@ export async function crawlAndAnalyzeUrl(
     recommendations,
     summary,
     liveMetadata: liveMeta,
+    dataSource: liveMeta.isLiveScanned ? 'live_crawl' : 'structural_estimate',
   };
 
   // Cache report
