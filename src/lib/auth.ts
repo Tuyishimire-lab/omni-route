@@ -364,3 +364,72 @@ export function getOAuthRedirectUri(
   return `${proto}://${host}/api/auth/${provider}/callback`;
 }
 
+// ─── Password Reset Tokens ──────────────────────────────────────────────────
+
+export interface PasswordResetPayload {
+  userId: string;
+  email: string;
+  purpose: 'password_reset';
+  hashSnippet: string;
+}
+
+export async function createPasswordResetToken(user: {
+  id: string;
+  email: string;
+  passwordHash: string | null;
+}): Promise<string> {
+  const secret = getJwtSecret();
+  const hashSnippet = user.passwordHash ? user.passwordHash.slice(-12) : 'no-prior-hash';
+
+  return new SignJWT({
+    userId: user.id,
+    email: user.email,
+    purpose: 'password_reset',
+    hashSnippet,
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setExpirationTime('30m')
+    .sign(secret);
+}
+
+export async function verifyPasswordResetToken(token: string): Promise<{
+  valid: boolean;
+  userId?: string;
+  email?: string;
+  error?: string;
+}> {
+  try {
+    const secret = getJwtSecret();
+    const { payload } = await jwtVerify(token, secret);
+
+    if (payload.purpose !== 'password_reset') {
+      return { valid: false, error: 'Invalid token purpose' };
+    }
+
+    const userId = payload.userId as string;
+    const email = payload.email as string;
+    const tokenSnippet = payload.hashSnippet as string;
+
+    // Fetch user from DB to verify current state
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, passwordHash: true, isActive: true },
+    });
+
+    if (!user || !user.isActive) {
+      return { valid: false, error: 'User not found or account is deactivated' };
+    }
+
+    const currentSnippet = user.passwordHash ? user.passwordHash.slice(-12) : 'no-prior-hash';
+    if (tokenSnippet !== currentSnippet) {
+      return { valid: false, error: 'This reset link has already been used. Please request a new one.' };
+    }
+
+    return { valid: true, userId: user.id, email: user.email };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Invalid or expired token';
+    return { valid: false, error: message };
+  }
+}
+
