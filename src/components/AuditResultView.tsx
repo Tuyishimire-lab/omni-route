@@ -20,7 +20,8 @@ import {
   Bookmark,
   Globe,
   FileCode,
-  CheckCheck
+  CheckCheck,
+  Share2,
 } from 'lucide-react';
 
 interface AuditResultViewProps {
@@ -32,6 +33,16 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('ALL');
   const [isSavedToWatchlist, setIsSavedToWatchlist] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [copiedShareLink, setCopiedShareLink] = useState(false);
+
+  const cleanDomain = report.domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/audit/${cleanDomain}` : `https://www.citeroute.com/audit/${cleanDomain}`;
+
+  const handleShareLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedShareLink(true);
+    setTimeout(() => setCopiedShareLink(false), 2500);
+  };
 
   const handleCopyCode = (snippet: string, id: string) => {
     navigator.clipboard.writeText(snippet);
@@ -96,6 +107,23 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleShareLink}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#111514] hover:bg-slate-850 text-slate-200 border border-[rgba(5,173,152,0.3)] hover:border-[#05AD98] text-xs font-semibold transition-all shadow-sm"
+          >
+            {copiedShareLink ? (
+              <>
+                <CheckCheck className="w-3.5 h-3.5 text-[#05AD98]" />
+                <span className="text-[#05AD98]">Link Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-[#05AD98]" />
+                <span>Share Public Report</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={handleSaveWatchlist}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#111514] hover:bg-slate-850 text-slate-200 border border-slate-750 text-xs font-semibold transition-all"
