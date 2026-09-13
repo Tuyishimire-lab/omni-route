@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import Image from 'next/image';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import OnboardingWizard from '../components/OnboardingWizard';
@@ -13,6 +14,15 @@ export const metadata: Metadata = {
   },
   description:
     'Turn AI crawlers into citations and revenue. The real-time Generative Engine Optimization (GEO) and autonomous agent observability platform for the post-search economy.',
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/citeroute-icon.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   alternates: {
     canonical: 'https://www.citeroute.com',
   },
@@ -26,12 +36,21 @@ export const metadata: Metadata = {
     url: 'https://www.citeroute.com',
     siteName: 'CiteRoute',
     type: 'website',
+    images: [
+      {
+        url: 'https://www.citeroute.com/logo.png',
+        width: 1024,
+        height: 1024,
+        alt: 'CiteRoute Platform Logo',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'CiteRoute | Generative Engine & Agent Observability Platform',
     description:
       'Turn AI crawlers into citations and revenue with real-time Generative Engine Optimization (GEO) and edge agent telemetry.',
+    images: ['https://www.citeroute.com/logo.png'],
   },
 };
 
@@ -43,7 +62,7 @@ const jsonLdSchema = {
       '@id': 'https://www.citeroute.com/#organization',
       name: 'CiteRoute',
       url: 'https://www.citeroute.com',
-      logo: 'https://www.citeroute.com/favicon.ico',
+      logo: 'https://www.citeroute.com/logo.png',
       description: 'Generative Engine Optimization (GEO) and AI agent observability platform.',
       email: 'tuyishime1angel@gmail.com',
     },
@@ -103,6 +122,13 @@ export default function RootLayout({
         <footer className="w-full border-t border-slate-850 bg-[#0A0E0E]/80 py-10 mt-16 text-xs text-[#878787]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
+              <Image
+                src="/citeroute-icon.png"
+                alt="CiteRoute Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 rounded-md object-contain shadow-sm"
+              />
               <span className="font-bold text-white tracking-wider">CITE<span className="text-[#05AD98]">ROUTE</span></span>
               <span className="text-slate-600">/</span>
               <span>Generative Engine & Agent Observability</span>

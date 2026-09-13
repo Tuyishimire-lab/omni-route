@@ -183,11 +183,14 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-8 h-8 rounded-lg p-[1.5px]" style={{ background: 'linear-gradient(135deg,#05AD98,#038a79)', boxShadow: '0 0 12px rgba(5,173,152,0.2)' }}>
-              <div className="w-full h-full rounded-[6px] flex items-center justify-center" style={{ background: '#0A0E0E' }}>
-                <Network className="w-4 h-4" style={{ color: '#05AD98' }} />
-              </div>
-            </div>
+            <Image
+              src="/citeroute-icon.png"
+              alt="CiteRoute Logo"
+              width={32}
+              height={32}
+              priority
+              className="w-8 h-8 rounded-lg object-contain shadow-md shadow-[rgba(5,173,152,0.25)] group-hover:scale-105 transition-transform"
+            />
             <span className="font-extrabold text-base tracking-tight text-white">
               CITE<span style={{ color: '#05AD98' }}>ROUTE</span>
             </span>

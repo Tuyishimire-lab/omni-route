@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
 
@@ -51,12 +52,19 @@ export default function RegisterPage() {
     <div className="min-h-[70vh] flex items-center justify-center">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98] mx-auto">
-            <UserPlus className="w-7 h-7" />
+        <div className="text-center space-y-3">
+          <Image
+            src="/citeroute-icon.png"
+            alt="CiteRoute Logo"
+            width={56}
+            height={56}
+            priority
+            className="w-14 h-14 rounded-2xl mx-auto shadow-xl shadow-[rgba(5,173,152,0.25)] border border-[rgba(5,173,152,0.3)] object-contain"
+          />
+          <div>
+            <h1 className="text-2xl font-extrabold text-white">Create Account</h1>
+            <p className="text-xs text-[#878787] mt-1">Join CiteRoute and optimize for AI search engines</p>
           </div>
-          <h1 className="text-2xl font-extrabold text-white">Create Account</h1>
-          <p className="text-xs text-[#878787]">Join CiteRoute and optimize for AI search engines</p>
         </div>
 
         {/* OAuth Buttons */}
