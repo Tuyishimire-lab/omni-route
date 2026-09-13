@@ -111,7 +111,7 @@ export default async function AnalyticsPage() {
         />
         <MetricCard
           title="Monitored Brand Domains"
-          value={`${monitoredDomains}`}
+          value={`${monitoredDomains}+`}
           change="Verified domain index"
           isPositive={true}
           subtitle="Active catalog endpoints"

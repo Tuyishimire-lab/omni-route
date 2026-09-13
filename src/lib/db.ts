@@ -308,14 +308,23 @@ export async function getGlobalStats() {
   );
 
   try {
-    const [domainCount, avgScore, eventCount] = await Promise.all([
-      prisma.domain.count(),
+    const [dbDomains, avgScore, eventCount] = await Promise.all([
+      prisma.domain.findMany({ select: { domain: true } }),
       prisma.domain.aggregate({ _avg: { latestGeoScore: true } }),
       prisma.scanEvent.count(),
     ]);
 
+    // Canonical deduplicated domain count across seed catalog + live DB scans
+    const uniqueDomainSet = new Set<string>();
+    for (const seed of DEFAULT_LEADERBOARD_ENTRIES) {
+      uniqueDomainSet.add(seed.domain.toLowerCase());
+    }
+    for (const d of dbDomains) {
+      uniqueDomainSet.add(d.domain.toLowerCase());
+    }
+
     return {
-      domainsRanked: Math.max(domainCount, seedCount),
+      domainsRanked: uniqueDomainSet.size,
       avgGeoIndex: Math.round(avgScore._avg.latestGeoScore ?? seedAvgScore) || seedAvgScore,
       totalScans: Math.max(eventCount, seedTotalScans),
     };
@@ -346,11 +355,11 @@ interface TelemetryEventRow {
 export async function getAnalyticsSummary() {
   try {
     const db = prisma;
-    const [totalEvents, txEvents, sumGmv, domainCount, eventsList] = await Promise.all([
+    const [totalEvents, txEvents, sumGmv, globalStats, eventsList] = await Promise.all([
       db.telemetryEvent.count(),
       db.telemetryEvent.count({ where: { type: 'AGENT_TX' } }),
       db.telemetryEvent.aggregate({ _sum: { settlementValue: true } }),
-      prisma.domain.count(),
+      getGlobalStats(),
       db.telemetryEvent.findMany({
         take: 30,
         orderBy: { timestamp: 'desc' },
@@ -401,7 +410,7 @@ export async function getAnalyticsSummary() {
       txCount,
       directGmv: gmv,
       avgOrderValue,
-      monitoredDomains: domainCount || 0,
+      monitoredDomains: globalStats.domainsRanked,
       conversionRate: `${convRate}%`,
       fraudBlocked: sufficientData ? '100.0%' : 'n/a',
       effectiveCac: sufficientData ? '$4.18' : 'n/a',
