@@ -12,7 +12,11 @@ export function analyzeDomainGEO(rawDomain: string): GeoAuditReport {
     .replace(/^(https?:\/\/)?(www\.)?/, '')
     .split('/')[0]
     .toLowerCase()
-    .trim() || 'example.com';
+    .trim();
+
+  if (!cleanDomain) {
+    throw new Error('Domain is required for GEO analysis');
+  }
 
   const subscores = computeDeterministicGeoSubscores(cleanDomain);
   // Engine breakdown requires real API keys - returns empty array here.
