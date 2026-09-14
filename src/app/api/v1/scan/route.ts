@@ -4,8 +4,11 @@ import { saveScanToDB } from '../../../../lib/db';
 import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
 import { getSession } from '../../../../lib/auth';
 import { prisma } from '../../../../lib/prisma';
+import { cookies } from 'next/headers';
 
 type SessionPayload = Awaited<ReturnType<typeof getSession>>;
+
+const VERIFIED_EMAIL_COOKIE = 'citeroute_verified_email';
 
 async function verifyScanAllowance(ip: string, session: SessionPayload) {
   let tier = 'free';
@@ -21,6 +24,22 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
     });
     tier = user?.tier ?? 'free';
     trackingId = `user:${session.userId}`;
+  } else {
+    // Anonymous user - require verified email
+    const cookieStore = await cookies();
+    const verifiedEmail = cookieStore.get(VERIFIED_EMAIL_COOKIE)?.value;
+
+    if (!verifiedEmail) {
+      return {
+        allowed: false,
+        tier: 'free',
+        error: 'Please verify your email to run a free GEO scan.',
+        code: 'EMAIL_REQUIRED',
+      };
+    }
+
+    // Track by verified email instead of IP
+    trackingId = `email:${verifiedEmail}`;
   }
 
   // Pro, Agency, Enterprise get unlimited scans

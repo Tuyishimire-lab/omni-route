@@ -10,6 +10,130 @@ function getResendClient(): Resend | null {
   return resendClient;
 }
 
+// ─── Email Verification Code ────────────────────────────────────────────────
+
+export interface SendVerificationCodeParams {
+  to: string;
+  code: string;
+}
+
+export async function sendVerificationCodeEmail({
+  to,
+  code,
+}: SendVerificationCodeParams): Promise<{ success: boolean; id?: string; error?: string }> {
+  const resend = getResendClient();
+  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute <onboarding@resend.dev>';
+
+  // Development fallback
+  if (!resend) {
+    console.log('\n======================================================');
+    console.log(' [CiteRoute] Email Verification Code');
+    console.log(` To: ${to}`);
+    console.log(` Code: ${code}`);
+    console.log(' (Set RESEND_API_KEY in .env.local to deliver live emails)');
+    console.log('======================================================\n');
+
+    if (process.env.NODE_ENV === 'production') {
+      return { success: false, error: 'RESEND_API_KEY is not set in production environment.' };
+    }
+    return { success: true, id: 'dev-verify-id' };
+  }
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your CiteRoute Verification Code</title>
+</head>
+<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#050707;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width:480px;background-color:#0D1313;border:1px solid rgba(5,173,152,0.2);border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+          <!-- Header -->
+          <tr>
+            <td style="padding:28px 32px 18px 32px;text-align:center;border-bottom:1px solid rgba(187,191,191,0.08);">
+              <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:#FFFFFF;text-transform:uppercase;">
+                CITE<span style="color:#05AD98;">ROUTE</span>
+              </div>
+              <div style="font-size:11px;color:#878787;margin-top:4px;letter-spacing:0.5px;">
+                Generative Engine &amp; Agent Observability
+              </div>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding:32px 32px 24px 32px;text-align:center;">
+              <h1 style="margin:0 0 12px 0;font-size:20px;font-weight:700;color:#FFFFFF;line-height:1.3;">
+                Verify your email
+              </h1>
+              <p style="margin:0 0 24px 0;font-size:14px;line-height:1.6;color:#94A3B8;">
+                Enter this code to start your free GEO scan. It expires in 10 minutes.
+              </p>
+
+              <!-- Code Block -->
+              <div style="background-color:#0A0E0E;border:2px solid rgba(5,173,152,0.3);border-radius:12px;padding:20px;margin:0 auto;max-width:260px;">
+                <div style="font-size:36px;font-weight:800;letter-spacing:12px;color:#05AD98;font-family:'Courier New',Courier,monospace;">
+                  ${code}
+                </div>
+              </div>
+
+              <p style="margin:24px 0 0 0;font-size:12px;line-height:1.5;color:#64748B;">
+                If you didn&rsquo;t request this code, you can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:18px 32px 24px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
+              <p style="margin:0 0 4px 0;font-size:10px;color:#64748B;">
+                CiteRoute Platform | <a href="https://www.citeroute.com" style="color:#878787;text-decoration:none;">citeroute.com</a>
+              </p>
+              <p style="margin:0;font-size:10px;color:#475569;">
+                &copy; ${new Date().getFullYear()} CiteRoute. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+
+  const text = `Your CiteRoute verification code is: ${code}\n\nEnter this code to start your free GEO scan. It expires in 10 minutes.\n\nIf you didn't request this, ignore this email.`;
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to,
+      replyTo: 'tuyishime1angel@gmail.com',
+      subject: `${code} is your CiteRoute verification code`,
+      html,
+      text,
+      headers: {
+        'X-Entity-Ref-ID': `verify-${Date.now()}-${to}`,
+      },
+    });
+
+    if (error) {
+      console.error('[email] Verification code delivery error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, id: data?.id };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown email dispatch error';
+    console.error('[email] Exception sending verification code:', err);
+    return { success: false, error: message };
+  }
+}
+
 export interface SendResetEmailParams {
   to: string;
   resetUrl: string;

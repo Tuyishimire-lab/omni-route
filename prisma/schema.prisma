@@ -209,3 +209,19 @@ model WatchlistEntry {
   @@index([sessionId])
   @@index([domain])
 }
+
+// Email verification for anonymous scan gating.
+// Anonymous users must verify their email before scanning.
+// OTP codes expire after 10 minutes.
+model EmailVerification {
+  id        String   @id @default(cuid())
+  email     String
+  code      String   // 6-digit numeric code
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([email, code])
+  @@index([email])
+  @@index([expiresAt])
+}

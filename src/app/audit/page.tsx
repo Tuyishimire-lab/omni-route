@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { GeoAuditReport } from '../../lib/types';
 import AuditResultView from '../../components/AuditResultView';
+import EmailGateModal from '../../components/EmailGateModal';
 import { Search, Globe2, Info, RefreshCw, Radio } from 'lucide-react';
 
 function AuditContent() {
@@ -18,6 +19,9 @@ function AuditContent() {
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
   // Monthly quota exhaustion: hard wall until next billing period or upgrade
   const [quotaExhausted, setQuotaExhausted] = useState<{ upgradeTier: string } | null>(null);
+  // Email verification gate for anonymous users
+  const [emailGateOpen, setEmailGateOpen] = useState(false);
+  const pendingScanDomain = useRef<string | null>(null);
 
   // Tick down the retry counter every second so the user sees a live countdown
   useEffect(() => {
@@ -43,6 +47,10 @@ function AuditContent() {
       const data = await res.json();
       if (data.success && data.data) {
         setActiveReport(data.data);
+      } else if (data.code === 'EMAIL_REQUIRED') {
+        // Anonymous user needs to verify email first
+        pendingScanDomain.current = target;
+        setEmailGateOpen(true);
       } else if (res.status === 429) {
         if (data.code === 'TIER_SCAN_LIMIT') {
           // Monthly quota exhausted - hard wall, no countdown
@@ -77,6 +85,16 @@ function AuditContent() {
     if (!domainInput.trim() || quotaExhausted) return;
     fetchScan(domainInput.trim());
   };
+
+  // After email verification succeeds, retry the pending scan
+  const handleEmailVerified = useCallback(() => {
+    setEmailGateOpen(false);
+    const domain = pendingScanDomain.current;
+    if (domain) {
+      pendingScanDomain.current = null;
+      fetchScan(domain);
+    }
+  }, []);
 
   const samplePresets = [
     { name: 'Stripe (Fintech)', domain: 'stripe.com' },
@@ -213,6 +231,13 @@ function AuditContent() {
       )}
 
       {activeReport && <AuditResultView report={activeReport} />}
+
+      {/* Email verification gate modal */}
+      <EmailGateModal
+        open={emailGateOpen}
+        onClose={() => setEmailGateOpen(false)}
+        onVerified={handleEmailVerified}
+      />
     </div>
   );
 }
