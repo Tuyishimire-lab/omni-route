@@ -65,7 +65,7 @@ const jsonLdSchema = {
       url: 'https://www.citeroute.com',
       logo: 'https://www.citeroute.com/logo.png',
       description: 'Generative Engine Optimization (GEO) and AI agent observability platform.',
-      email: 'hello@citeroute.com',
+      email: 'tuyishime1angel@gmail.com',
     },
     {
       '@type': 'WebSite',
