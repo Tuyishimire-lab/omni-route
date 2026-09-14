@@ -1,0 +1,4762 @@
+[
+  {
+    "domain": "adept.ai",
+    "url": "https://adept.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "anthropic.com",
+    "url": "https://anthropic.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "anyscale.com",
+    "url": "https://anyscale.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "appen.com",
+    "url": "https://appen.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "assemblyai.com",
+    "url": "https://assemblyai.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "banana.dev",
+    "url": "https://banana.dev",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "baseten.co",
+    "url": "https://baseten.co",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "bolt.new",
+    "url": "https://bolt.new",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "cerebras.ai",
+    "url": "https://cerebras.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "character.ai",
+    "url": "https://character.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "clarifai.com",
+    "url": "https://clarifai.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "claude.ai",
+    "url": "https://claude.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "cohere.com",
+    "url": "https://cohere.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "copy.ai",
+    "url": "https://copy.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "covariant.ai",
+    "url": "https://covariant.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "cursor.com",
+    "url": "https://cursor.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "databricks.com",
+    "url": "https://databricks.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "datature.io",
+    "url": "https://datature.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "deepgram.com",
+    "url": "https://deepgram.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "deepmind.google",
+    "url": "https://deepmind.google",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "deepseek.com",
+    "url": "https://deepseek.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "descript.com",
+    "url": "https://descript.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "dust.tt",
+    "url": "https://dust.tt",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "elevenlabs.io",
+    "url": "https://elevenlabs.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "figure.ai",
+    "url": "https://figure.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "fireflies.ai",
+    "url": "https://fireflies.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "fireworks.ai",
+    "url": "https://fireworks.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "fixie.ai",
+    "url": "https://fixie.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "glean.com",
+    "url": "https://glean.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "groq.com",
+    "url": "https://groq.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "harvey.ai",
+    "url": "https://harvey.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "heygen.com",
+    "url": "https://heygen.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "huggingface.co",
+    "url": "https://huggingface.co",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "humeai.com",
+    "url": "https://humeai.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "inflection.ai",
+    "url": "https://inflection.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "jasper.ai",
+    "url": "https://jasper.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "krea.ai",
+    "url": "https://krea.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "krisp.ai",
+    "url": "https://krisp.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "labelbox.com",
+    "url": "https://labelbox.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "langchain.com",
+    "url": "https://langchain.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "lepton.ai",
+    "url": "https://lepton.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "llamaindex.ai",
+    "url": "https://llamaindex.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "lumen5.com",
+    "url": "https://lumen5.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "mem.ai",
+    "url": "https://mem.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "midjourney.com",
+    "url": "https://midjourney.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "mistral.ai",
+    "url": "https://mistral.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "modal.com",
+    "url": "https://modal.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "murf.ai",
+    "url": "https://murf.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "mythic.ai",
+    "url": "https://mythic.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "notion.ai",
+    "url": "https://notion.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "openai.com",
+    "url": "https://openai.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "otter.ai",
+    "url": "https://otter.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "perplexity.ai",
+    "url": "https://perplexity.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "phind.com",
+    "url": "https://phind.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "physical-intelligence.com",
+    "url": "https://physical-intelligence.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "pictory.ai",
+    "url": "https://pictory.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "pinecone.io",
+    "url": "https://pinecone.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "play.ht",
+    "url": "https://play.ht",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "poe.com",
+    "url": "https://poe.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "qdrant.tech",
+    "url": "https://qdrant.tech",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "replicate.com",
+    "url": "https://replicate.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "rev.ai",
+    "url": "https://rev.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "roboflow.com",
+    "url": "https://roboflow.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "runwayml.com",
+    "url": "https://runwayml.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "sambanova.ai",
+    "url": "https://sambanova.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "scale.com",
+    "url": "https://scale.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "snorkel.ai",
+    "url": "https://snorkel.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "stability.ai",
+    "url": "https://stability.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "suno.com",
+    "url": "https://suno.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "superannotate.com",
+    "url": "https://superannotate.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "synthesia.io",
+    "url": "https://synthesia.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "tavus.io",
+    "url": "https://tavus.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "tensorrt.nvidia.com",
+    "url": "https://tensorrt.nvidia.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "together.ai",
+    "url": "https://together.ai",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "unstructured.io",
+    "url": "https://unstructured.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "v0.dev",
+    "url": "https://v0.dev",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "v7labs.com",
+    "url": "https://v7labs.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "weaviate.io",
+    "url": "https://weaviate.io",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "weightsandbiases.com",
+    "url": "https://weightsandbiases.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "writer.com",
+    "url": "https://writer.com",
+    "category": "AI/Tech"
+  },
+  {
+    "domain": "airbyte.com",
+    "url": "https://airbyte.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "alation.com",
+    "url": "https://alation.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "anomalo.com",
+    "url": "https://anomalo.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "astronomer.io",
+    "url": "https://astronomer.io",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "atlan.com",
+    "url": "https://atlan.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "bigeye.com",
+    "url": "https://bigeye.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "census.com",
+    "url": "https://census.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "clarity.ms",
+    "url": "https://clarity.ms",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "collibra.com",
+    "url": "https://collibra.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "dbt.com",
+    "url": "https://dbt.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "deepnote.com",
+    "url": "https://deepnote.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "domo.com",
+    "url": "https://domo.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "fivetran.com",
+    "url": "https://fivetran.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "gradio.app",
+    "url": "https://gradio.app",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "greatexpectations.io",
+    "url": "https://greatexpectations.io",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "hevodata.com",
+    "url": "https://hevodata.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "hex.tech",
+    "url": "https://hex.tech",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "hightouch.com",
+    "url": "https://hightouch.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "looker.com",
+    "url": "https://looker.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "lucky-orange.com",
+    "url": "https://lucky-orange.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "matillion.com",
+    "url": "https://matillion.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "metabase.com",
+    "url": "https://metabase.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "mode.com",
+    "url": "https://mode.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "montecarlo.data",
+    "url": "https://montecarlo.data",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "mouseflow.com",
+    "url": "https://mouseflow.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "observable.com",
+    "url": "https://observable.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "powerbi.microsoft.com",
+    "url": "https://powerbi.microsoft.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "redash.io",
+    "url": "https://redash.io",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "sisense.com",
+    "url": "https://sisense.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "snowflake.com",
+    "url": "https://snowflake.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "soda.io",
+    "url": "https://soda.io",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "stitch.com",
+    "url": "https://stitch.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "streamlit.io",
+    "url": "https://streamlit.io",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "superset.apache.org",
+    "url": "https://superset.apache.org",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "tableau.com",
+    "url": "https://tableau.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "thoughtspot.com",
+    "url": "https://thoughtspot.com",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "transform.co",
+    "url": "https://transform.co",
+    "category": "Analytics/Data"
+  },
+  {
+    "domain": "arangodb.com",
+    "url": "https://arangodb.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "aws.amazon.com",
+    "url": "https://aws.amazon.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "azure.microsoft.com",
+    "url": "https://azure.microsoft.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "bunny.net",
+    "url": "https://bunny.net",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "clickhouse.com",
+    "url": "https://clickhouse.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "cloud.google.com",
+    "url": "https://cloud.google.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "cockroachlabs.com",
+    "url": "https://cockroachlabs.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "confluent.io",
+    "url": "https://confluent.io",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "couchbase.com",
+    "url": "https://couchbase.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "dgraph.io",
+    "url": "https://dgraph.io",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "digitalocean.com",
+    "url": "https://digitalocean.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "elasticsearch.co",
+    "url": "https://elasticsearch.co",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "equinix.com",
+    "url": "https://equinix.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "fastly.com",
+    "url": "https://fastly.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "fauna.com",
+    "url": "https://fauna.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "hazelcast.com",
+    "url": "https://hazelcast.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "hetzner.com",
+    "url": "https://hetzner.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "ibm.com",
+    "url": "https://ibm.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "influxdata.com",
+    "url": "https://influxdata.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "keycdn.com",
+    "url": "https://keycdn.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "limelight.com",
+    "url": "https://limelight.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "linode.com",
+    "url": "https://linode.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "meilisearch.com",
+    "url": "https://meilisearch.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "memcached.org",
+    "url": "https://memcached.org",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "milvus.io",
+    "url": "https://milvus.io",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "mongodb.com",
+    "url": "https://mongodb.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "nats.io",
+    "url": "https://nats.io",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "neo4j.com",
+    "url": "https://neo4j.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "opensearch.org",
+    "url": "https://opensearch.org",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "oracle.com",
+    "url": "https://oracle.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "ovhcloud.com",
+    "url": "https://ovhcloud.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "questdb.io",
+    "url": "https://questdb.io",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "rabbitmq.com",
+    "url": "https://rabbitmq.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "rackspace.com",
+    "url": "https://rackspace.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "redis.com",
+    "url": "https://redis.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "redpanda.com",
+    "url": "https://redpanda.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "singlestore.com",
+    "url": "https://singlestore.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "solace.com",
+    "url": "https://solace.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "stackpath.com",
+    "url": "https://stackpath.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "swiftype.com",
+    "url": "https://swiftype.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "tigergraph.com",
+    "url": "https://tigergraph.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "timescale.com",
+    "url": "https://timescale.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "typesense.org",
+    "url": "https://typesense.org",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "vespa.ai",
+    "url": "https://vespa.ai",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "vultr.com",
+    "url": "https://vultr.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "yugabyte.com",
+    "url": "https://yugabyte.com",
+    "category": "Cloud/Infrastructure"
+  },
+  {
+    "domain": "airbnb.com",
+    "url": "https://airbnb.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "anylist.com",
+    "url": "https://anylist.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "booking.com",
+    "url": "https://booking.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "bumble.com",
+    "url": "https://bumble.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "deliveroo.com",
+    "url": "https://deliveroo.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "doordash.com",
+    "url": "https://doordash.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "eventbrite.com",
+    "url": "https://eventbrite.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "expedia.com",
+    "url": "https://expedia.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "grubhub.com",
+    "url": "https://grubhub.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "hinge.co",
+    "url": "https://hinge.co",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "hopper.com",
+    "url": "https://hopper.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "instacart.com",
+    "url": "https://instacart.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "kayak.com",
+    "url": "https://kayak.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "lyft.com",
+    "url": "https://lyft.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "meetup.com",
+    "url": "https://meetup.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "myfitnesspal.com",
+    "url": "https://myfitnesspal.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "netflix.com",
+    "url": "https://netflix.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "nextdoor.com",
+    "url": "https://nextdoor.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "noom.com",
+    "url": "https://noom.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "peloton.com",
+    "url": "https://peloton.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "photomath.com",
+    "url": "https://photomath.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "pinterest.com",
+    "url": "https://pinterest.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "postmates.com",
+    "url": "https://postmates.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "rome2rio.com",
+    "url": "https://rome2rio.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "skyscanner.net",
+    "url": "https://skyscanner.net",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "snap.com",
+    "url": "https://snap.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "strava.com",
+    "url": "https://strava.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "stubhub.com",
+    "url": "https://stubhub.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "ticketmaster.com",
+    "url": "https://ticketmaster.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "tinder.com",
+    "url": "https://tinder.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "tripadvisor.com",
+    "url": "https://tripadvisor.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "uber.com",
+    "url": "https://uber.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "yelp.com",
+    "url": "https://yelp.com",
+    "category": "Consumer Apps"
+  },
+  {
+    "domain": "aave.com",
+    "url": "https://aave.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "alchemy.com",
+    "url": "https://alchemy.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "arbitrum.io",
+    "url": "https://arbitrum.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "arweave.org",
+    "url": "https://arweave.org",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "ceramic.network",
+    "url": "https://ceramic.network",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "chainlink.com",
+    "url": "https://chainlink.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "compound.finance",
+    "url": "https://compound.finance",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "debank.com",
+    "url": "https://debank.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "defillama.com",
+    "url": "https://defillama.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "dune.com",
+    "url": "https://dune.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "eigenlayer.xyz",
+    "url": "https://eigenlayer.xyz",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "etherscan.io",
+    "url": "https://etherscan.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "filecoin.io",
+    "url": "https://filecoin.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "glassnode.com",
+    "url": "https://glassnode.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "lido.fi",
+    "url": "https://lido.fi",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "makerdao.com",
+    "url": "https://makerdao.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "messari.io",
+    "url": "https://messari.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "metamask.io",
+    "url": "https://metamask.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "nansen.ai",
+    "url": "https://nansen.ai",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "opensea.io",
+    "url": "https://opensea.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "optimism.io",
+    "url": "https://optimism.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "phantom.app",
+    "url": "https://phantom.app",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "polygon.technology",
+    "url": "https://polygon.technology",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "rainbow.me",
+    "url": "https://rainbow.me",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "starknet.io",
+    "url": "https://starknet.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "thegraph.com",
+    "url": "https://thegraph.com",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "uniswap.org",
+    "url": "https://uniswap.org",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "zerion.io",
+    "url": "https://zerion.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "zksync.io",
+    "url": "https://zksync.io",
+    "category": "Crypto/Web3"
+  },
+  {
+    "domain": "atipo.es",
+    "url": "https://atipo.es",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "awwwards.com",
+    "url": "https://awwwards.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "behance.net",
+    "url": "https://behance.net",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "blender.org",
+    "url": "https://blender.org",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "brandmark.io",
+    "url": "https://brandmark.io",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "canva.com",
+    "url": "https://canva.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "cleanup.pictures",
+    "url": "https://cleanup.pictures",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "collectui.com",
+    "url": "https://collectui.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "colorhunt.co",
+    "url": "https://colorhunt.co",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "coolors.co",
+    "url": "https://coolors.co",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "cssdesignawards.com",
+    "url": "https://cssdesignawards.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "designs.ai",
+    "url": "https://designs.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "dribbble.com",
+    "url": "https://dribbble.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "figma.com",
+    "url": "https://figma.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "fontjoy.com",
+    "url": "https://fontjoy.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "fontshare.com",
+    "url": "https://fontshare.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "fontsinuse.com",
+    "url": "https://fontsinuse.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "fontsquirrel.com",
+    "url": "https://fontsquirrel.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "framer.com",
+    "url": "https://framer.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "freepik.com",
+    "url": "https://freepik.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "getimg.ai",
+    "url": "https://getimg.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "happyhues.co",
+    "url": "https://happyhues.co",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "hatchful.shopify.com",
+    "url": "https://hatchful.shopify.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "icons8.com",
+    "url": "https://icons8.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "ideogram.ai",
+    "url": "https://ideogram.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "invisionapp.com",
+    "url": "https://invisionapp.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "kittl.com",
+    "url": "https://kittl.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "landingfolio.com",
+    "url": "https://landingfolio.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "lapa.ninja",
+    "url": "https://lapa.ninja",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "leonardo.ai",
+    "url": "https://leonardo.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "logopony.com",
+    "url": "https://logopony.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "looka.com",
+    "url": "https://looka.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "lottiefiles.com",
+    "url": "https://lottiefiles.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "magicstudio.com",
+    "url": "https://magicstudio.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "midjourney.art",
+    "url": "https://midjourney.art",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "mobbin.com",
+    "url": "https://mobbin.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "muzli.com",
+    "url": "https://muzli.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "mycolor.space",
+    "url": "https://mycolor.space",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "pageflows.com",
+    "url": "https://pageflows.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "penpot.app",
+    "url": "https://penpot.app",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "photopea.com",
+    "url": "https://photopea.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "photoroom.com",
+    "url": "https://photoroom.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "pixlr.com",
+    "url": "https://pixlr.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "playground.com",
+    "url": "https://playground.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "relume.io",
+    "url": "https://relume.io",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "remove.bg",
+    "url": "https://remove.bg",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "rive.app",
+    "url": "https://rive.app",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "screenlane.com",
+    "url": "https://screenlane.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "siteinspire.com",
+    "url": "https://siteinspire.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "sketch.com",
+    "url": "https://sketch.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "spline.design",
+    "url": "https://spline.design",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "stockimg.ai",
+    "url": "https://stockimg.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "svgrepo.com",
+    "url": "https://svgrepo.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "typeface.ai",
+    "url": "https://typeface.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "uigarage.net",
+    "url": "https://uigarage.net",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "unsplash.com",
+    "url": "https://unsplash.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "uxarchive.com",
+    "url": "https://uxarchive.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "vectorizer.ai",
+    "url": "https://vectorizer.ai",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "webflow.com",
+    "url": "https://webflow.com",
+    "category": "Design/Creative"
+  },
+  {
+    "domain": "airflow.apache.org",
+    "url": "https://airflow.apache.org",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "ansible.com",
+    "url": "https://ansible.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "api.video",
+    "url": "https://api.video",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "auth0.com",
+    "url": "https://auth0.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "betteruptime.com",
+    "url": "https://betteruptime.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "buildkite.com",
+    "url": "https://buildkite.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "bun.sh",
+    "url": "https://bun.sh",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "buttercms.com",
+    "url": "https://buttercms.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "cal.com",
+    "url": "https://cal.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "chef.io",
+    "url": "https://chef.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "circleci.com",
+    "url": "https://circleci.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "clerk.com",
+    "url": "https://clerk.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "cloudflare.com",
+    "url": "https://cloudflare.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "codesandbox.io",
+    "url": "https://codesandbox.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "contentful.com",
+    "url": "https://contentful.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "convex.dev",
+    "url": "https://convex.dev",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "dagster.io",
+    "url": "https://dagster.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "datadoghq.com",
+    "url": "https://datadoghq.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "deno.com",
+    "url": "https://deno.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "directus.io",
+    "url": "https://directus.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "docker.com",
+    "url": "https://docker.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "dub.co",
+    "url": "https://dub.co",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "dynatrace.com",
+    "url": "https://dynatrace.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "envoy.com",
+    "url": "https://envoy.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "flagsmith.com",
+    "url": "https://flagsmith.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "fly.io",
+    "url": "https://fly.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "github.com",
+    "url": "https://github.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "gitlab.com",
+    "url": "https://gitlab.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "gitpod.io",
+    "url": "https://gitpod.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "grafana.com",
+    "url": "https://grafana.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "hashicorp.com",
+    "url": "https://hashicorp.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "honeycomb.io",
+    "url": "https://honeycomb.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "hygraph.com",
+    "url": "https://hygraph.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "incident.io",
+    "url": "https://incident.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "inkeep.com",
+    "url": "https://inkeep.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "inngest.com",
+    "url": "https://inngest.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "istio.io",
+    "url": "https://istio.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "keystonejs.com",
+    "url": "https://keystonejs.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "kong.com",
+    "url": "https://kong.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "launchdarkly.com",
+    "url": "https://launchdarkly.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "lightstep.com",
+    "url": "https://lightstep.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "linear.dev",
+    "url": "https://linear.dev",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "liveblocks.io",
+    "url": "https://liveblocks.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "livekit.io",
+    "url": "https://livekit.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "mage.ai",
+    "url": "https://mage.ai",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "mailgun.com",
+    "url": "https://mailgun.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "mintlify.com",
+    "url": "https://mintlify.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "mux.com",
+    "url": "https://mux.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "neon.tech",
+    "url": "https://neon.tech",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "netlify.com",
+    "url": "https://netlify.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "newrelic.com",
+    "url": "https://newrelic.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "ngrok.com",
+    "url": "https://ngrok.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "opsgenie.com",
+    "url": "https://opsgenie.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "optimizely.com",
+    "url": "https://optimizely.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "pagerduty.com",
+    "url": "https://pagerduty.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "payload.cms.com",
+    "url": "https://payload.cms.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "planetscale.com",
+    "url": "https://planetscale.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "posthog.com",
+    "url": "https://posthog.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "postman.com",
+    "url": "https://postman.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "postmark.com",
+    "url": "https://postmark.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "prefect.io",
+    "url": "https://prefect.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "prisma.io",
+    "url": "https://prisma.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "prismic.io",
+    "url": "https://prismic.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "pulumi.com",
+    "url": "https://pulumi.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "puppet.com",
+    "url": "https://puppet.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "railway.app",
+    "url": "https://railway.app",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "render.com",
+    "url": "https://render.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "replit.com",
+    "url": "https://replit.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "resend.com",
+    "url": "https://resend.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "sanity.io",
+    "url": "https://sanity.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "segment.com",
+    "url": "https://segment.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "sendgrid.com",
+    "url": "https://sendgrid.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "sentry.io",
+    "url": "https://sentry.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "snyk.io",
+    "url": "https://snyk.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "sonarqube.org",
+    "url": "https://sonarqube.org",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "split.io",
+    "url": "https://split.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "stackblitz.com",
+    "url": "https://stackblitz.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "statuspage.io",
+    "url": "https://statuspage.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "storyblok.com",
+    "url": "https://storyblok.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "strapi.io",
+    "url": "https://strapi.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "stytch.com",
+    "url": "https://stytch.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "supabase.com",
+    "url": "https://supabase.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "tailscale.com",
+    "url": "https://tailscale.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "temporal.io",
+    "url": "https://temporal.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "terraform.io",
+    "url": "https://terraform.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "travisci.com",
+    "url": "https://travisci.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "trigger.dev",
+    "url": "https://trigger.dev",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "turso.tech",
+    "url": "https://turso.tech",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "twilio.com",
+    "url": "https://twilio.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "tyk.io",
+    "url": "https://tyk.io",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "unleash.run",
+    "url": "https://unleash.run",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "upstash.com",
+    "url": "https://upstash.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "vercel.com",
+    "url": "https://vercel.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "vonage.com",
+    "url": "https://vonage.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "zerotier.com",
+    "url": "https://zerotier.com",
+    "category": "Developer Tools"
+  },
+  {
+    "domain": "afterpay.com",
+    "url": "https://afterpay.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "aftership.com",
+    "url": "https://aftership.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "algolia.com",
+    "url": "https://algolia.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "alibaba.com",
+    "url": "https://alibaba.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "allbirds.com",
+    "url": "https://allbirds.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "amazon.com",
+    "url": "https://amazon.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "asos.com",
+    "url": "https://asos.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "attentive.com",
+    "url": "https://attentive.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "bestbuy.com",
+    "url": "https://bestbuy.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "bigcommerce.com",
+    "url": "https://bigcommerce.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "bold.co",
+    "url": "https://bold.co",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "bolt.com",
+    "url": "https://bolt.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "chargebee.com",
+    "url": "https://chargebee.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "chargify.com",
+    "url": "https://chargify.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "constructorio.com",
+    "url": "https://constructorio.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "deliverr.com",
+    "url": "https://deliverr.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "easypost.com",
+    "url": "https://easypost.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "ebay.com",
+    "url": "https://ebay.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "etsy.com",
+    "url": "https://etsy.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "faire.com",
+    "url": "https://faire.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "fast.co",
+    "url": "https://fast.co",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "flexport.com",
+    "url": "https://flexport.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "gempages.net",
+    "url": "https://gempages.net",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "glossier.com",
+    "url": "https://glossier.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "gorgias.com",
+    "url": "https://gorgias.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "gymshark.com",
+    "url": "https://gymshark.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "klaviyo.com",
+    "url": "https://klaviyo.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "lemonsqueezy.com",
+    "url": "https://lemonsqueezy.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "loop.returns",
+    "url": "https://loop.returns",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "loyaltylion.com",
+    "url": "https://loyaltylion.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "magento.com",
+    "url": "https://magento.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "mercadolibre.com",
+    "url": "https://mercadolibre.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "narvar.com",
+    "url": "https://narvar.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "nike.com",
+    "url": "https://nike.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "nosto.com",
+    "url": "https://nosto.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "okendo.io",
+    "url": "https://okendo.io",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "paddle.com",
+    "url": "https://paddle.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "pagefly.io",
+    "url": "https://pagefly.io",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "prestashop.com",
+    "url": "https://prestashop.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "printful.com",
+    "url": "https://printful.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "rebuy.com",
+    "url": "https://rebuy.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "recharge.com",
+    "url": "https://recharge.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "recurly.com",
+    "url": "https://recurly.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "referralcandy.com",
+    "url": "https://referralcandy.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "returnly.com",
+    "url": "https://returnly.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "searchspring.com",
+    "url": "https://searchspring.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "sezzle.com",
+    "url": "https://sezzle.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shipbob.com",
+    "url": "https://shipbob.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shiphero.com",
+    "url": "https://shiphero.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shippo.com",
+    "url": "https://shippo.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shogun.io",
+    "url": "https://shogun.io",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shopee.com",
+    "url": "https://shopee.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "shopify.com",
+    "url": "https://shopify.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "smile.io",
+    "url": "https://smile.io",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "splitit.com",
+    "url": "https://splitit.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "squarespace.com",
+    "url": "https://squarespace.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "stamped.io",
+    "url": "https://stamped.io",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "target.com",
+    "url": "https://target.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "volusion.com",
+    "url": "https://volusion.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "walmart.com",
+    "url": "https://walmart.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "warbyparker.com",
+    "url": "https://warbyparker.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "wayfair.com",
+    "url": "https://wayfair.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "wix.com",
+    "url": "https://wix.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "woocommerce.com",
+    "url": "https://woocommerce.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "yotpo.com",
+    "url": "https://yotpo.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "zalando.com",
+    "url": "https://zalando.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "zip.co",
+    "url": "https://zip.co",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "zuora.com",
+    "url": "https://zuora.com",
+    "category": "E-Commerce"
+  },
+  {
+    "domain": "anki.net",
+    "url": "https://anki.net",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "blackboard.com",
+    "url": "https://blackboard.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "brainscape.com",
+    "url": "https://brainscape.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "brightspace.com",
+    "url": "https://brightspace.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "brilliant.org",
+    "url": "https://brilliant.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "buymeacoffee.com",
+    "url": "https://buymeacoffee.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "canvas.instructure.com",
+    "url": "https://canvas.instructure.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "classmarker.com",
+    "url": "https://classmarker.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "codecademy.com",
+    "url": "https://codecademy.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "codewars.com",
+    "url": "https://codewars.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "coursera.org",
+    "url": "https://coursera.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "domestika.org",
+    "url": "https://domestika.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "duolingo.com",
+    "url": "https://duolingo.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "edx.org",
+    "url": "https://edx.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "exercism.org",
+    "url": "https://exercism.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "freecodecamp.org",
+    "url": "https://freecodecamp.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "gumroad.com",
+    "url": "https://gumroad.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "hackerrank.com",
+    "url": "https://hackerrank.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "kajabi.com",
+    "url": "https://kajabi.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "khanacademy.org",
+    "url": "https://khanacademy.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "ko-fi.com",
+    "url": "https://ko-fi.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "leetcode.com",
+    "url": "https://leetcode.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "masterclass.com",
+    "url": "https://masterclass.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "memrise.com",
+    "url": "https://memrise.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "moodle.org",
+    "url": "https://moodle.org",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "patreon.com",
+    "url": "https://patreon.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "pluralsight.com",
+    "url": "https://pluralsight.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "podia.com",
+    "url": "https://podia.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "proctorio.com",
+    "url": "https://proctorio.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "quizlet.com",
+    "url": "https://quizlet.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "remnote.com",
+    "url": "https://remnote.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "respondus.com",
+    "url": "https://respondus.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "schoology.com",
+    "url": "https://schoology.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "skillshare.com",
+    "url": "https://skillshare.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "teachable.com",
+    "url": "https://teachable.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "thinkific.com",
+    "url": "https://thinkific.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "turnitin.com",
+    "url": "https://turnitin.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "udacity.com",
+    "url": "https://udacity.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "udemy.com",
+    "url": "https://udemy.com",
+    "category": "Education/EdTech"
+  },
+  {
+    "domain": "acorns.com",
+    "url": "https://acorns.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "adyen.com",
+    "url": "https://adyen.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "affirm.com",
+    "url": "https://affirm.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "airwallex.com",
+    "url": "https://airwallex.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "alloy.com",
+    "url": "https://alloy.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "angellist.com",
+    "url": "https://angellist.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "bench.co",
+    "url": "https://bench.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "betterment.com",
+    "url": "https://betterment.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "bill.com",
+    "url": "https://bill.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "bluevine.com",
+    "url": "https://bluevine.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "braintree.com",
+    "url": "https://braintree.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "brex.com",
+    "url": "https://brex.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "carta.com",
+    "url": "https://carta.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "checkout.com",
+    "url": "https://checkout.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "chime.com",
+    "url": "https://chime.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "clover.com",
+    "url": "https://clover.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "coinbase.com",
+    "url": "https://coinbase.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "column.com",
+    "url": "https://column.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "deel.com",
+    "url": "https://deel.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "divvy.co",
+    "url": "https://divvy.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "flutterwave.com",
+    "url": "https://flutterwave.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "freshbooks.com",
+    "url": "https://freshbooks.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "fundbox.com",
+    "url": "https://fundbox.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "fundrise.com",
+    "url": "https://fundrise.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "gusto.com",
+    "url": "https://gusto.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "kabbage.com",
+    "url": "https://kabbage.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "klarna.com",
+    "url": "https://klarna.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "lightspeed.com",
+    "url": "https://lightspeed.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "lili.co",
+    "url": "https://lili.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "lithic.com",
+    "url": "https://lithic.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "marqeta.com",
+    "url": "https://marqeta.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "melio.com",
+    "url": "https://melio.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "mercury.com",
+    "url": "https://mercury.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "moderntreasury.com",
+    "url": "https://moderntreasury.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "monzo.com",
+    "url": "https://monzo.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "moov.io",
+    "url": "https://moov.io",
+    "category": "Fintech"
+  },
+  {
+    "domain": "n26.com",
+    "url": "https://n26.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "netsuite.com",
+    "url": "https://netsuite.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "novo.co",
+    "url": "https://novo.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "nubank.com.br",
+    "url": "https://nubank.com.br",
+    "category": "Fintech"
+  },
+  {
+    "domain": "nuvei.com",
+    "url": "https://nuvei.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "paypal.com",
+    "url": "https://paypal.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "paystack.com",
+    "url": "https://paystack.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "paytm.com",
+    "url": "https://paytm.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "persona.com",
+    "url": "https://persona.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "pilot.com",
+    "url": "https://pilot.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "plaid.com",
+    "url": "https://plaid.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "ramp.com",
+    "url": "https://ramp.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "rapyd.net",
+    "url": "https://rapyd.net",
+    "category": "Fintech"
+  },
+  {
+    "domain": "razorpay.com",
+    "url": "https://razorpay.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "relay.com",
+    "url": "https://relay.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "remote.com",
+    "url": "https://remote.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "revolut.com",
+    "url": "https://revolut.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "rho.co",
+    "url": "https://rho.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "ripple.com",
+    "url": "https://ripple.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "robinhood.com",
+    "url": "https://robinhood.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "sardine.ai",
+    "url": "https://sardine.ai",
+    "category": "Fintech"
+  },
+  {
+    "domain": "sofi.com",
+    "url": "https://sofi.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "square.com",
+    "url": "https://square.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "squareup.com",
+    "url": "https://squareup.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "stash.com",
+    "url": "https://stash.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "stripe.com",
+    "url": "https://stripe.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "synctera.com",
+    "url": "https://synctera.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "toasttab.com",
+    "url": "https://toasttab.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "treasury-prime.com",
+    "url": "https://treasury-prime.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "unit.co",
+    "url": "https://unit.co",
+    "category": "Fintech"
+  },
+  {
+    "domain": "wave.com",
+    "url": "https://wave.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "wealthfront.com",
+    "url": "https://wealthfront.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "wise.com",
+    "url": "https://wise.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "xero.com",
+    "url": "https://xero.com",
+    "category": "Fintech"
+  },
+  {
+    "domain": "10xgenomics.com",
+    "url": "https://10xgenomics.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "allscripts.com",
+    "url": "https://allscripts.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "athenahealth.com",
+    "url": "https://athenahealth.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "benchling.com",
+    "url": "https://benchling.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "biontech.com",
+    "url": "https://biontech.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "calm.com",
+    "url": "https://calm.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "cerebral.com",
+    "url": "https://cerebral.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "cerner.com",
+    "url": "https://cerner.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "eclinicalworks.com",
+    "url": "https://eclinicalworks.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "epic.com",
+    "url": "https://epic.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "fitbit.com",
+    "url": "https://fitbit.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "flatiron.com",
+    "url": "https://flatiron.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "geneious.com",
+    "url": "https://geneious.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "gilead.com",
+    "url": "https://gilead.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "ginger.com",
+    "url": "https://ginger.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "guardanthealth.com",
+    "url": "https://guardanthealth.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "headspace.com",
+    "url": "https://headspace.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "hims.com",
+    "url": "https://hims.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "illumina.com",
+    "url": "https://illumina.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "iqvia.com",
+    "url": "https://iqvia.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "medidata.com",
+    "url": "https://medidata.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "moderna.com",
+    "url": "https://moderna.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "nanoporetech.com",
+    "url": "https://nanoporetech.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "nurx.com",
+    "url": "https://nurx.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "oscar.com",
+    "url": "https://oscar.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "oura.com",
+    "url": "https://oura.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "pacbio.com",
+    "url": "https://pacbio.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "pfizer.com",
+    "url": "https://pfizer.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "regeneron.com",
+    "url": "https://regeneron.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "ro.co",
+    "url": "https://ro.co",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "talkiatry.com",
+    "url": "https://talkiatry.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "tempus.com",
+    "url": "https://tempus.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "twist.com",
+    "url": "https://twist.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "veeva.com",
+    "url": "https://veeva.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "veracyte.com",
+    "url": "https://veracyte.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "whoop.com",
+    "url": "https://whoop.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "withings.com",
+    "url": "https://withings.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "zocdoc.com",
+    "url": "https://zocdoc.com",
+    "category": "Healthcare/BioTech"
+  },
+  {
+    "domain": "15five.com",
+    "url": "https://15five.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "adp.com",
+    "url": "https://adp.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "ashbyhq.com",
+    "url": "https://ashbyhq.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "bamboohr.com",
+    "url": "https://bamboohr.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "beamery.com",
+    "url": "https://beamery.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "betterworks.com",
+    "url": "https://betterworks.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "breezy.hr",
+    "url": "https://breezy.hr",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "comparably.com",
+    "url": "https://comparably.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "cultureamp.com",
+    "url": "https://cultureamp.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "dover.com",
+    "url": "https://dover.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "eightfold.ai",
+    "url": "https://eightfold.ai",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "gem.com",
+    "url": "https://gem.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "glassdoor.com",
+    "url": "https://glassdoor.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "globalization-partners.com",
+    "url": "https://globalization-partners.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "greenhouse.io",
+    "url": "https://greenhouse.io",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "hibob.com",
+    "url": "https://hibob.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "hired.com",
+    "url": "https://hired.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "hireology.com",
+    "url": "https://hireology.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "icims.com",
+    "url": "https://icims.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "indeed.com",
+    "url": "https://indeed.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "jobvite.com",
+    "url": "https://jobvite.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "lattice.com",
+    "url": "https://lattice.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "leapsome.com",
+    "url": "https://leapsome.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "levels.fyi",
+    "url": "https://levels.fyi",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "lever.co",
+    "url": "https://lever.co",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "linkedin.com",
+    "url": "https://linkedin.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "monster.com",
+    "url": "https://monster.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "namely.com",
+    "url": "https://namely.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "oysterhr.com",
+    "url": "https://oysterhr.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "papayaglobal.com",
+    "url": "https://papayaglobal.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "paycom.com",
+    "url": "https://paycom.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "paylocity.com",
+    "url": "https://paylocity.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "payscale.com",
+    "url": "https://payscale.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "personio.com",
+    "url": "https://personio.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "phenom.com",
+    "url": "https://phenom.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "recruitee.com",
+    "url": "https://recruitee.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "reflektive.com",
+    "url": "https://reflektive.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "rippling.com",
+    "url": "https://rippling.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "salary.com",
+    "url": "https://salary.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "smartrecruiters.com",
+    "url": "https://smartrecruiters.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "teamtailor.com",
+    "url": "https://teamtailor.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "velocityglobal.com",
+    "url": "https://velocityglobal.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "wellfound.com",
+    "url": "https://wellfound.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "workboard.com",
+    "url": "https://workboard.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "workday.com",
+    "url": "https://workday.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "ziprecruiter.com",
+    "url": "https://ziprecruiter.com",
+    "category": "HR/Recruiting"
+  },
+  {
+    "domain": "accela.com",
+    "url": "https://accela.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "agiloft.com",
+    "url": "https://agiloft.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "avvo.com",
+    "url": "https://avvo.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "casepacer.com",
+    "url": "https://casepacer.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "casetext.com",
+    "url": "https://casetext.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "civicplus.com",
+    "url": "https://civicplus.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "clio.com",
+    "url": "https://clio.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "contractpodai.com",
+    "url": "https://contractpodai.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "findlaw.com",
+    "url": "https://findlaw.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "govdelivery.com",
+    "url": "https://govdelivery.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "granicus.com",
+    "url": "https://granicus.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "hellosign.com",
+    "url": "https://hellosign.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "icertis.com",
+    "url": "https://icertis.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "ironclad.ai",
+    "url": "https://ironclad.ai",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "juro.com",
+    "url": "https://juro.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "legalzoom.com",
+    "url": "https://legalzoom.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "lexion.ai",
+    "url": "https://lexion.ai",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "lexisnexis.com",
+    "url": "https://lexisnexis.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "mycase.com",
+    "url": "https://mycase.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "nolo.com",
+    "url": "https://nolo.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "notarize.com",
+    "url": "https://notarize.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "pandadoc.com",
+    "url": "https://pandadoc.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "practicepanther.com",
+    "url": "https://practicepanther.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "precisely.com",
+    "url": "https://precisely.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "rocketlawyer.com",
+    "url": "https://rocketlawyer.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "smokeball.com",
+    "url": "https://smokeball.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "tyler.com",
+    "url": "https://tyler.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "westlaw.com",
+    "url": "https://westlaw.com",
+    "category": "Legal/GovTech"
+  },
+  {
+    "domain": "blueyonder.com",
+    "url": "https://blueyonder.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "convoy.com",
+    "url": "https://convoy.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "coupa.com",
+    "url": "https://coupa.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "descartes.com",
+    "url": "https://descartes.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "fourkites.com",
+    "url": "https://fourkites.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "goshippo.com",
+    "url": "https://goshippo.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "ivalua.com",
+    "url": "https://ivalua.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "jaggaer.com",
+    "url": "https://jaggaer.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "kinaxis.com",
+    "url": "https://kinaxis.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "llamasoft.com",
+    "url": "https://llamasoft.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "loadsmart.com",
+    "url": "https://loadsmart.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "manhattan.com",
+    "url": "https://manhattan.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "motive.com",
+    "url": "https://motive.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "o9solutions.com",
+    "url": "https://o9solutions.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "platform.science",
+    "url": "https://platform.science",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "project44.com",
+    "url": "https://project44.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "samsara.com",
+    "url": "https://samsara.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "sap.com",
+    "url": "https://sap.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "trimble.com",
+    "url": "https://trimble.com",
+    "category": "Logistics/Supply Chain"
+  },
+  {
+    "domain": "activecampaign.com",
+    "url": "https://activecampaign.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "ahrefs.com",
+    "url": "https://ahrefs.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "amplitude.com",
+    "url": "https://amplitude.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "apollo.io",
+    "url": "https://apollo.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "beehiiv.com",
+    "url": "https://beehiiv.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "braze.com",
+    "url": "https://braze.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "buffer.com",
+    "url": "https://buffer.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "carrd.co",
+    "url": "https://carrd.co",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "chorus.ai",
+    "url": "https://chorus.ai",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "clari.com",
+    "url": "https://clari.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "clay.com",
+    "url": "https://clay.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "clearbit.com",
+    "url": "https://clearbit.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "clickfunnels.com",
+    "url": "https://clickfunnels.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "convertkit.com",
+    "url": "https://convertkit.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "customer.io",
+    "url": "https://customer.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "drift.com",
+    "url": "https://drift.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "drip.com",
+    "url": "https://drip.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "fullstory.com",
+    "url": "https://fullstory.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "ghost.org",
+    "url": "https://ghost.org",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "gong.io",
+    "url": "https://gong.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "hashnode.dev",
+    "url": "https://hashnode.dev",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "heap.io",
+    "url": "https://heap.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "highspot.com",
+    "url": "https://highspot.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "hootsuite.com",
+    "url": "https://hootsuite.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "hotjar.com",
+    "url": "https://hotjar.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "hubspot.com",
+    "url": "https://hubspot.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "instantly.ai",
+    "url": "https://instantly.ai",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "instapage.com",
+    "url": "https://instapage.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "intercom.com",
+    "url": "https://intercom.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "iterable.com",
+    "url": "https://iterable.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "later.com",
+    "url": "https://later.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "leadiq.com",
+    "url": "https://leadiq.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "leadpages.com",
+    "url": "https://leadpages.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "lemlist.com",
+    "url": "https://lemlist.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "lusha.com",
+    "url": "https://lusha.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "lytics.com",
+    "url": "https://lytics.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "mailchimp.com",
+    "url": "https://mailchimp.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "medium.com",
+    "url": "https://medium.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "mixpanel.com",
+    "url": "https://mixpanel.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "moz.com",
+    "url": "https://moz.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "mparticle.com",
+    "url": "https://mparticle.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "omnisend.com",
+    "url": "https://omnisend.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "outreach.io",
+    "url": "https://outreach.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "reply.io",
+    "url": "https://reply.io",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "rudderstack.com",
+    "url": "https://rudderstack.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "salesloft.com",
+    "url": "https://salesloft.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "seismic.com",
+    "url": "https://seismic.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "semrush.com",
+    "url": "https://semrush.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "showpad.com",
+    "url": "https://showpad.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "similarweb.com",
+    "url": "https://similarweb.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "sprinklr.com",
+    "url": "https://sprinklr.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "sproutsocial.com",
+    "url": "https://sproutsocial.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "spyfu.com",
+    "url": "https://spyfu.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "substack.com",
+    "url": "https://substack.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "super.so",
+    "url": "https://super.so",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "tealium.com",
+    "url": "https://tealium.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "typedream.com",
+    "url": "https://typedream.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "umso.com",
+    "url": "https://umso.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "unbounce.com",
+    "url": "https://unbounce.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "vidyard.com",
+    "url": "https://vidyard.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "vimeo.com",
+    "url": "https://vimeo.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "wistia.com",
+    "url": "https://wistia.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "woodpecker.co",
+    "url": "https://woodpecker.co",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "wordpress.com",
+    "url": "https://wordpress.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "zoominfo.com",
+    "url": "https://zoominfo.com",
+    "category": "Marketing/Sales"
+  },
+  {
+    "domain": "anchor.fm",
+    "url": "https://anchor.fm",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "animoto.com",
+    "url": "https://animoto.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "bluesky.social",
+    "url": "https://bluesky.social",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "buzzsprout.com",
+    "url": "https://buzzsprout.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "captivate.fm",
+    "url": "https://captivate.fm",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "dailymotion.com",
+    "url": "https://dailymotion.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "devto.dev",
+    "url": "https://devto.dev",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "discord.com",
+    "url": "https://discord.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "hackernews.com",
+    "url": "https://hackernews.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "headliner.app",
+    "url": "https://headliner.app",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "instagram.com",
+    "url": "https://instagram.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "invideo.io",
+    "url": "https://invideo.io",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "kapwing.com",
+    "url": "https://kapwing.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "kick.com",
+    "url": "https://kick.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "mastodon.social",
+    "url": "https://mastodon.social",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "opus.pro",
+    "url": "https://opus.pro",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "producthunt.com",
+    "url": "https://producthunt.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "promo.com",
+    "url": "https://promo.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "reddit.com",
+    "url": "https://reddit.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "repurpose.io",
+    "url": "https://repurpose.io",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "riverside.fm",
+    "url": "https://riverside.fm",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "rumble.com",
+    "url": "https://rumble.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "simplecast.com",
+    "url": "https://simplecast.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "spotify.com",
+    "url": "https://spotify.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "threads.net",
+    "url": "https://threads.net",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "tiktok.com",
+    "url": "https://tiktok.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "transistor.fm",
+    "url": "https://transistor.fm",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "twitch.tv",
+    "url": "https://twitch.tv",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "twitter.com",
+    "url": "https://twitter.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "youtube.com",
+    "url": "https://youtube.com",
+    "category": "Media/Content"
+  },
+  {
+    "domain": "1password.com",
+    "url": "https://1password.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "adobe.com",
+    "url": "https://adobe.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "airtable.com",
+    "url": "https://airtable.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "amie.so",
+    "url": "https://amie.so",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "apple.com",
+    "url": "https://apple.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "asana.com",
+    "url": "https://asana.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "atlassian.com",
+    "url": "https://atlassian.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "basecamp.com",
+    "url": "https://basecamp.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "baserow.io",
+    "url": "https://baserow.io",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "bear.app",
+    "url": "https://bear.app",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "bitwarden.com",
+    "url": "https://bitwarden.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "box.com",
+    "url": "https://box.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "calendly.com",
+    "url": "https://calendly.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "clickup.com",
+    "url": "https://clickup.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "clockify.me",
+    "url": "https://clockify.me",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "coda.io",
+    "url": "https://coda.io",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "confluence.com",
+    "url": "https://confluence.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "craft.do",
+    "url": "https://craft.do",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "cvent.com",
+    "url": "https://cvent.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "docusign.com",
+    "url": "https://docusign.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "dropbox.com",
+    "url": "https://dropbox.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "evernote.com",
+    "url": "https://evernote.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "fantastical.app",
+    "url": "https://fantastical.app",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "fibery.io",
+    "url": "https://fibery.io",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "freshworks.com",
+    "url": "https://freshworks.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "front.com",
+    "url": "https://front.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "google.com",
+    "url": "https://google.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "grammarly.com",
+    "url": "https://grammarly.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "harvest.com",
+    "url": "https://harvest.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "height.app",
+    "url": "https://height.app",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "hive.com",
+    "url": "https://hive.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "jotform.com",
+    "url": "https://jotform.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "lastpass.com",
+    "url": "https://lastpass.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "linear.app",
+    "url": "https://linear.app",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "logseq.com",
+    "url": "https://logseq.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "loom.com",
+    "url": "https://loom.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "make.com",
+    "url": "https://make.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "microsoft.com",
+    "url": "https://microsoft.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "miro.com",
+    "url": "https://miro.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "monday.com",
+    "url": "https://monday.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "motion.com",
+    "url": "https://motion.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "nocodb.com",
+    "url": "https://nocodb.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "notion.so",
+    "url": "https://notion.so",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "obsidian.md",
+    "url": "https://obsidian.md",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "pitch.com",
+    "url": "https://pitch.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "podio.com",
+    "url": "https://podio.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "raycast.com",
+    "url": "https://raycast.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "reclaim.ai",
+    "url": "https://reclaim.ai",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "retool.com",
+    "url": "https://retool.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "rise.com",
+    "url": "https://rise.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "roamresearch.com",
+    "url": "https://roamresearch.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "rows.com",
+    "url": "https://rows.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "salesforce.com",
+    "url": "https://salesforce.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "seatable.io",
+    "url": "https://seatable.io",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "slack.com",
+    "url": "https://slack.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "smartsheet.com",
+    "url": "https://smartsheet.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "superhuman.com",
+    "url": "https://superhuman.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "tally.so",
+    "url": "https://tally.so",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "tana.inc",
+    "url": "https://tana.inc",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "teamwork.com",
+    "url": "https://teamwork.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "timely.com",
+    "url": "https://timely.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "todoist.com",
+    "url": "https://todoist.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "toggl.com",
+    "url": "https://toggl.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "trello.com",
+    "url": "https://trello.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "typeform.com",
+    "url": "https://typeform.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "wrike.com",
+    "url": "https://wrike.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "zapier.com",
+    "url": "https://zapier.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "zendesk.com",
+    "url": "https://zendesk.com",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "zoom.us",
+    "url": "https://zoom.us",
+    "category": "SaaS/Productivity"
+  },
+  {
+    "domain": "abnormalsecurity.com",
+    "url": "https://abnormalsecurity.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "akamai.com",
+    "url": "https://akamai.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "aquasec.com",
+    "url": "https://aquasec.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "barracuda.com",
+    "url": "https://barracuda.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "beyondtrust.com",
+    "url": "https://beyondtrust.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "bridgecrew.io",
+    "url": "https://bridgecrew.io",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "carbonblack.com",
+    "url": "https://carbonblack.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "cribl.io",
+    "url": "https://cribl.io",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "crowdstrike.com",
+    "url": "https://crowdstrike.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "cyberark.com",
+    "url": "https://cyberark.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "divvycloud.com",
+    "url": "https://divvycloud.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "drata.com",
+    "url": "https://drata.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "elastic.co",
+    "url": "https://elastic.co",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "ermetic.com",
+    "url": "https://ermetic.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "fireeye.com",
+    "url": "https://fireeye.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "fortinet.com",
+    "url": "https://fortinet.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "fugue.co",
+    "url": "https://fugue.co",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "jumpcloud.com",
+    "url": "https://jumpcloud.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "lacework.com",
+    "url": "https://lacework.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "malwarebytes.com",
+    "url": "https://malwarebytes.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "mandiant.com",
+    "url": "https://mandiant.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "mimecast.com",
+    "url": "https://mimecast.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "okta.com",
+    "url": "https://okta.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "onelogin.com",
+    "url": "https://onelogin.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "orca.security",
+    "url": "https://orca.security",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "paloaltonetworks.com",
+    "url": "https://paloaltonetworks.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "panther.com",
+    "url": "https://panther.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "proofpoint.com",
+    "url": "https://proofpoint.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "qualys.com",
+    "url": "https://qualys.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "rapid7.com",
+    "url": "https://rapid7.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "sailpoint.com",
+    "url": "https://sailpoint.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "secureframe.com",
+    "url": "https://secureframe.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "sentinelone.com",
+    "url": "https://sentinelone.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "sophos.com",
+    "url": "https://sophos.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "splunk.com",
+    "url": "https://splunk.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "sumo.com",
+    "url": "https://sumo.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "sysdig.com",
+    "url": "https://sysdig.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "tenable.com",
+    "url": "https://tenable.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "tessian.com",
+    "url": "https://tessian.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "trellix.com",
+    "url": "https://trellix.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "vanta.com",
+    "url": "https://vanta.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "varonis.com",
+    "url": "https://varonis.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "wiz.io",
+    "url": "https://wiz.io",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "zscaler.com",
+    "url": "https://zscaler.com",
+    "category": "Security/Compliance"
+  },
+  {
+    "domain": "arcadia.com",
+    "url": "https://arcadia.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "carbonengineering.com",
+    "url": "https://carbonengineering.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "carbonfact.com",
+    "url": "https://carbonfact.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "charm.industrial",
+    "url": "https://charm.industrial",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "climeworks.com",
+    "url": "https://climeworks.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "emitwise.com",
+    "url": "https://emitwise.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "enphase.com",
+    "url": "https://enphase.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "eos.com",
+    "url": "https://eos.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "formenergyinc.com",
+    "url": "https://formenergyinc.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "greenly.earth",
+    "url": "https://greenly.earth",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "lucid.com",
+    "url": "https://lucid.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "normative.io",
+    "url": "https://normative.io",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "northvolt.com",
+    "url": "https://northvolt.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "ohmconnect.com",
+    "url": "https://ohmconnect.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "pachama.com",
+    "url": "https://pachama.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "patch.io",
+    "url": "https://patch.io",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "persefoni.com",
+    "url": "https://persefoni.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "plan-a.earth",
+    "url": "https://plan-a.earth",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "quantumscape.com",
+    "url": "https://quantumscape.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "rivian.com",
+    "url": "https://rivian.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "sinai.com",
+    "url": "https://sinai.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "solaredge.com",
+    "url": "https://solaredge.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "solidpower.com",
+    "url": "https://solidpower.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "sunnova.com",
+    "url": "https://sunnova.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "sunrun.com",
+    "url": "https://sunrun.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "sweep.net",
+    "url": "https://sweep.net",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "tesla.com",
+    "url": "https://tesla.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "voltus.co",
+    "url": "https://voltus.co",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "watershed.com",
+    "url": "https://watershed.com",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "wren.co",
+    "url": "https://wren.co",
+    "category": "Sustainability/Climate"
+  },
+  {
+    "domain": "agora.io",
+    "url": "https://agora.io",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "aircall.io",
+    "url": "https://aircall.io",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "bandwidth.com",
+    "url": "https://bandwidth.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "bluejeans.com",
+    "url": "https://bluejeans.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "cloudtalk.io",
+    "url": "https://cloudtalk.io",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "daily.co",
+    "url": "https://daily.co",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "dialpad.com",
+    "url": "https://dialpad.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "five9.com",
+    "url": "https://five9.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "genesys.com",
+    "url": "https://genesys.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "gotomeeting.com",
+    "url": "https://gotomeeting.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "infobip.com",
+    "url": "https://infobip.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "jitsi.org",
+    "url": "https://jitsi.org",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "justcall.io",
+    "url": "https://justcall.io",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "kaleyra.com",
+    "url": "https://kaleyra.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "lifesize.com",
+    "url": "https://lifesize.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "messagebird.com",
+    "url": "https://messagebird.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "nexmo.com",
+    "url": "https://nexmo.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "nice.com",
+    "url": "https://nice.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "pexip.com",
+    "url": "https://pexip.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "plivo.com",
+    "url": "https://plivo.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "ringcentral.com",
+    "url": "https://ringcentral.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "sinch.com",
+    "url": "https://sinch.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "talkdesk.com",
+    "url": "https://talkdesk.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "telnyx.com",
+    "url": "https://telnyx.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "verint.com",
+    "url": "https://verint.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "webex.com",
+    "url": "https://webex.com",
+    "category": "Telecom/Communications"
+  },
+  {
+    "domain": "whereby.com",
+    "url": "https://whereby.com",
+    "category": "Telecom/Communications"
+  }
+]

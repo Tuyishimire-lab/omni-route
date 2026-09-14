@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import sitemap from '../../app/sitemap';
 
 describe('Sitemap Generator (src/app/sitemap.ts)', () => {
-  it('returns valid sitemap entries for Google indexing', () => {
-    const entries = sitemap();
+  it('returns valid sitemap entries for Google indexing', async () => {
+    const entries = await sitemap();
 
     expect(Array.isArray(entries)).toBe(true);
     expect(entries.length).toBeGreaterThanOrEqual(8);
@@ -23,6 +23,7 @@ describe('Sitemap Generator (src/app/sitemap.ts)', () => {
       'https://www.citeroute.com/leaderboard',
       'https://www.citeroute.com/pricing',
       'https://www.citeroute.com/about',
+      'https://www.citeroute.com/directory',
     ];
 
     for (const path of expectedPaths) {
@@ -32,8 +33,8 @@ describe('Sitemap Generator (src/app/sitemap.ts)', () => {
     }
   });
 
-  it('ensures all sitemap URLs use HTTPS and the official domain', () => {
-    const entries = sitemap();
+  it('ensures all sitemap URLs use HTTPS and the official domain', async () => {
+    const entries = await sitemap();
     for (const entry of entries) {
       expect(entry.url).toMatch(/^https:\/\/www\.citeroute\.com/);
     }
