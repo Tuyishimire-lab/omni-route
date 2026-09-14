@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GeoAuditReport, Recommendation } from '../lib/types';
 import { saveWatchedDomain, getWatchedDomains } from '../lib/storage';
 import UpgradeModal from './UpgradeModal';
@@ -25,7 +25,11 @@ import {
   Key,
   Zap,
   X,
+  TrendingUp,
+  TrendingDown,
+  Activity,
 } from 'lucide-react';
+import Sparkline from './Sparkline';
 
 // ── Connect Engines Callout ────────────────────────────────────────────────
 // Shown below the engine breakdown cards when no live API data is available.
@@ -76,6 +80,86 @@ function ConnectEnginesCallout({ domain }: { domain: string }) {
       >
         <X className="w-4 h-4" />
       </button>
+    </div>
+  );
+}
+
+// ── Score History Panel ─────────────────────────────────────────────────────
+// Fetches real ScanEvent history from the DB and renders a trend sparkline.
+function ScoreHistoryPanel({ domain }: { domain: string }) {
+  const [history, setHistory] = useState<{ date: string; score: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+    fetch(`/api/v1/leaderboard/history?domains=${encodeURIComponent(cleanDomain)}&days=14`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!cancelled && data?.history?.[cleanDomain]) {
+          setHistory(data.history[cleanDomain]);
+        }
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [domain]);
+
+  if (loading) return null;
+
+  const hasHistory = history.length >= 2;
+  const delta = hasHistory ? history[history.length - 1].score - history[0].score : 0;
+  const firstDate = hasHistory ? history[0].date : null;
+  const lastDate = hasHistory ? history[history.length - 1].date : null;
+
+  return (
+    <div className="glass-panel rounded-2xl p-4 sm:p-5 border border-[rgba(187,191,191,0.10)] print-break-avoid">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+          <Activity className="w-4 h-4 text-[#05AD98]" />
+          Score History
+        </h3>
+        {hasHistory && (
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-[#878787] font-mono">
+              {firstDate} → {lastDate}
+            </span>
+            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+              delta > 0
+                ? 'bg-[rgba(5,173,152,0.10)] text-[#05AD98] border-[rgba(5,173,152,0.25)]'
+                : delta < 0
+                ? 'bg-rose-500/10 text-rose-400 border-rose-500/25'
+                : 'bg-slate-500/10 text-[#878787] border-slate-500/20'
+            }`}>
+              {delta > 0 ? <TrendingUp className="w-3 h-3" /> : delta < 0 ? <TrendingDown className="w-3 h-3" /> : null}
+              {delta > 0 ? `+${delta}` : delta === 0 ? '±0' : delta} pts
+            </span>
+          </div>
+        )}
+      </div>
+
+      {hasHistory ? (
+        <div className="w-full">
+          <Sparkline
+            data={history}
+            width={600}
+            height={64}
+            showDots={true}
+          />
+          <p className="text-[10px] text-[#878787] mt-2">
+            {history.length} data points over 14 days — updated by CiteRoute&apos;s automated rescan pipeline.
+          </p>
+        </div>
+      ) : (
+        <div className="text-center py-4">
+          <p className="text-xs text-[#878787]">
+            First scan — trend data will appear after the next rescan cycle.
+          </p>
+          <p className="text-[10px] text-[#878787] mt-1">
+            CiteRoute rescans domains every 7 days automatically.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
@@ -404,6 +488,9 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
           </div>
         </div>
       </div>
+
+      {/* Score History — real trend data from cron rescans */}
+      <ScoreHistoryPanel domain={report.domain} />
 
       {/* Foundation Model & Generative Answer Engine Diagnostics */}
       <div className="print-break-avoid">

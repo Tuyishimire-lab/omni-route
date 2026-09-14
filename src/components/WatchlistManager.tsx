@@ -68,12 +68,24 @@ export default function WatchlistManager() {
   const [isClient, setIsClient] = useState(false);
   const [userTier, setUserTier] = useState<UserTier>('free');
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [dbHistoryMap, setDbHistoryMap] = useState<Record<string, { date: string; score: number }[]>>({});
 
   useEffect(() => {
     // Deferred: localStorage isn't available during SSR
     const t = setTimeout(() => {
       setIsClient(true);
-      setDomains(getWatchedDomains());
+      const loaded = getWatchedDomains();
+      setDomains(loaded);
+      // Fetch real DB history for sparklines (replaces localStorage-seeded fakes)
+      if (loaded.length > 0) {
+        const domainList = loaded.map(d => d.domain).slice(0, 20);
+        fetch(`/api/v1/leaderboard/history?domains=${domainList.join(',')}&days=14`)
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data?.history) setDbHistoryMap(data.history);
+          })
+          .catch(() => {});
+      }
       fetch('/api/auth/me')
         .then((res) => res.json())
         .then((data) => {
@@ -227,13 +239,21 @@ export default function WatchlistManager() {
                   </div>
                 </div>
 
-                {/* Sparkline */}
-                {item.scoreHistory && item.scoreHistory.length > 1 && (
-                  <div className="pt-1">
-                    <p className="text-[10px] text-[#878787] mb-1">7-day GEO trend</p>
-                    <Sparkline data={item.scoreHistory} />
-                  </div>
-                )}
+                {/* Sparkline — real DB history from cron rescans */}
+                {(() => {
+                  const realHistory = dbHistoryMap[item.domain];
+                  return realHistory && realHistory.length > 1 ? (
+                    <div className="pt-1">
+                      <p className="text-[10px] text-[#878787] mb-1">14-day GEO trend</p>
+                      <Sparkline data={realHistory} />
+                    </div>
+                  ) : item.scoreHistory && item.scoreHistory.length > 1 ? (
+                    <div className="pt-1">
+                      <p className="text-[10px] text-[#878787] mb-1">14-day GEO trend</p>
+                      <Sparkline data={item.scoreHistory} />
+                    </div>
+                  ) : null;
+                })()}
 
                 {/* Actions */}
                 <div className="flex items-center justify-between pt-2 border-t border-slate-850 text-xs">

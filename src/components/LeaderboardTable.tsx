@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown, RefreshCw, Sparkles } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Search, ArrowRight, Crown, RefreshCw, Sparkles, Clock } from 'lucide-react';
 import Sparkline from './Sparkline';
 
 import { DEFAULT_LEADERBOARD_ENTRIES, LeaderboardEntry } from '../lib/defaultLeaderboard';
@@ -10,6 +10,22 @@ import { DEFAULT_LEADERBOARD_ENTRIES, LeaderboardEntry } from '../lib/defaultLea
 export type { LeaderboardEntry };
 
 const CATEGORIES = ['All', 'AI/Tech', 'Fintech', 'SaaS/Tools', 'SaaS/Design', 'Developer', 'E-Commerce'];
+
+function formatRelativeTime(isoDate?: string): string {
+  if (!isoDate) return '—';
+  const now = Date.now();
+  const then = new Date(isoDate).getTime();
+  const diffMs = now - then;
+  if (diffMs < 0) return 'just now';
+  const mins = Math.floor(diffMs / 60_000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  return `${Math.floor(days / 30)}mo ago`;
+}
 
 function getScoreBarColor(score: number) {
   if (score >= 90) return 'from-[#05AD98] to-emerald-400';
@@ -143,13 +159,14 @@ export default function LeaderboardTable({
       {/* Table */}
       <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
         {/* Table Head */}
-        <div className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px] gap-x-2 px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
+        <div className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
           <span className="text-center">#</span>
           <span>Domain</span>
           <span className="text-center">GEO Score</span>
           <span className="text-center hidden sm:block">Score Bar</span>
           <span className="text-center hidden sm:block">Citation Win</span>
           <span className="text-center hidden sm:block">History</span>
+          <span className="text-center hidden sm:block">Scanned</span>
           <span className="text-center">Trend</span>
         </div>
 
@@ -173,7 +190,7 @@ export default function LeaderboardTable({
         {!isLoading && filtered.map((entry, idx) => (
           <div
             key={entry.domain}
-            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
+            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
           >
             {/* Rank */}
             <div className="text-center">
@@ -243,6 +260,14 @@ export default function LeaderboardTable({
                 height={28}
                 showDots={true}
               />
+            </div>
+
+            {/* Last Scanned (hidden on mobile) */}
+            <div className="hidden sm:flex items-center justify-center">
+              <span className="text-[10px] text-[#878787] font-mono flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                {formatRelativeTime(entry.lastScanned)}
+              </span>
             </div>
 
             {/* Trend */}
