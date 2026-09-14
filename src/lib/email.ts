@@ -112,7 +112,7 @@ export async function sendVerificationCodeEmail({
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
-      replyTo: 'tuyishime1angel@gmail.com',
+      replyTo: 'contact@citeroute.com',
       subject: `${code} is your CiteRoute verification code`,
       html,
       text,
@@ -236,7 +236,7 @@ export async function sendPasswordResetEmail({
           <tr>
             <td style="padding:20px 32px 28px 32px;background-color:#0A0E0E;border-top:1px solid rgba(187,191,191,0.08);text-align:center;">
               <p style="margin:0 0 6px 0;font-size:11px;color:#64748B;">
-                CiteRoute Platform | Questions? Reach us at <a href="mailto:tuyishime1angel@gmail.com" style="color:#05AD98;text-decoration:none;">tuyishime1angel@gmail.com</a>
+                CiteRoute Platform | Questions? Reach us at <a href="mailto:contact@citeroute.com" style="color:#05AD98;text-decoration:none;">contact@citeroute.com</a>
               </p>
               <p style="margin:0;font-size:10px;color:#475569;">
                 &copy; ${new Date().getFullYear()} CiteRoute. All rights reserved.
@@ -251,13 +251,13 @@ export async function sendPasswordResetEmail({
 </html>
   `;
 
-  const text = `Reset Your CiteRoute Password\n\nHello ${recipientName},\n\nWe received a request to reset the password for your CiteRoute account. Visit the link below to choose a new password:\n\n${resetUrl}\n\nThis link will expire in 30 minutes. If you did not request this, please ignore this email.\n\nSupport: tuyishime1angel@gmail.com`;
+  const text = `Reset Your CiteRoute Password\n\nHello ${recipientName},\n\nWe received a request to reset the password for your CiteRoute account. Visit the link below to choose a new password:\n\n${resetUrl}\n\nThis link will expire in 30 minutes. If you did not request this, please ignore this email.\n\nSupport: contact@citeroute.com`;
 
   try {
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
-      replyTo: 'tuyishime1angel@gmail.com',
+      replyTo: 'contact@citeroute.com',
       subject: 'Reset your CiteRoute password',
       html,
       text,
@@ -393,7 +393,7 @@ export async function sendWelcomeEmail({
               </p>
 
               <p style="margin:20px 0 0 0;font-size:12px;line-height:1.5;color:#878787;">
-                Need assistance setting up your domain or configuring crawler rules? Reply directly to this email or reach us anytime at <a href="mailto:tuyishime1angel@gmail.com" style="color:#05AD98;text-decoration:none;">tuyishime1angel@gmail.com</a>.
+                Need assistance setting up your domain or configuring crawler rules? Reply directly to this email or reach us anytime at <a href="mailto:contact@citeroute.com" style="color:#05AD98;text-decoration:none;">contact@citeroute.com</a>.
               </p>
             </td>
           </tr>
@@ -420,20 +420,20 @@ export async function sendWelcomeEmail({
 </html>
   `;
 
-  const text = `Welcome to CiteRoute, ${recipientName}!\n\nSearch is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.\n\nQuick Start Guide:\n1. Run a GEO Scan: Audit your domain to uncover your baseline citation rate and vector readiness.\n2. Install the Snippet: Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.\n3. Track Citations: Watch crawler visits transform into citations, brand mentions, and referral traffic.\n\nOpen your sites and dashboard: ${dashboardUrl}\n\nQuestions? Reach us at tuyishime1angel@gmail.com\n\n© ${new Date().getFullYear()} CiteRoute. All rights reserved.`;
+  const text = `Welcome to CiteRoute, ${recipientName}!\n\nSearch is moving from blue links to direct AI answers. CiteRoute gives you the real-time telemetry, Generative Engine Optimization (GEO) scoring, and citation analytics needed to win visibility across ChatGPT, Claude, and Perplexity.\n\nQuick Start Guide:\n1. Run a GEO Scan: Audit your domain to uncover your baseline citation rate and vector readiness.\n2. Install the Snippet: Add the one-line CiteRoute telemetry tag to monitor autonomous AI agent crawlers in real-time.\n3. Track Citations: Watch crawler visits transform into citations, brand mentions, and referral traffic.\n\nOpen your sites and dashboard: ${dashboardUrl}\n\nQuestions? Reach us at contact@citeroute.com\n\n© ${new Date().getFullYear()} CiteRoute. All rights reserved.`;
 
   try {
     const subject = userName ? `Welcome to CiteRoute, ${userName}` : 'Welcome to CiteRoute';
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
-      replyTo: 'tuyishime1angel@gmail.com',
+      replyTo: 'contact@citeroute.com',
       subject,
       html,
       text,
       headers: {
         'X-Entity-Ref-ID': `welcome-${Date.now()}-${to}`,
-        'List-Unsubscribe': '<mailto:tuyishime1angel@gmail.com?subject=unsubscribe>',
+        'List-Unsubscribe': '<mailto:contact@citeroute.com?subject=unsubscribe>',
       },
     });
 
@@ -875,7 +875,7 @@ export async function sendWeeklyDigestEmail({
     ``,
     `View your live dashboard: ${dashboardUrl}`,
     ``,
-    `Questions? Reach us at tuyishime1angel@gmail.com`,
+    `Questions? Reach us at contact@citeroute.com`,
     ``,
     `(c) ${new Date().getFullYear()} CiteRoute. All rights reserved.`,
   ].join('\n');
@@ -889,13 +889,13 @@ export async function sendWeeklyDigestEmail({
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to,
-      replyTo: 'tuyishime1angel@gmail.com',
+      replyTo: 'contact@citeroute.com',
       subject,
       html,
       text,
       headers: {
         'X-Entity-Ref-ID': `digest-${Date.now()}-${to}`,
-        'List-Unsubscribe': '<mailto:tuyishime1angel@gmail.com?subject=unsubscribe>',
+        'List-Unsubscribe': '<mailto:contact@citeroute.com?subject=unsubscribe>',
       },
     });
 

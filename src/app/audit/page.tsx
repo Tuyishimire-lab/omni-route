@@ -167,12 +167,12 @@ function AuditContent() {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <a
-                href="/pricing"
+                href="/register?redirect=/pricing&tier=pro"
                 className="px-3 py-1.5 rounded-lg bg-[#05AD98] text-white font-semibold hover:bg-[#038a79] transition-colors whitespace-nowrap"
               >
                 Upgrade to Pro
               </a>
-              <a href="/register" className="text-rose-300 underline hover:text-rose-200 whitespace-nowrap">
+              <a href="/register?redirect=/audit" className="text-rose-300 underline hover:text-rose-200 whitespace-nowrap">
                 Sign up free
               </a>
             </div>
@@ -186,7 +186,7 @@ function AuditContent() {
               Too many scans in a short window. Next scan available in{' '}
               <strong className="font-mono">{rateLimitRetryAfter}s</strong>
               {' '}&mdash; or{' '}
-              <a href="/register" className="underline hover:text-amber-200">create a free account</a>
+              <a href="/register?redirect=/audit" className="underline hover:text-amber-200">create a free account</a>
               {' '}for higher limits.
             </span>
             <a href="/pricing" className="shrink-0 underline hover:text-amber-200 whitespace-nowrap">View plans</a>

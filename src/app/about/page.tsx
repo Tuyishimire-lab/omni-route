@@ -172,10 +172,10 @@ export default function AboutPage() {
           Enterprise inquiries, partnership proposals, or feedback - we&apos;d love to hear from you.
         </p>
         <a
-          href="mailto:tuyishime1angel@gmail.com"
+          href="mailto:contact@citeroute.com"
           className="inline-block text-sm text-[#05AD98] font-mono hover:underline transition-all"
         >
-          tuyishime1angel@gmail.com
+          contact@citeroute.com
         </a>
       </section>
     </div>

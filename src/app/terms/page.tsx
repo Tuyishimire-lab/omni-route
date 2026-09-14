@@ -86,7 +86,7 @@ export default function TermsOfServicePage() {
             To access certain features, you must register for an account. You agree to provide accurate, current, and complete information and promptly update your account profile when details change.
           </p>
           <p>
-            You are entirely responsible for maintaining the confidentiality of your credentials and API keys. Any action performed through your account is deemed to have been authorized by you. You agree to notify us immediately at <span className="text-white font-mono">tuyishime1angel@gmail.com</span> upon discovering any unauthorized use of your account or security breach.
+            You are entirely responsible for maintaining the confidentiality of your credentials and API keys. Any action performed through your account is deemed to have been authorized by you. You agree to notify us immediately at <span className="text-white font-mono">contact@citeroute.com</span> upon discovering any unauthorized use of your account or security breach.
           </p>
         </section>
 
@@ -132,7 +132,7 @@ export default function TermsOfServicePage() {
               <strong className="text-white">14-Day Refund Guarantee:</strong> If you are dissatisfied with your initial subscription purchase for any reason, you may request a full refund within fourteen (14) calendar days of your initial purchase date.
             </li>
             <li>
-              <strong className="text-white">How to Request a Refund:</strong> To request a refund under the 14-day policy, please email <span className="text-white font-mono">tuyishime1angel@gmail.com</span> with your registered account email and order receipt number. Approved refunds are processed promptly to the original payment method by Lemon Squeezy.
+              <strong className="text-white">How to Request a Refund:</strong> To request a refund under the 14-day policy, please email <span className="text-white font-mono">contact@citeroute.com</span> with your registered account email and order receipt number. Approved refunds are processed promptly to the original payment method by Lemon Squeezy.
             </li>
           </ul>
         </section>
@@ -227,7 +227,7 @@ export default function TermsOfServicePage() {
           </p>
           <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] text-xs text-[#878787] space-y-1">
             <p className="text-white font-semibold">CiteRoute Legal Operations</p>
-            <p>Email: tuyishime1angel@gmail.com</p>
+            <p>Email: contact@citeroute.com</p>
             <p>Location: Kigali, Rwanda</p>
           </div>
         </section>

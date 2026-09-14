@@ -77,7 +77,7 @@ export default function UpgradeModal({
 
   const handleInstantUpgrade = async () => {
     if (targetTier === 'enterprise') {
-      window.location.href = 'mailto:tuyishime1angel@gmail.com?subject=CiteRoute%20Enterprise%20Upgrade';
+      window.location.href = 'mailto:contact@citeroute.com?subject=CiteRoute%20Enterprise%20Upgrade';
       return;
     }
 

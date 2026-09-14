@@ -3,11 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +41,10 @@ export default function RegisterPage() {
         return;
       }
 
-      router.push('/');
+      // Redirect to the specified destination (or home)
+      // Validate redirect is a relative path to prevent open redirects
+      const safeDest = redirectTo.startsWith('/') ? redirectTo : '/';
+      router.push(safeDest);
       router.refresh();
     } catch {
       setError('Network error. Please try again.');

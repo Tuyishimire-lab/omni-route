@@ -254,8 +254,8 @@ function ResetPasswordForm() {
         {/* Footer */}
         <p className="text-center text-xs text-[#878787]">
           Need help? Contact support at{' '}
-          <a href="mailto:tuyishime1angel@gmail.com" className="text-[#05AD98] hover:underline font-semibold">
-            tuyishime1angel@gmail.com
+          <a href="mailto:contact@citeroute.com" className="text-[#05AD98] hover:underline font-semibold">
+            contact@citeroute.com
           </a>
         </p>
       </div>

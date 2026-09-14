@@ -264,7 +264,7 @@ export default function PricingCards() {
                   )
                 ) : plan.id === 'enterprise' ? (
                   <a
-                    href="mailto:tuyishime1angel@gmail.com?subject=CiteRoute%20Enterprise%20Inquiry"
+                    href="mailto:contact@citeroute.com?subject=CiteRoute%20Enterprise%20Inquiry"
                     className="block text-center py-2.5 rounded-xl text-sm font-bold bg-[rgba(184,160,74,0.10)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)] hover:bg-[rgba(184,160,74,0.18)] transition-all"
                   >
                     Contact Sales

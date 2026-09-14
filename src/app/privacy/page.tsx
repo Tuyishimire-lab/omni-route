@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
           <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] text-xs text-[#878787] space-y-1">
             <p className="text-white font-semibold">CiteRoute Operations</p>
             <p>Location: Kigali, Rwanda</p>
-            <p>Contact Email: tuyishime1angel@gmail.com</p>
+            <p>Contact Email: contact@citeroute.com</p>
           </div>
         </section>
 
@@ -206,7 +206,7 @@ export default function PrivacyPolicyPage() {
             </li>
           </ul>
           <p>
-            To exercise any of these rights, please email us directly at <span className="text-white font-mono">tuyishime1angel@gmail.com</span>. We respond to all verified requests within thirty (30) days without cost.
+            To exercise any of these rights, please email us directly at <span className="text-white font-mono">contact@citeroute.com</span>. We respond to all verified requests within thirty (30) days without cost.
           </p>
         </section>
 
@@ -245,7 +245,7 @@ export default function PrivacyPolicyPage() {
           </p>
           <div className="p-4 rounded-xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] text-xs text-[#878787] space-y-1">
             <p className="text-white font-semibold">CiteRoute Legal and Privacy</p>
-            <p>Email: tuyishime1angel@gmail.com</p>
+            <p>Email: contact@citeroute.com</p>
             <p>Location: Kigali, Rwanda</p>
           </div>
         </section>
