@@ -7,11 +7,13 @@ interface EmailGateModalProps {
   open: boolean;
   onClose: () => void;
   onVerified: () => void;
+  /** When set (e.g. from EMAIL_EXPIRED), skip the email-entry step and auto-send a new code. */
+  initialEmail?: string;
 }
 
 type Step = 'email' | 'code';
 
-export default function EmailGateModal({ open, onClose, onVerified }: EmailGateModalProps) {
+export default function EmailGateModal({ open, onClose, onVerified, initialEmail }: EmailGateModalProps) {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -27,6 +29,38 @@ export default function EmailGateModal({ open, onClose, onVerified }: EmailGateM
       setTimeout(() => emailInputRef.current?.focus(), 100);
     }
   }, [open, step]);
+
+  // When opened with a pre-filled email (re-verification), auto-send the code
+  useEffect(() => {
+    if (open && initialEmail) {
+      setEmail(initialEmail);
+      // Trigger code send immediately — skips the email-entry step
+      const sendCode = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const res = await fetch('/api/v1/verify-email/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: initialEmail.trim().toLowerCase() }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            setStep('code');
+            setCode(['', '', '', '', '', '']);
+          } else {
+            setError(data.error || 'Failed to send code. Try again.');
+          }
+        } catch {
+          setError('Network error. Please check your connection.');
+        } finally {
+          setLoading(false);
+        }
+      };
+      sendCode();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, initialEmail]);
 
   // Focus first code input when switching to code step
   useEffect(() => {
@@ -176,11 +210,15 @@ export default function EmailGateModal({ open, onClose, onVerified }: EmailGateM
             )}
           </div>
           <h2 className="text-xl font-bold text-white mb-1">
-            {step === 'email' ? 'Verify your email' : 'Enter verification code'}
+            {step === 'email'
+              ? (initialEmail ? 'Re-verify your email' : 'Verify your email')
+              : 'Enter verification code'}
           </h2>
           <p className="text-sm text-[#878787]">
             {step === 'email'
-              ? 'We need your email to run a free GEO scan.'
+              ? (initialEmail
+                ? 'Your previous verification expired. We\'ll send a new code.'
+                : 'We need your email to run a free GEO scan.')
               : (
                 <>
                   We sent a 6-digit code to{' '}
