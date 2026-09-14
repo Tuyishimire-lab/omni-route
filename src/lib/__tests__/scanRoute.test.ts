@@ -8,6 +8,22 @@ vi.mock('next/server', async (importOriginal) => {
   return { ...actual, after: vi.fn((fn: () => void) => { try { fn(); } catch {} }) };
 });
 
+// Mock next/headers cookies store - verifyScanAllowance() calls cookies() for
+// anonymous users to check the verified-email gate. Without this mock, the call
+// throws an "outside of request scope" error in the Vitest environment, causing
+// every anonymous-user test to 500 instead of the expected status code.
+vi.mock('next/headers', () => ({
+  cookies: vi.fn().mockResolvedValue({
+    get: vi.fn((name: string) =>
+      name === 'citeroute_verified_email'
+        ? { value: 'test@example.com' }
+        : undefined
+    ),
+    set: vi.fn(),
+    delete: vi.fn(),
+  }),
+}));
+
 import { POST, GET } from '../../app/api/v1/scan/route';
 import * as liveCrawlerModule from '../liveCrawler';
 import * as dbModule from '../db';
