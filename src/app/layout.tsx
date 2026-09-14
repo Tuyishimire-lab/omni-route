@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import Image from 'next/image';
+import Link from 'next/link';
 import './globals.css';
 import Navbar from '../components/Navbar';
 import OnboardingWizard from '../components/OnboardingWizard';
@@ -64,7 +65,7 @@ const jsonLdSchema = {
       url: 'https://www.citeroute.com',
       logo: 'https://www.citeroute.com/logo.png',
       description: 'Generative Engine Optimization (GEO) and AI agent observability platform.',
-      email: 'tuyishime1angel@gmail.com',
+      email: 'hello@citeroute.com',
     },
     {
       '@type': 'WebSite',
@@ -134,11 +135,11 @@ export default function RootLayout({
               <span>Generative Engine & Agent Observability</span>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-5 text-[#878787]">
-              <a href="/docs" className="hover:text-[#05AD98] transition-colors">Docs</a>
-              <a href="/pricing" className="hover:text-[#05AD98] transition-colors">Pricing</a>
-              <a href="/about" className="hover:text-[#05AD98] transition-colors">About</a>
-              <a href="/privacy" className="hover:text-[#05AD98] transition-colors">Privacy Policy</a>
-              <a href="/terms" className="hover:text-[#05AD98] transition-colors">Terms of Service</a>
+              <Link href="/docs" className="hover:text-[#05AD98] transition-colors">Docs</Link>
+              <Link href="/pricing" className="hover:text-[#05AD98] transition-colors">Pricing</Link>
+              <Link href="/about" className="hover:text-[#05AD98] transition-colors">About</Link>
+              <Link href="/privacy" className="hover:text-[#05AD98] transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-[#05AD98] transition-colors">Terms of Service</Link>
             </div>
             <p className="text-[#878787]">© 2026 CiteRoute. All rights reserved.</p>
           </div>

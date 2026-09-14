@@ -20,8 +20,8 @@ const FAQ_ITEMS = [
     a: 'You add one script tag to your site. Every time a visitor loads a page, the tag fires a lightweight beacon to CiteRoute. We classify the visitor\'s user-agent against 13+ known AI crawler signatures and log the event to your private analytics dashboard - no personal data collected.',
   },
   {
-    q: 'Why is Pro $79 instead of $29?',
-    a: 'The old $29 price didn\'t reflect the actual value: real AI traffic data, daily automated re-scans, and a verified tracking tag are infrastructure-level features. Comparable tools (Ahrefs, Semrush) charge $99-$449/mo. At $79 you get a data product, not just a dashboard.',
+    q: 'Can I cancel or change my plan at any time?',
+    a: 'Yes, you can upgrade, downgrade, or cancel your subscription at any time directly from your billing settings. If you cancel, you will maintain full access to your plan features until the end of your current billing period.',
   },
   {
     q: 'What does the API key unlock?',
