@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { GeoAuditReport, Recommendation } from '../lib/types';
 import { saveWatchedDomain, getWatchedDomains } from '../lib/storage';
 import UpgradeModal from './UpgradeModal';
@@ -28,6 +29,8 @@ import {
   TrendingUp,
   TrendingDown,
   Activity,
+  ShieldCheck,
+  Building2,
 } from 'lucide-react';
 import Sparkline from './Sparkline';
 
@@ -86,7 +89,7 @@ function ConnectEnginesCallout({ domain }: { domain: string }) {
 
 // ── Score History Panel ─────────────────────────────────────────────────────
 // Fetches real ScanEvent history from the DB and renders a trend sparkline.
-function ScoreHistoryPanel({ domain }: { domain: string }) {
+function ScoreHistoryPanel({ domain, isWhiteLabel }: { domain: string; isWhiteLabel?: boolean }) {
   const [history, setHistory] = useState<{ date: string; score: number }[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -147,7 +150,9 @@ function ScoreHistoryPanel({ domain }: { domain: string }) {
             showDots={true}
           />
           <p className="text-[10px] text-[#878787] mt-2">
-            {history.length} data points over 14 days — updated by CiteRoute&apos;s automated rescan pipeline.
+            {isWhiteLabel
+              ? `${history.length} data points over 14 days — updated by automated rescan pipeline.`
+              : `${history.length} data points over 14 days — updated by CiteRoute's automated rescan pipeline.`}
           </p>
         </div>
       ) : (
@@ -156,7 +161,9 @@ function ScoreHistoryPanel({ domain }: { domain: string }) {
             First scan — trend data will appear after the next rescan cycle.
           </p>
           <p className="text-[10px] text-[#878787] mt-1">
-            CiteRoute rescans domains every 7 days automatically.
+            {isWhiteLabel
+              ? 'Domains are rescanned every 7 days automatically.'
+              : 'CiteRoute rescans domains every 7 days automatically.'}
           </p>
         </div>
       )}
@@ -174,6 +181,37 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
   const [isSavedToWatchlist, setIsSavedToWatchlist] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [copiedShareLink, setCopiedShareLink] = useState(false);
+
+  // White-label detection for Agency & Enterprise tiers
+  const [user, setUser] = useState<{ tier?: string; role?: string; name?: string } | null>(null);
+  const [customAgencyName, setCustomAgencyName] = useState('');
+  const [showAgencyCustomizer, setShowAgencyCustomizer] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.user) {
+          setUser(data.user);
+          const savedAgency = typeof window !== 'undefined' ? localStorage.getItem('citeroute_agency_brand_name') : null;
+          if (savedAgency) {
+            setCustomAgencyName(savedAgency);
+          } else if (data.user.name && (data.user.tier === 'agency' || data.user.tier === 'enterprise' || data.user.role === 'admin')) {
+            setCustomAgencyName(data.user.name);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const isWhiteLabel = Boolean(user?.role === 'admin' || user?.tier === 'agency' || user?.tier === 'enterprise');
+
+  const handleAgencyNameChange = (val: string) => {
+    setCustomAgencyName(val);
+    try {
+      localStorage.setItem('citeroute_agency_brand_name', val);
+    } catch {}
+  };
 
   const cleanDomain = report.domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
   const shareUrl = typeof window !== 'undefined' ? `${window.location.origin}/audit/${cleanDomain}` : `https://www.citeroute.com/audit/${cleanDomain}`;
@@ -232,29 +270,63 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
     <div className="space-y-8 animate-in fade-in duration-500 print:space-y-4">
       {/* Executive Report Header - Visible only in Print/PDF */}
       <div className="hidden print:flex flex-col border-b border-[rgba(5,173,152,0.35)] pb-4 mb-2 print-break-avoid">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[rgba(5,173,152,0.15)] border border-[rgba(5,173,152,0.35)] flex items-center justify-center font-bold text-white tracking-wider">
-              <span className="text-[#05AD98] font-mono text-sm font-extrabold">CR</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-white text-base tracking-wider">CITE<span className="text-[#05AD98]">ROUTE</span></span>
-                <span className="text-slate-600 text-xs">/</span>
-                <span className="text-xs font-semibold text-[#BBBFBF]">Executive GEO &amp; AI Visibility Audit</span>
+        {isWhiteLabel ? (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[rgba(184,160,74,0.15)] border border-[rgba(184,160,74,0.35)] flex items-center justify-center font-bold text-[#B8A04A] tracking-wider">
+                <span className="font-mono text-xs font-extrabold uppercase">
+                  {customAgencyName ? customAgencyName.slice(0, 2).toUpperCase() : 'GEO'}
+                </span>
               </div>
-              <p className="text-[10px] text-[#878787]">
-                Generative Engine Optimization Inspection &amp; Autonomous Agent Citation Report
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-white text-base tracking-wider uppercase">
+                    {customAgencyName || 'Executive GEO & AI Visibility Audit'}
+                  </span>
+                  {customAgencyName && (
+                    <>
+                      <span className="text-slate-600 text-xs">/</span>
+                      <span className="text-xs font-semibold text-[#BBBFBF]">Client Intelligence Deliverable</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-[10px] text-[#878787]">
+                  Generative Engine Optimization (GEO) &amp; Autonomous Agent Discovery Assessment
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-sm font-mono font-bold text-[#B8A04A]">{cleanDomain}</div>
+              <div className="text-[10px] text-[#878787]">
+                Prepared: {new Date(report.analyzedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-sm font-mono font-bold text-[#05AD98]">{cleanDomain}</div>
-            <div className="text-[10px] text-[#878787]">
-              Audited: {new Date(report.analyzedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[rgba(5,173,152,0.15)] border border-[rgba(5,173,152,0.35)] flex items-center justify-center font-bold text-white tracking-wider">
+                <span className="text-[#05AD98] font-mono text-sm font-extrabold">CR</span>
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-white text-base tracking-wider">CITE<span className="text-[#05AD98]">ROUTE</span></span>
+                  <span className="text-slate-600 text-xs">/</span>
+                  <span className="text-xs font-semibold text-[#BBBFBF]">Executive GEO &amp; AI Visibility Audit</span>
+                </div>
+                <p className="text-[10px] text-[#878787]">
+                  Generative Engine Optimization Inspection &amp; Autonomous Agent Citation Report
+                </p>
+              </div>
+            </div>
+            <div className="text-right">
+              <div className="text-sm font-mono font-bold text-[#05AD98]">{cleanDomain}</div>
+              <div className="text-[10px] text-[#878787]">
+                Audited: {new Date(report.analyzedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Top Action Bar (Print & Save) */}
@@ -308,6 +380,27 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
             )}
           </button>
 
+          {isWhiteLabel ? (
+            <button
+              onClick={() => setShowAgencyCustomizer(!showAgencyCustomizer)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[rgba(184,160,74,0.12)] hover:bg-[rgba(184,160,74,0.20)] border border-[rgba(184,160,74,0.30)] text-xs font-bold text-[#B8A04A] transition-all"
+              title="Click to customize Agency Name on PDF export"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>White-Label Active</span>
+              {customAgencyName && <span className="text-white text-[10px] font-normal hidden sm:inline">({customAgencyName})</span>}
+            </button>
+          ) : (
+            <Link
+              href="/pricing"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111514] hover:bg-slate-850 text-slate-400 hover:text-white border border-[rgba(187,191,191,0.12)] text-xs font-semibold transition-all"
+              title="Agency plan includes unbranded, white-label client PDF exports"
+            >
+              <Building2 className="w-3.5 h-3.5 text-[#B8A04A]" />
+              <span>White-Label PDF</span>
+            </Link>
+          )}
+
           <button
             onClick={handlePrintPdf}
             className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#111514] hover:bg-slate-850 text-slate-200 border border-slate-750 text-xs font-semibold transition-all"
@@ -317,6 +410,29 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
           </button>
         </div>
       </div>
+
+      {/* Agency White-Label Name Customizer Drawer */}
+      {showAgencyCustomizer && isWhiteLabel && (
+        <div className="p-3.5 rounded-2xl bg-[#0D1211] border border-[rgba(184,160,74,0.25)] flex items-center justify-between flex-wrap gap-3 text-xs print:hidden animate-in fade-in duration-150">
+          <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+            <Building2 className="w-4 h-4 text-[#B8A04A] shrink-0" />
+            <span className="text-[#BBBFBF] font-semibold whitespace-nowrap">Agency / Firm Name:</span>
+            <input
+              type="text"
+              value={customAgencyName}
+              onChange={(e) => handleAgencyNameChange(e.target.value)}
+              placeholder="e.g. Acme Digital Growth Agency"
+              className="w-full max-w-sm px-3 py-1.5 rounded-xl bg-[#070A0A] border border-[rgba(187,191,191,0.15)] text-white text-xs outline-none focus:border-[#B8A04A]"
+            />
+          </div>
+          <button
+            onClick={() => setShowAgencyCustomizer(false)}
+            className="px-3 py-1.5 rounded-xl bg-[rgba(184,160,74,0.15)] text-[#B8A04A] hover:bg-[rgba(184,160,74,0.25)] font-bold text-xs"
+          >
+            Save &amp; Close
+          </button>
+        </div>
+      )}
 
       {/* Live Scanned DOM Metadata Strip */}
       {report.liveMetadata?.isLiveScanned && (
@@ -490,7 +606,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
       </div>
 
       {/* Score History — real trend data from cron rescans */}
-      <ScoreHistoryPanel domain={report.domain} />
+      <ScoreHistoryPanel domain={report.domain} isWhiteLabel={isWhiteLabel} />
 
       {/* Foundation Model & Generative Answer Engine Diagnostics */}
       <div className="print-break-avoid">
@@ -667,8 +783,20 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
       {/* Executive Report Footer - Visible only in Print/PDF */}
       <div className="hidden print:flex items-center justify-between border-t border-[rgba(187,191,191,0.20)] pt-4 mt-6 text-[10px] text-[#878787] print-break-avoid">
-        <span>Generated by CiteRoute Platform • <strong className="text-[#05AD98]">https://www.citeroute.com</strong></span>
-        <span>Confidential &amp; Proprietary • Page Intelligence &amp; Autonomous Agent Observability</span>
+        {isWhiteLabel ? (
+          <>
+            <span>
+              Confidential Client Deliverable &bull; Prepared for <strong className="text-white">{cleanDomain}</strong>
+              {customAgencyName ? ` by ${customAgencyName}` : ''}
+            </span>
+            <span>Autonomous Agent &amp; Generative Engine Visibility Intelligence</span>
+          </>
+        ) : (
+          <>
+            <span>Generated by CiteRoute Platform • <strong className="text-[#05AD98]">https://www.citeroute.com</strong></span>
+            <span>Confidential &amp; Proprietary • Page Intelligence &amp; Autonomous Agent Observability</span>
+          </>
+        )}
       </div>
 
       <UpgradeModal

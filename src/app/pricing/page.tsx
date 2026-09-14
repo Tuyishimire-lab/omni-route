@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 import PricingCards from '../../components/PricingCards';
+import EnterpriseDataSection from '../../components/EnterpriseDataSection';
 
 const FAQ_ITEMS = [
   {
@@ -78,7 +79,7 @@ export default function PricingPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 opacity-60">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { endpoint: '/api/v1/geo-score', price: '$0.02', unit: 'per call', desc: 'Full GEO audit of any domain - scores, citations, agent discoverability.' },
             { endpoint: '/api/v1/verify', price: '$0.01', unit: 'per call', desc: 'Verify that a domain has a valid tracking tag or agent.json installed.' },
@@ -96,48 +97,12 @@ export default function PricingPage() {
         </div>
 
         <p className="text-[11px] text-[#878787]">
-          API endpoints included in your plan work immediately. Per-call overage billing will launch in a future update.
+          All plan API keys work immediately. Overage calls beyond your daily limit are billed at the rates above at month end.
         </p>
       </section>
 
-      {/* Data Products */}
-      <section className="glass-panel rounded-2xl border border-[rgba(184,160,74,0.20)] bg-[rgba(184,160,74,0.03)] p-8 space-y-6">
-        <div className="flex items-start justify-between flex-wrap gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Database className="w-5 h-5 text-[#B8A04A]" />
-              <h2 className="text-xl font-bold text-white">Data Subscriptions</h2>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[rgba(184,160,74,0.12)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)]">ENTERPRISE</span>
-            </div>
-            <p className="text-sm text-[#878787]">
-              The CiteRoute index is a unique ground-truth dataset - which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed.
-            </p>
-          </div>
-          <Link href="mailto:contact@citeroute.com?subject=CiteRoute%20Enterprise%20Data%20Subscriptions" className="flex items-center gap-1.5 text-xs text-[#B8A04A] font-semibold hover:underline">
-            Talk to us <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {[
-            { name: 'Vertical Leaderboard', price: '$500', period: '/month', desc: 'Private weekly ranking of AI citation leaders in your industry vertical - delivered as API or CSV.' },
-            { name: 'Competitor Benchmarking', price: '$1,500', period: '/month', desc: 'Track how your GEO score and AI citation share trends vs. up to 20 named competitors over time.' },
-            { name: 'Full Index Access', price: '$5,000', period: '/month', desc: 'Raw access to the full domain index, AI crawler visit data, and citation events via private API endpoint.' },
-          ].map((product) => (
-            <div key={product.name} className="bg-[#111514] rounded-xl border border-[rgba(184,160,74,0.12)] p-4 space-y-2">
-              <div className="flex items-center gap-1.5">
-                <Building2 className="w-3.5 h-3.5 text-[#B8A04A]" />
-                <span className="text-xs font-bold text-white">{product.name}</span>
-              </div>
-              <div className="flex items-baseline gap-1">
-                <span className="text-xl font-extrabold text-[#B8A04A]">{product.price}</span>
-                <span className="text-xs text-[#878787]">{product.period}</span>
-              </div>
-              <p className="text-[11px] text-[#878787] leading-relaxed">{product.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Enterprise Data Subscriptions */}
+      <EnterpriseDataSection />
 
       {/* FAQ */}
       <section className="max-w-3xl mx-auto space-y-6">

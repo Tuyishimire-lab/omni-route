@@ -9,6 +9,7 @@ export function getLemonConfig() {
   const webhookSecret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET || '';
   const proVariantId = process.env.LEMONSQUEEZY_VARIANT_ID_PRO || '';
   const agencyVariantId = process.env.LEMONSQUEEZY_VARIANT_ID_AGENCY || '';
+  const overageVariantId = process.env.LEMONSQUEEZY_OVERAGE_VARIANT_ID || '';
 
   return {
     apiKey,
@@ -16,6 +17,7 @@ export function getLemonConfig() {
     webhookSecret,
     proVariantId,
     agencyVariantId,
+    overageVariantId,
   };
 }
 
@@ -187,3 +189,70 @@ export async function getSubscriptionPortalUrl(subscriptionId: string): Promise<
     return null;
   }
 }
+
+export interface ReportUsageParams {
+  subscriptionItemId: string;
+  quantity: number;
+  action?: 'increment' | 'set';
+}
+
+/**
+ * Reports metered usage quantity to Lemon Squeezy for a subscription item.
+ * Lemon Squeezy aggregates reported usage over the monthly cycle and bills on renewal.
+ */
+export async function reportUsageToLemonSqueezy(params: ReportUsageParams): Promise<{ success: boolean; usageRecordId?: string; error?: string }> {
+  const { apiKey } = getLemonConfig();
+  if (!apiKey) {
+    return { success: false, error: 'LEMONSQUEEZY_API_KEY is not configured' };
+  }
+  if (!params.subscriptionItemId) {
+    return { success: false, error: 'subscriptionItemId is required' };
+  }
+  if (params.quantity <= 0) {
+    return { success: true }; // Nothing to report
+  }
+
+  try {
+    const payload = {
+      data: {
+        type: 'usage-records',
+        attributes: {
+          quantity: params.quantity,
+          action: params.action || 'increment',
+        },
+        relationships: {
+          'subscription-item': {
+            data: {
+              type: 'subscription-items',
+              id: params.subscriptionItemId.toString(),
+            },
+          },
+        },
+      },
+    };
+
+    const response = await fetch('https://api.lemonsqueezy.com/v1/usage-records', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[lemonsqueezy] Report usage failed:', response.status, errorText);
+      return { success: false, error: `Report usage failed (${response.status}): ${errorText}` };
+    }
+
+    const data = await response.json();
+    const usageRecordId = data?.data?.id;
+    return { success: true, usageRecordId };
+  } catch (err) {
+    console.error('[lemonsqueezy] Exception reporting usage:', err);
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error reporting usage' };
+  }
+}
+

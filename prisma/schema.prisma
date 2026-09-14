@@ -93,8 +93,10 @@ model ApiKey {
   name        String                  // "My Production Key"
   domain      String?                 // optional: restrict to a specific domain
   tier        String    @default("free") // free | pro | enterprise
-  rateLimit   Int       @default(100) // requests per hour
-  usageCount  Int       @default(0)
+  rateLimit   Int       @default(100) // requests per hour / burst
+  usageCount  Int       @default(0)   // total lifetime calls
+  overageCount Int      @default(0)   // total calls beyond daily plan limit
+  overageCostCents Int  @default(0)   // total accrued overage value in USD cents
   lastUsedAt  DateTime?
   createdAt   DateTime  @default(now())
   isActive    Boolean   @default(true)
@@ -132,6 +134,7 @@ model User {
   // Lemon Squeezy Subscription Details
   lemonCustomerId          String?
   lemonSubscriptionId      String?
+  lemonSubscriptionItemId  String?   // ID of metered usage subscription item
   lemonVariantId           String?
   subscriptionStatus       String?   // active | on_trial | paused | past_due | unpaid | cancelled | expired
   subscriptionRenewsAt     DateTime?
@@ -225,3 +228,25 @@ model EmailVerification {
   @@index([email])
   @@index([expiresAt])
 }
+
+// Enterprise Data Subscription inquiries / high-ticket leads
+model EnterpriseInquiry {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  company        String
+  website        String?
+  product        String   // "Vertical Leaderboard" | "Competitor Benchmarking" | "Full Index Access"
+  price          String?  // "$500/month", "$1,500/month", "$5,000/month"
+  industry       String?
+  deliveryFormat String?  // "Private REST API Key" | "Automated Weekly CSV Export" | etc.
+  message        String?
+  status         String   @default("pending") // pending | contacted | qualified | closed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([email])
+  @@index([createdAt])
+  @@index([status])
+}
+

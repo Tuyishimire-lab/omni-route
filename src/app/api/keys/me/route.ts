@@ -19,12 +19,19 @@ export async function GET() {
     const tierConfig = getTierConfig(session.tier);
     const keys = await getUserApiKeys(session.userId);
 
+    const totalUsage = keys.reduce((sum, k) => sum + (k.usageCount || 0), 0);
+    const totalOverage = keys.reduce((sum, k) => sum + ((k as any).overageCount || 0), 0);
+    const totalOverageCostCents = keys.reduce((sum, k) => sum + ((k as any).overageCostCents || 0), 0);
+
     return NextResponse.json({
       keys,
       tier: session.tier,
       role: session.role,
       hasApiAccess: session.role === 'admin' ? true : tierConfig.hasApiAccess,
       dailyLimit: session.role === 'admin' ? Infinity : tierConfig.apiDailyLimit,
+      totalUsage,
+      totalOverage,
+      totalOverageCostCents,
     });
   } catch (err) {
     console.error('[keys/me GET] Error:', err);

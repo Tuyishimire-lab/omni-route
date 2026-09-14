@@ -911,3 +911,205 @@ export async function sendWeeklyDigestEmail({
     return { success: false, error: message };
   }
 }
+
+// ─── Enterprise Data Inquiry Email ───────────────────────────────────────────
+
+export interface EnterpriseInquiryParams {
+  name: string;
+  email: string;
+  company: string;
+  website?: string;
+  product: string;
+  price?: string;
+  industry?: string;
+  deliveryFormat?: string;
+  message?: string;
+}
+
+export async function sendEnterpriseInquiryEmail(
+  params: EnterpriseInquiryParams
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const resend = getResendClient();
+  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute Enterprise <onboarding@resend.dev>';
+  const to = 'contact@citeroute.com';
+
+  if (!resend) {
+    console.log('\n======================================================');
+    console.log(' [CiteRoute Enterprise] New Data Feed Lead Captured');
+    console.log(` Prospect: ${params.name} <${params.email}>`);
+    console.log(` Company:  ${params.company} (${params.website || 'N/A'})`);
+    console.log(` Product:  ${params.product} (${params.price || 'Enterprise'})`);
+    console.log(` Industry: ${params.industry || 'Not specified'}`);
+    console.log(` Format:   ${params.deliveryFormat || 'API / CSV'}`);
+    if (params.message) console.log(` Notes:    ${params.message}`);
+    console.log('======================================================\n');
+
+    if (process.env.NODE_ENV === 'production') {
+      return { success: false, error: 'RESEND_API_KEY is not configured in production.' };
+    }
+    return { success: true, id: 'dev-enterprise-lead-id' };
+  }
+
+  const subject = `[Enterprise Lead] ${params.product} - ${params.company} (${params.name})`;
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Enterprise Data Inquiry</title>
+</head>
+<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#E2E8F0;">
+  <div style="max-width:560px;margin:24px auto;background:#0D1313;border:1px solid rgba(184,160,74,0.3);border-radius:16px;padding:32px;">
+    <div style="font-size:18px;font-weight:800;color:#B8A04A;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">
+      Enterprise Data Feed Inquiry
+    </div>
+    <p style="font-size:14px;color:#878787;margin:0 0 24px 0;">
+      A new enterprise buyer has requested a custom dataset or consultation on CiteRoute.
+    </p>
+
+    <div style="background:#111817;border-radius:12px;border:1px solid rgba(255,255,255,0.06);padding:20px;margin-bottom:24px;">
+      <div style="margin-bottom:12px;">
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Product Requested</span>
+        <strong style="font-size:16px;color:#FFFFFF;">${params.product}</strong>
+        ${params.price ? `<span style="font-size:12px;color:#B8A04A;font-weight:bold;margin-left:8px;">(${params.price})</span>` : ''}
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Prospect</span>
+        <strong style="font-size:14px;color:#FFFFFF;">${params.name}</strong> &lt;<a href="mailto:${params.email}" style="color:#05AD98;text-decoration:none;">${params.email}</a>&gt;
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Company</span>
+        <span style="font-size:14px;color:#FFFFFF;">${params.company}</span>
+        ${params.website ? `<span style="color:#878787;"> &bull; <a href="${params.website.startsWith('http') ? params.website : `https://${params.website}`}" target="_blank" style="color:#05AD98;text-decoration:none;">${params.website}</a></span>` : ''}
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Industry / Vertical</span>
+        <span style="font-size:14px;color:#FFFFFF;">${params.industry || 'General'}</span>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Delivery Format</span>
+        <span style="font-size:14px;color:#FFFFFF;">${params.deliveryFormat || 'API Feed / CSV'}</span>
+      </div>
+
+      ${params.message ? `
+      <div>
+        <span style="font-size:11px;color:#878787;text-transform:uppercase;display:block;">Requirements & Notes</span>
+        <p style="font-size:13px;color:#BBBFBF;line-height:1.5;margin:4px 0 0 0;white-space:pre-wrap;">${params.message}</p>
+      </div>` : ''}
+    </div>
+
+    <div style="text-align:center;">
+      <a href="mailto:${params.email}?subject=CiteRoute%20Enterprise%20Data%20Feed%20-%20${encodeURIComponent(params.product)}" style="display:inline-block;padding:12px 24px;border-radius:10px;background:#B8A04A;color:#000000;font-size:13px;font-weight:bold;text-decoration:none;">
+        Reply to ${params.name} &rarr;
+      </a>
+    </div>
+  </div>
+</body>
+</html>`;
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to,
+      replyTo: params.email,
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error('[email] Enterprise inquiry Resend delivery error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, id: data?.id };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown enterprise inquiry email error';
+    console.error('[email] Exception sending enterprise inquiry:', err);
+    return { success: false, error: message };
+  }
+}
+
+export async function sendEnterpriseConfirmationEmail(
+  params: EnterpriseInquiryParams
+): Promise<{ success: boolean; id?: string; error?: string }> {
+  const resend = getResendClient();
+  const fromEmail = process.env.ALERT_FROM_EMAIL || 'CiteRoute Enterprise <onboarding@resend.dev>';
+  const to = params.email;
+
+  if (!resend) {
+    console.log('\n======================================================');
+    console.log(' [CiteRoute Enterprise] Buyer Confirmation Email Dispatched');
+    console.log(` To:      ${params.name} <${params.email}>`);
+    console.log(` Product: ${params.product}`);
+    console.log('======================================================\n');
+
+    if (process.env.NODE_ENV === 'production') {
+      return { success: false, error: 'RESEND_API_KEY is not configured in production.' };
+    }
+    return { success: true, id: 'dev-enterprise-confirm-id' };
+  }
+
+  const subject = `Inquiry Received: CiteRoute ${params.product} for ${params.company}`;
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Your CiteRoute Enterprise Request</title>
+</head>
+<body style="margin:0;padding:0;background-color:#050707;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#E2E8F0;">
+  <div style="max-width:560px;margin:24px auto;background:#0D1313;border:1px solid rgba(184,160,74,0.3);border-radius:16px;padding:32px;">
+    <div style="font-size:18px;font-weight:800;color:#FFFFFF;letter-spacing:1px;margin-bottom:8px;">
+      CITE<span style="color:#B8A04A;">ROUTE</span> <span style="font-size:12px;color:#B8A04A;padding:2px 8px;border:1px solid rgba(184,160,74,0.3);border-radius:20px;vertical-align:middle;margin-left:6px;">ENTERPRISE</span>
+    </div>
+    <h2 style="font-size:20px;color:#FFFFFF;margin:16px 0 8px 0;">We've Received Your Feed Request</h2>
+    <p style="font-size:14px;color:#BBBFBF;line-height:1.6;margin:0 0 20px 0;">
+      Hello ${params.name}, thank you for requesting access to <strong>${params.product}</strong>.
+      Our enterprise data engineering team has logged your vertical specifications and will reach out within 24 hours with a custom sample dataset.
+    </p>
+
+    <div style="background:#111817;border-radius:12px;border:1px solid rgba(255,255,255,0.06);padding:18px;margin-bottom:24px;">
+      <div style="font-size:11px;color:#878787;text-transform:uppercase;margin-bottom:8px;">Request Summary</div>
+      <div style="font-size:13px;color:#FFFFFF;margin-bottom:4px;">&bull; <strong>Product:</strong> ${params.product} ${params.price ? `(${params.price})` : ''}</div>
+      <div style="font-size:13px;color:#FFFFFF;margin-bottom:4px;">&bull; <strong>Company:</strong> ${params.company}</div>
+      <div style="font-size:13px;color:#FFFFFF;margin-bottom:4px;">&bull; <strong>Delivery Format:</strong> ${params.deliveryFormat || 'API / CSV'}</div>
+      <div style="font-size:13px;color:#FFFFFF;">&bull; <strong>Vertical:</strong> ${params.industry || 'General'}</div>
+    </div>
+
+    <p style="font-size:13px;color:#878787;line-height:1.5;">
+      Need immediate setup or an enterprise NDA? Simply reply directly to this email or reach us at <a href="mailto:contact@citeroute.com" style="color:#B8A04A;text-decoration:none;">contact@citeroute.com</a>.
+    </p>
+
+    <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:24px;padding-top:16px;text-align:center;font-size:11px;color:#64748B;">
+      &copy; ${new Date().getFullYear()} CiteRoute. Generative Engine & AI Citation Intelligence.
+    </div>
+  </div>
+</body>
+</html>`;
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to,
+      replyTo: 'contact@citeroute.com',
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error('[email] Enterprise confirmation delivery error:', error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, id: data?.id };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown enterprise confirmation email error';
+    console.error('[email] Exception sending enterprise confirmation:', err);
+    return { success: false, error: message };
+  }
+}
+

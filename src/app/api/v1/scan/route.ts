@@ -5,6 +5,7 @@ import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
 import { getSession } from '../../../../lib/auth';
 import { prisma } from '../../../../lib/prisma';
 import { cookies } from 'next/headers';
+import { validateApiKey, attachMeteringHeaders, ValidatedKey } from '../../../../lib/apiAuth';
 
 type SessionPayload = Awaited<ReturnType<typeof getSession>>;
 
@@ -96,15 +97,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Resolve session once - reused for quota check and bypassCache gating
-    const session = await getSession();
+    // Check for API key authentication (Bearer token or api_key query parameter)
+    const authHeader = req.headers.get('authorization');
+    const keyParam = req.nextUrl.searchParams.get('api_key');
+    const keyString = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : keyParam?.trim();
 
-    const quotaCheck = await verifyScanAllowance(ip, session);
-    if (!quotaCheck.allowed) {
-      return NextResponse.json(
-        { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier, email: quotaCheck.email },
-        { status: 429 }
-      );
+    let validatedKey: ValidatedKey | undefined;
+    if (keyString) {
+      const keyResult = await validateApiKey(keyString, '/api/v1/scan');
+      if (!keyResult.valid) {
+        const status = keyResult.code === 'TIER_API_ACCESS_REQUIRED' ? 403 : 401;
+        return NextResponse.json({ error: keyResult.error, code: keyResult.code }, { status });
+      }
+      validatedKey = keyResult.key;
+    }
+
+    // Resolve session once - reused for quota check and bypassCache gating
+    const session = validatedKey ? null : await getSession();
+
+    let quotaCheck: { allowed: boolean; tier?: string; error?: string; code?: string; upgradeTier?: string; email?: string } | undefined;
+    if (!validatedKey) {
+      quotaCheck = await verifyScanAllowance(ip, session);
+      if (!quotaCheck.allowed) {
+        return NextResponse.json(
+          { error: quotaCheck.error, code: quotaCheck.code, upgradeTier: quotaCheck.upgradeTier, email: quotaCheck.email },
+          { status: 429 }
+        );
+      }
     }
 
     let body: { url?: string; sessionId?: string; bypassCache?: boolean } = {};
@@ -120,7 +139,7 @@ export async function POST(req: NextRequest) {
 
     // bypassCache is a Pro+ feature - free and anonymous users cannot force
     // a live re-crawl on every request (it would exhaust Jina Reader quota).
-    const isPrivileged = session?.role === 'admin' || (quotaCheck.tier !== 'free');
+    const isPrivileged = Boolean(validatedKey) || session?.role === 'admin' || (quotaCheck?.tier !== 'free');
     const bypassCache = isPrivileged && Boolean(body?.bypassCache);
     if (!isPrivileged && body?.bypassCache) {
       console.info('[scan] bypassCache requested by free/anonymous user - downgraded to cached response');
@@ -134,10 +153,16 @@ export async function POST(req: NextRequest) {
         .catch((e) => console.error('[scan] DB persist failed:', e))
     );
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { success: true, data: report, cached: !bypassCache },
       { status: 200, headers: { 'X-RateLimit-Remaining': String(rateCheck.remaining) } }
     );
+
+    if (validatedKey) {
+      attachMeteringHeaders(response, validatedKey);
+    }
+
+    return response;
   } catch (error: unknown) {
     // P0-4: Log full error server-side but never expose internal details to callers
     console.error('[scan POST] Error:', error instanceof Error ? error.message : error);

@@ -1,6 +1,10 @@
 import { prisma } from './prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { getTierConfig } from './tierLimits';
+import { checkRateLimit } from './rateLimiter';
+import { getEndpointPricing, formatCents } from './apiPricing';
+import { reportUsageToLemonSqueezy } from './lemonsqueezy';
 
 // ─── Key Generation ──────────────────────────────────────────────────────────
 
@@ -65,6 +69,8 @@ export async function getUserApiKeys(userId: string) {
       domain: true,
       rateLimit: true,
       usageCount: true,
+      overageCount: true,
+      overageCostCents: true,
       lastUsedAt: true,
       createdAt: true,
       isActive: true,
@@ -84,7 +90,7 @@ export async function revokeUserApiKey(userId: string, keyId: string) {
   });
 }
 
-// ─── Key Validation ──────────────────────────────────────────────────────────
+// ─── Key Validation & Metering ───────────────────────────────────────────────
 
 export interface ValidatedKey {
   id: string;
@@ -94,11 +100,19 @@ export interface ValidatedKey {
   domain: string | null;
   rateLimit: number;
   usageCount: number;
+  overageCount: number;
+  overageCostCents: number;
+  isOverage: boolean;
+  dailyLimit: number;
+  dailyRemaining: number;
+  endpointCostCents: number;
+  userId: string | null;
 }
 
 export async function validateApiKey(
-  keyString: string
-): Promise<{ valid: boolean; key?: ValidatedKey; error?: string }> {
+  keyString: string,
+  pathname?: string
+): Promise<{ valid: boolean; key?: ValidatedKey; error?: string; code?: string }> {
   if (!keyString || !keyString.startsWith('or-')) {
     return { valid: false, error: 'Invalid API key format. Keys start with "or-live_" or "or-test_".' };
   }
@@ -107,6 +121,16 @@ export async function validateApiKey(
     const keyHash = hashApiKey(keyString);
     const apiKey = await prisma.apiKey.findUnique({
       where: { keyHash },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            tier: true,
+            role: true,
+            lemonSubscriptionItemId: true,
+          },
+        },
+      },
     });
 
     if (!apiKey) {
@@ -117,37 +141,56 @@ export async function validateApiKey(
       return { valid: false, error: 'API key has been deactivated.' };
     }
 
-    // Simple hourly rate limit check using usageCount
-    const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
-    const isRecentlyReset = !apiKey.lastUsedAt || apiKey.lastUsedAt < hourAgo;
+    // Determine user tier & permissions
+    const effectiveTier = apiKey.owner?.tier || apiKey.tier;
+    const isAdmin = apiKey.owner?.role === 'admin';
+    const tierConfig = getTierConfig(effectiveTier);
 
-    // Atomic conditional increment - prevents concurrent requests from
-    // blowing past the limit via a read-then-write race.
-    const updated = await prisma.apiKey.updateMany({
-      where: {
-        id: apiKey.id,
-        OR: [
-          // Window expired - reset to 1
-          { lastUsedAt: { lt: hourAgo } },
-          { lastUsedAt: null },
-          // Window active - only increment if under the limit
-          ...(isRecentlyReset ? [] : [{ usageCount: { lt: apiKey.rateLimit } }]),
-        ],
-      },
+    if (!isAdmin && !tierConfig.hasApiAccess) {
+      return {
+        valid: false,
+        error: 'API key access requires an active Pro or Agency plan. Upgrade your plan to use the API.',
+        code: 'TIER_API_ACCESS_REQUIRED',
+      };
+    }
+
+    // Resolve daily limit & endpoint pricing
+    const dailyLimit = isAdmin ? Infinity : tierConfig.apiDailyLimit;
+    const endpointCost = getEndpointPricing(pathname || '/api/v1/scan');
+
+    // 24-hour daily quota check
+    const DAY_MS = 24 * 60 * 60 * 1000;
+    const quotaMax = dailyLimit === Infinity ? 999_999_999 : dailyLimit;
+    const dailyCheck = await checkRateLimit(apiKey.id, 'api:daily', DAY_MS, quotaMax);
+
+    const isOverage = !dailyCheck.allowed;
+    const appliedCostCents = isOverage ? endpointCost.priceCents : 0;
+
+    // Update API Key usage and overage counts atomically
+    await prisma.apiKey.update({
+      where: { id: apiKey.id },
       data: {
-        usageCount: isRecentlyReset ? 1 : { increment: 1 },
+        usageCount: { increment: 1 },
+        ...(isOverage ? {
+          overageCount: { increment: 1 },
+          overageCostCents: { increment: appliedCostCents },
+        } : {}),
         lastUsedAt: new Date(),
       },
     });
 
-    if (updated.count === 0) {
-      return {
-        valid: false,
-        error: `Rate limit exceeded. ${apiKey.tier} tier allows ${apiKey.rateLimit} requests/hour.`,
-      };
+    // If overage occurred and customer has a LemonSqueezy metered subscription item, report usage
+    if (isOverage && apiKey.owner?.lemonSubscriptionItemId) {
+      reportUsageToLemonSqueezy({
+        subscriptionItemId: apiKey.owner.lemonSubscriptionItemId,
+        quantity: endpointCost.credits,
+      }).catch((err) => console.error('[apiAuth] Error syncing usage to LemonSqueezy:', err));
     }
 
-    const currentUsage = isRecentlyReset ? 1 : apiKey.usageCount + 1;
+    const currentUsage = apiKey.usageCount + 1;
+    const currentOverage = isOverage ? apiKey.overageCount + 1 : apiKey.overageCount;
+    const currentOverageCost = isOverage ? apiKey.overageCostCents + appliedCostCents : apiKey.overageCostCents;
+    const dailyRemaining = dailyLimit === Infinity ? Infinity : (isOverage ? 0 : dailyCheck.remaining);
 
     return {
       valid: true,
@@ -155,16 +198,37 @@ export async function validateApiKey(
         id: apiKey.id,
         key: keyString,
         name: apiKey.name,
-        tier: apiKey.tier,
+        tier: effectiveTier,
         domain: apiKey.domain,
         rateLimit: apiKey.rateLimit,
         usageCount: currentUsage,
+        overageCount: currentOverage,
+        overageCostCents: currentOverageCost,
+        isOverage,
+        dailyLimit,
+        dailyRemaining,
+        endpointCostCents: endpointCost.priceCents,
+        userId: apiKey.userId,
       },
     };
   } catch (err) {
     console.error('[apiAuth] Validation error:', err);
     return { valid: false, error: 'Internal authentication error.' };
   }
+}
+
+/**
+ * Attaches standard rate-limit and overage metering headers to any NextResponse.
+ */
+export function attachMeteringHeaders(res: NextResponse, key: ValidatedKey): NextResponse {
+  res.headers.set('X-RateLimit-Limit', key.dailyLimit === Infinity ? 'Unlimited' : String(key.dailyLimit));
+  res.headers.set('X-RateLimit-Remaining', key.dailyRemaining === Infinity ? 'Unlimited' : String(key.dailyRemaining));
+  res.headers.set('X-RateLimit-Overage-Count', String(key.overageCount));
+  res.headers.set('X-RateLimit-Overage-Cost', formatCents(key.overageCostCents));
+  if (key.isOverage) {
+    res.headers.set('X-RateLimit-Overage-Applied', formatCents(key.endpointCostCents));
+  }
+  return res;
 }
 
 // ─── Middleware Wrapper ──────────────────────────────────────────────────────
@@ -175,10 +239,9 @@ type ApiHandler = (
 ) => Promise<NextResponse>;
 
 /**
- * Wraps an API route handler with optional API key authentication.
+ * Wraps an API route handler with API key authentication & metering.
  * If `required` is true, unauthenticated requests get 401.
- * If `required` is false, unauthenticated requests still pass through
- * but with a lower IP-based rate limit.
+ * If `required` is false, unauthenticated requests still pass through.
  */
 export function withAuth(handler: ApiHandler, options: { required?: boolean } = {}) {
   return async (req: NextRequest): Promise<NextResponse> => {
@@ -198,14 +261,18 @@ export function withAuth(handler: ApiHandler, options: { required?: boolean } = 
       return handler(req, {});
     }
 
-    const result = await validateApiKey(keyString);
+    const result = await validateApiKey(keyString, req.nextUrl.pathname);
 
     if (!result.valid) {
-      const status = result.error?.includes('Rate limit') ? 429 : 401;
-      return NextResponse.json({ error: result.error }, { status });
+      const status = result.code === 'TIER_API_ACCESS_REQUIRED' ? 403 : 401;
+      return NextResponse.json({ error: result.error, code: result.code }, { status });
     }
 
-    return handler(req, { apiKey: result.key });
+    const response = await handler(req, { apiKey: result.key });
+    if (result.key) {
+      attachMeteringHeaders(response, result.key);
+    }
+    return response;
   };
 }
 

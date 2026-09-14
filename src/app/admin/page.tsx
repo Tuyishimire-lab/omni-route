@@ -4,12 +4,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   Key, Plus, Trash2, ToggleLeft, ToggleRight, Shield, RefreshCw,
-  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity, Search, ExternalLink
+  Copy, Check, Crown, Zap, Users, AlertCircle, LogIn, ShieldOff, Activity, Search, ExternalLink, Building2
 } from 'lucide-react';
 import TrafficTelemetry from '../../components/TrafficTelemetry';
 import ScanExplorer from '../../components/admin/ScanExplorer';
 import UserDirectory from '../../components/admin/UserDirectory';
 import SiteTelemetryModal from '../../components/admin/SiteTelemetryModal';
+import EnterpriseInquiries from '../../components/admin/EnterpriseInquiries';
 import { formatTelemetryTimestamp } from '../../lib/timestamp';
 
 interface ApiKeyRecord {
@@ -58,7 +59,7 @@ export default function AdminPage() {
   const [createdKey, setCreatedKey] = useState<string | null>(null);
 
   // Active Admin Tab
-  const [activeTab, setActiveTab] = useState<'scans' | 'users' | 'keys' | 'telemetry'>('scans');
+  const [activeTab, setActiveTab] = useState<'scans' | 'users' | 'keys' | 'telemetry' | 'inquiries'>('scans');
 
   // Check auth on mount
   useEffect(() => {
@@ -288,6 +289,18 @@ export default function AdminPage() {
           <Activity className="w-3.5 h-3.5" />
           <span>Telemetry &amp; Sites</span>
         </button>
+
+        <button
+          onClick={() => setActiveTab('inquiries')}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+            activeTab === 'inquiries'
+              ? 'bg-[rgba(184,160,74,0.15)] text-[#B8A04A] border border-[rgba(184,160,74,0.30)] shadow-sm'
+              : 'text-[#878787] hover:text-white hover:bg-[rgba(255,255,255,0.03)] border border-transparent'
+          }`}
+        >
+          <Building2 className="w-3.5 h-3.5" />
+          <span>Enterprise Leads</span>
+        </button>
       </div>
 
       {/* Tab 1: Global Scan Explorer */}
@@ -295,6 +308,9 @@ export default function AdminPage() {
 
       {/* Tab 2: User Directory */}
       {activeTab === 'users' && <UserDirectory />}
+
+      {/* Tab: Enterprise Inquiries */}
+      {activeTab === 'inquiries' && <EnterpriseInquiries />}
 
       {/* Tab 3: API Key Management */}
       {activeTab === 'keys' && (

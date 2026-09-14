@@ -31,6 +31,11 @@ export async function POST(req: NextRequest) {
     }
 
     const subscriptionId = data.id ? String(data.id) : null;
+    const subscriptionItemId = data.attributes?.first_subscription_item?.id
+      ? String(data.attributes.first_subscription_item.id)
+      : (data.relationships?.['subscription-items']?.data?.[0]?.id
+        ? String(data.relationships['subscription-items'].data[0].id)
+        : null);
     const variantId = data.attributes?.variant_id ? String(data.attributes.variant_id) : null;
     const customerId = data.attributes?.customer_id ? String(data.attributes.customer_id) : null;
     const status = data.attributes?.status || 'active';
@@ -79,6 +84,7 @@ export async function POST(req: NextRequest) {
               tier: resolvedTier,
               lemonCustomerId: customerId,
               lemonSubscriptionId: subscriptionId,
+              ...(subscriptionItemId ? { lemonSubscriptionItemId: subscriptionItemId } : {}),
               lemonVariantId: variantId,
               subscriptionStatus: status,
               subscriptionRenewsAt: renewsAt,

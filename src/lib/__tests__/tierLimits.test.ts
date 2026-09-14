@@ -124,3 +124,16 @@ describe('tierLimits - checkApiKeyEligibility', () => {
     expect(checkApiKeyEligibility('free', 'admin').allowed).toBe(true);
   });
 });
+
+describe('tierLimits - White-Label Reports Entitlement', () => {
+  it('disables white-label reports for free and pro tiers', () => {
+    expect(getTierConfig('free').hasWhiteLabelReports).toBe(false);
+    expect(getTierConfig('pro').hasWhiteLabelReports).toBe(false);
+  });
+
+  it('enables white-label reports for agency and enterprise tiers', () => {
+    expect(getTierConfig('agency').hasWhiteLabelReports).toBe(true);
+    expect(getTierConfig('enterprise').hasWhiteLabelReports).toBe(true);
+  });
+});
+

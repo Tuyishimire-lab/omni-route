@@ -15,6 +15,8 @@ interface ApiKeyItem {
   domain: string | null;
   rateLimit: number;
   usageCount: number;
+  overageCount?: number;
+  overageCostCents?: number;
   lastUsedAt: string | null;
   createdAt: string;
   isActive: boolean;
@@ -25,6 +27,9 @@ interface UserSessionInfo {
   role: string;
   hasApiAccess: boolean;
   dailyLimit: number;
+  totalUsage?: number;
+  totalOverage?: number;
+  totalOverageCostCents?: number;
 }
 
 export default function ApiKeysPage() {
@@ -57,6 +62,9 @@ export default function ApiKeysPage() {
           role: data.role || 'user',
           hasApiAccess: Boolean(data.hasApiAccess),
           dailyLimit: data.dailyLimit || 0,
+          totalUsage: data.totalUsage || 0,
+          totalOverage: data.totalOverage || 0,
+          totalOverageCostCents: data.totalOverageCostCents || 0,
         });
       } else if (res.status === 401) {
         setSessionInfo(null);
@@ -249,12 +257,12 @@ export default function ApiKeysPage() {
         /* Eligible User View */
         <div className="space-y-8">
           {/* Plan Quota Card */}
-          <div className="glass-panel rounded-2xl p-5 border border-[rgba(187,191,191,0.10)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+          <div className="glass-panel rounded-2xl p-5 border border-[rgba(187,191,191,0.10)] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-start sm:items-center gap-3">
               <span className="p-2.5 rounded-xl bg-[rgba(5,173,152,0.10)] text-[#05AD98] border border-[rgba(5,173,152,0.2)]">
                 {sessionInfo.role === 'admin' ? <Crown className="w-5 h-5" /> : <Zap className="w-5 h-5" />}
               </span>
-              <div>
+              <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                     {sessionInfo.role === 'admin' ? 'Superadmin Access' : `${sessionInfo.tier} Plan Entitlement`}
@@ -263,9 +271,13 @@ export default function ApiKeysPage() {
                     Active
                   </span>
                 </div>
-                <p className="text-xs text-[#878787] mt-0.5">
-                  Daily Quota: <strong className="text-white font-mono">{formatLimit(sessionInfo.dailyLimit)}</strong> · Keys Created: <strong className="text-white font-mono">{keys.length} / 5</strong>
-                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#878787]">
+                  <span>Daily Quota: <strong className="text-white font-mono">{formatLimit(sessionInfo.dailyLimit)}</strong></span>
+                  <span>•</span>
+                  <span>Total Calls: <strong className="text-white font-mono">{sessionInfo.totalUsage || 0}</strong></span>
+                  <span>•</span>
+                  <span>Overages: <strong className="text-amber-400 font-mono">{sessionInfo.totalOverage || 0} reqs</strong> (${(((sessionInfo.totalOverageCostCents || 0) / 100)).toFixed(2)})</span>
+                </div>
               </div>
             </div>
 
@@ -275,7 +287,7 @@ export default function ApiKeysPage() {
                 setErrorMsg(null);
                 setIsModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:opacity-95 text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)]"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:opacity-95 text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create API Key</span>
@@ -305,7 +317,8 @@ export default function ApiKeysPage() {
                       <th className="p-3.5">Name</th>
                       <th className="p-3.5">Key Prefix</th>
                       <th className="p-3.5">Scope</th>
-                      <th className="p-3.5">Usage</th>
+                      <th className="p-3.5">Lifetime Calls</th>
+                      <th className="p-3.5">Overages</th>
                       <th className="p-3.5">Created</th>
                       <th className="p-3.5 text-right">Actions</th>
                     </tr>
@@ -340,6 +353,15 @@ export default function ApiKeysPage() {
                         </td>
                         <td className="p-3.5 font-sans">
                           <span className="font-semibold text-white">{k.usageCount}</span> reqs
+                        </td>
+                        <td className="p-3.5 font-sans">
+                          {k.overageCount && k.overageCount > 0 ? (
+                            <span className="text-amber-400 font-semibold">
+                              {k.overageCount} (${(((k.overageCostCents || 0) / 100)).toFixed(2)})
+                            </span>
+                          ) : (
+                            <span className="text-[#878787]">0</span>
+                          )}
                         </td>
                         <td className="p-3.5 font-sans text-[#878787]">
                           {new Date(k.createdAt).toLocaleDateString()}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateAndSanitizeUrl } from '../../../../lib/security';
 import { prisma } from '../../../../lib/prisma';
+import { validateApiKey, attachMeteringHeaders, ValidatedKey } from '../../../../lib/apiAuth';
 
 export const dynamic = 'force-dynamic';
 
@@ -20,8 +21,24 @@ export interface VerifyResult {
  *
  * Fetches the customer homepage server-side and checks whether the CiteRoute
  * tracking tag or edge middleware is present. Returns diagnostics for the verify widget.
+ * Pricing for API key callers: $0.01/call (1 LemonSqueezy credit) beyond plan limits.
  */
 export async function GET(req: NextRequest) {
+  // Optional API key validation & metering
+  const authHeader = req.headers.get('authorization');
+  const keyParam = req.nextUrl.searchParams.get('api_key');
+  const keyString = authHeader?.startsWith('Bearer ') ? authHeader.slice(7).trim() : keyParam?.trim();
+
+  let validatedKey: ValidatedKey | undefined;
+  if (keyString) {
+    const keyResult = await validateApiKey(keyString, '/api/v1/verify');
+    if (!keyResult.valid) {
+      const status = keyResult.code === 'TIER_API_ACCESS_REQUIRED' ? 403 : 401;
+      return NextResponse.json({ error: keyResult.error, code: keyResult.code }, { status });
+    }
+    validatedKey = keyResult.key;
+  }
+
   const rawDomain = req.nextUrl.searchParams.get('domain')?.trim();
   if (!rawDomain) {
     return NextResponse.json({ error: 'Missing domain parameter' }, { status: 400 });
@@ -51,8 +68,16 @@ export async function GET(req: NextRequest) {
     orderBy: { lastSeen: 'desc' },
   }).catch(() => null);
 
+  const sendResponse = (data: VerifyResult, status = 200) => {
+    const res = NextResponse.json<VerifyResult>(data, { status });
+    if (validatedKey) {
+      attachMeteringHeaders(res, validatedKey);
+    }
+    return res;
+  };
+
   if (heartbeat) {
-    return NextResponse.json<VerifyResult>({
+    return sendResponse({
       found: true,
       method: 'heartbeat',
       siteDomain: heartbeat.domain,
@@ -128,7 +153,7 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    return NextResponse.json<VerifyResult>({
+    return sendResponse({
       found: false, method: null, siteDomain: null, domainMatch: false,
       tagUrl: null, checkedUrl,
       error: msg.includes('abort') ? 'Request timed out (10 s)' : `Fetch failed: ${msg}`,
@@ -173,5 +198,5 @@ export async function GET(req: NextRequest) {
     ? normSite === checkedHostname || normSite === checkedHostnameNoWww
     : found;
 
-  return NextResponse.json<VerifyResult>({ found, method, siteDomain, domainMatch, tagUrl, checkedUrl });
+  return sendResponse({ found, method, siteDomain, domainMatch, tagUrl, checkedUrl });
 }

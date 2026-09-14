@@ -263,12 +263,24 @@ export default function PricingCards() {
                     </Link>
                   )
                 ) : plan.id === 'enterprise' ? (
-                  <a
-                    href="mailto:contact@citeroute.com?subject=CiteRoute%20Enterprise%20Inquiry"
-                    className="block text-center py-2.5 rounded-xl text-sm font-bold bg-[rgba(184,160,74,0.10)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)] hover:bg-[rgba(184,160,74,0.18)] transition-all"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        const el = document.getElementById('enterprise-data');
+                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        window.dispatchEvent(
+                          new CustomEvent('open-enterprise-inquiry', {
+                            detail: { productName: 'Full Index Access' },
+                          })
+                        );
+                      }
+                    }}
+                    className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-[rgba(184,160,74,0.12)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)] hover:bg-[rgba(184,160,74,0.22)] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    Contact Sales
-                  </a>
+                    <span>Contact Sales</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
                 ) : isCurrent ? (
                   <div className="space-y-2">
                     <div className="w-full text-center py-2 rounded-xl text-xs font-bold text-[#05AD98] bg-[rgba(5,173,152,0.12)] border border-[rgba(5,173,152,0.3)]">
