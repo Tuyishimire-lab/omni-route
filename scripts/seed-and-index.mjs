@@ -21,8 +21,14 @@ import crypto from 'node:crypto';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // ── Config ───────────────────────────────────────────────────────────────────
-const url = process.env.DATABASE_URL || "libsql://omniroute-prod-tuyishimire-lab.aws-us-east-1.turso.io";
-const authToken = process.env.DATABASE_AUTH_TOKEN || "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODcyMzkzMDgsImlkIjoiMDFhMDFmYzItYWIwMS03YjVhLWFiOGItYzQ3OTA3ZTczYWVkIiwia2lkIjoiaGhXVEttQm5fZDVHY1NhYnJRUGh5UzBqai1iUTNZTXVhZ04wVUZxekUxMCIsInJpZCI6IjlhYzI2MzNhLTZjNTEtNDE1OS1iZGJkLTZjMmE0YTI5ZDZkYiJ9.okS0Tibgt0rk3O1Jqr5pTGdtRmmVymojBARky1tOllLUi1ZsLHaYXeTsXZHp26RhdCljeORc9pCetlrxg3EcDQ";
+const url = process.env.DATABASE_URL || process.env.TURSO_DATABASE_URL;
+const authToken = process.env.DATABASE_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN;
+
+if (!url || !authToken) {
+  console.error('ERROR: DATABASE_URL and DATABASE_AUTH_TOKEN must be set in env or .env.local');
+  process.exit(1);
+}
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.citeroute.com';
 const INDEXNOW_ENDPOINT = process.env.INDEXNOW_SUBMIT_URL || `${APP_URL}/api/indexnow`;
 const SCAN_ENDPOINT = `${APP_URL}/api/v1/scan`;
