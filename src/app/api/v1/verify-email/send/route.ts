@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     ]);
 
     // Fire-and-forget: code is stored, respond immediately.
-    // Email delivery is best-effort — the user can always click "Resend".
+    // Email delivery is best-effort - the user can always click "Resend".
     sendVerificationCodeEmail({ to: email, code }).catch((err) => {
       console.error('[verify-email/send] Email dispatch failed:', err);
     });

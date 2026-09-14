@@ -185,7 +185,7 @@ function AuditContent() {
             <span>
               Too many scans in a short window. Next scan available in{' '}
               <strong className="font-mono">{rateLimitRetryAfter}s</strong>
-              {' '}&mdash; or{' '}
+              {' '}- or{' '}
               <a href="/register?redirect=/audit" className="underline hover:text-amber-200">create a free account</a>
               {' '}for higher limits.
             </span>

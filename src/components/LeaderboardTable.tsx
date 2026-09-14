@@ -12,7 +12,7 @@ export type { LeaderboardEntry };
 const CATEGORIES = ['All', 'AI/Tech', 'Fintech', 'SaaS/Tools', 'SaaS/Design', 'Developer', 'E-Commerce'];
 
 function formatRelativeTime(isoDate?: string): string {
-  if (!isoDate) return '—';
+  if (!isoDate) return '-';
   const now = Date.now();
   const then = new Date(isoDate).getTime();
   const diffMs = now - then;

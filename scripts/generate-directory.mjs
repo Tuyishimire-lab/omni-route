@@ -1,5 +1,5 @@
 /**
- * CiteRoute Programmatic SEO — Domain Directory Generator
+ * CiteRoute Programmatic SEO - Domain Directory Generator
  *
  * Generates a curated list of 1,500+ SaaS/tech domains across 20 categories.
  * Output: scripts/domains-directory.json

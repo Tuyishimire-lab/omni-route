@@ -1,4 +1,4 @@
-# CiteRoute — Master Project Documentation
+# CiteRoute - Master Project Documentation
 
 > **Version:** 2.0.0  
 > **Status:** Active / Production-Ready  

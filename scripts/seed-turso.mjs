@@ -1,9 +1,8 @@
 /**
- * seed-turso.mjs — bootstrap benchmark Domain + ScanEvent rows.
+ * seed-turso.mjs - bootstrap benchmark Domain + ScanEvent rows.
  *
- * POLICY: This script NEVER writes TelemetryEvent rows.
- * TelemetryEvents must only be created by real customer tracking snippets
- * hitting /api/v1/track. Fake events pollute analytics — see mockTelemetry.ts
+ * NOTE: Does NOT write to TelemetryEvent. TelemetryEvent is for real live bots
+ * hitting /api/v1/track. Fake events pollute analytics - see mockTelemetry.ts
  * for the UI-only demo feed that stays entirely in the browser.
  *
  * Usage (one-time, run locally):
@@ -70,7 +69,7 @@ async function main() {
 
   // Explicitly confirm no TelemetryEvent rows were written
   console.log(`✓ Seeded ${SEED_DOMAINS.length} benchmark domains (Domain + ScanEvent only).`);
-  console.log('  TelemetryEvent table was NOT touched — real events come from /api/v1/track only.');
+  console.log('  TelemetryEvent table was NOT touched - real events come from /api/v1/track only.');
 }
 
 main().catch(err => {

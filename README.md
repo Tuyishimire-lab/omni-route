@@ -31,7 +31,7 @@ Requires Node ≥ 22 and pnpm ≥ 10.
 | Variable | Purpose |
 |---|---|
 | `DATABASE_URL` | Turso/libSQL connection string (SQLite-compatible) |
-| `JWT_SECRET` | Session signing secret — **required in production**, app refuses to boot without it |
+| `JWT_SECRET` | Session signing secret - **required in production**, app refuses to boot without it |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth (optional) |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth (optional) |
 
@@ -49,10 +49,10 @@ No cookies, no PII. Classification happens server-side from request headers.
 ## Architecture
 
 - **Next.js 16 App Router** · React 19 · TypeScript strict
-- **Prisma 7 + libSQL/Turso** — serverless-safe persistence
-- **DB-backed rate limiting & scan caching** — correct across cold starts
+- **Prisma 7 + libSQL/Turso** - serverless-safe persistence
+- **DB-backed rate limiting & scan caching** - correct across cold starts
 - **API keys hashed at rest** (sha256); plaintext shown exactly once at creation
-- **SSRF-hardened crawler** — private ranges, link-local, and cloud-metadata targets blocked
+- **SSRF-hardened crawler** - private ranges, link-local, and cloud-metadata targets blocked
 - **Vitest** unit tests: `pnpm test`
 
 ```
@@ -77,4 +77,4 @@ vercel deploy --prod
 
 ---
 
-© 2026 CiteRoute — see DOCUMENTATION.md for the full product spec.
+© 2026 CiteRoute - see DOCUMENTATION.md for the full product spec.

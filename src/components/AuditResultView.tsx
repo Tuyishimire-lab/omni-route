@@ -151,14 +151,14 @@ function ScoreHistoryPanel({ domain, isWhiteLabel }: { domain: string; isWhiteLa
           />
           <p className="text-[10px] text-[#878787] mt-2">
             {isWhiteLabel
-              ? `${history.length} data points over 14 days — updated by automated rescan pipeline.`
-              : `${history.length} data points over 14 days — updated by CiteRoute's automated rescan pipeline.`}
+              ? `${history.length} data points over 14 days, updated by automated rescan pipeline.`
+              : `${history.length} data points over 14 days, updated by CiteRoute's automated rescan pipeline.`}
           </p>
         </div>
       ) : (
         <div className="text-center py-4">
           <p className="text-xs text-[#878787]">
-            First scan — trend data will appear after the next rescan cycle.
+            First scan. Trend data will appear after the next rescan cycle.
           </p>
           <p className="text-[10px] text-[#878787] mt-1">
             {isWhiteLabel
@@ -605,7 +605,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
         </div>
       </div>
 
-      {/* Score History — real trend data from cron rescans */}
+      {/* Score History - real trend data from cron rescans */}
       <ScoreHistoryPanel domain={report.domain} isWhiteLabel={isWhiteLabel} />
 
       {/* Foundation Model & Generative Answer Engine Diagnostics */}

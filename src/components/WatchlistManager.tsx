@@ -239,7 +239,7 @@ export default function WatchlistManager() {
                   </div>
                 </div>
 
-                {/* Sparkline — real DB history from cron rescans */}
+                {/* Sparkline - real DB history from cron rescans */}
                 {(() => {
                   const realHistory = dbHistoryMap[item.domain];
                   return realHistory && realHistory.length > 1 ? (

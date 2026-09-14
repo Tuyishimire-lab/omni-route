@@ -252,7 +252,7 @@ export default function EnterpriseDataSection() {
               </span>
             </div>
             <p className="text-xs sm:text-sm text-[#BBBFBF] leading-relaxed">
-              The CiteRoute index is a unique ground-truth dataset — which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed or custom data pipeline.
+              The CiteRoute index is a unique ground-truth dataset: which domains AI engines cite, at what frequency, with real crawler fingerprints. Available as a private feed or custom data pipeline.
             </p>
           </div>
 

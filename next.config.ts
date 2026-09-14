@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // GitHub and Google avatar CDNs — used for OAuth profile pictures
+    // GitHub and Google avatar CDNs - used for OAuth profile pictures
     remotePatterns: [
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
 
   env: {
     // Used client-side for canonical URLs, OG tags, sitemaps, share links.
-    // NEVER use this server-side for OAuth redirect URIs — derive from req.nextUrl instead.
+    // NEVER use this server-side for OAuth redirect URIs - derive from req.nextUrl instead.
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   },
   async headers() {

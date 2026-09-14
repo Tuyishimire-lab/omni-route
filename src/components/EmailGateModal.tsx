@@ -34,7 +34,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
   useEffect(() => {
     if (open && initialEmail) {
       setEmail(initialEmail);
-      // Trigger code send immediately — skips the email-entry step
+      // Trigger code send immediately - skips the email-entry step
       const sendCode = async () => {
         setLoading(true);
         setError(null);
