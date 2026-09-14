@@ -75,7 +75,8 @@ export async function GET(req: NextRequest) {
   const normalizedUsers = users.map((u) => {
     if (u.role === 'admin' && u.tier === 'free') {
       // Asynchronously update in DB to keep permanent consistency
-      prisma.user.update({ where: { id: u.id }, data: { tier: 'enterprise' } }).catch(() => {});
+      prisma.user.update({ where: { id: u.id }, data: { tier: 'enterprise' } })
+        .catch((err) => console.warn(`[admin/users] Failed to align admin ${u.id} to enterprise tier:`, err));
       return { ...u, tier: 'enterprise' as const };
     }
     return u;
