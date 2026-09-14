@@ -104,6 +104,10 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col antialiased" style={{ background: '#0A0E0E', color: '#FFFFFF' }}>
         <GoogleAnalytics />
         <Script src="https://assets.lemonsqueezy.com/lemon.js" strategy="afterInteractive" />
+        <Script id="lemonsqueezy-affiliate-config" strategy="afterInteractive">
+          {`window.lemonSqueezyAffiliateConfig = { store: "citeroute" };`}
+        </Script>
+        <Script src="https://lmsqueezy.com/affiliate.js" strategy="afterInteractive" defer />
 
         {/* Skip to main content - WCAG 2.1 AA keyboard nav requirement */}
         <a
@@ -138,6 +142,7 @@ export default function RootLayout({
               <Link href="/docs" className="hover:text-[#05AD98] transition-colors">Docs</Link>
               <Link href="/pricing" className="hover:text-[#05AD98] transition-colors">Pricing</Link>
               <Link href="/about" className="hover:text-[#05AD98] transition-colors">About</Link>
+              <Link href="https://citeroute.lemonsqueezy.com/affiliates" target="_blank" rel="noopener noreferrer" className="hover:text-[#05AD98] transition-colors">Affiliates</Link>
               <Link href="/privacy" className="hover:text-[#05AD98] transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-[#05AD98] transition-colors">Terms of Service</Link>
             </div>
