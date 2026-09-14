@@ -14,11 +14,11 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "indexnow": "node scripts/submit-indexnow.mjs",
+    "indexnow": "node --env-file=.env.local scripts/submit-indexnow.mjs",
     "seed:generate": "node scripts/generate-directory.mjs",
-    "seed:directory": "node scripts/seed-and-index.mjs",
-    "seed:dry-run": "node scripts/seed-and-index.mjs --dry-run",
-    "seed:pre-crawl": "node scripts/seed-and-index.mjs --pre-crawl",
+    "seed:directory": "node --env-file=.env.local scripts/seed-and-index.mjs",
+    "seed:dry-run": "node --env-file=.env.local scripts/seed-and-index.mjs --dry-run",
+    "seed:pre-crawl": "node --env-file=.env.local scripts/seed-and-index.mjs --pre-crawl",
     "postinstall": "prisma generate"
   },
   "dependencies": {
