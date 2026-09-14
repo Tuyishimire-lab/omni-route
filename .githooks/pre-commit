@@ -1,0 +1,43 @@
+#!/bin/sh
+# Pre-commit hook: block commits containing potential secrets.
+# Install: copy this file to .git/hooks/pre-commit and chmod +x it.
+
+echo "Running secret scan..."
+
+# Patterns that should never appear in committed code
+PATTERNS=(
+  "eyJhbG"                          # JWT tokens
+  "sk-[a-zA-Z0-9]{20,}"            # OpenAI-style API keys
+  "AKIA[A-Z0-9]{16}"               # AWS access keys
+  "turso\.io"                       # Hardcoded Turso DB URLs
+  "ghp_[a-zA-Z0-9]{36}"            # GitHub personal access tokens
+  "re_[a-zA-Z0-9]{20,}"            # Resend API keys
+  "lmsq_[a-zA-Z0-9]{20,}"          # Lemon Squeezy API keys
+)
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|mjs|js|json)$' | grep -v 'node_modules' | grep -v '.test.ts')
+
+if [ -z "$STAGED" ]; then
+  exit 0
+fi
+
+FOUND=0
+for pattern in "${PATTERNS[@]}"; do
+  MATCHES=$(git diff --cached -U0 -- $STAGED | grep -E "^\+" | grep -v "^+++" | grep -E "$pattern" || true)
+  if [ -n "$MATCHES" ]; then
+    echo ""
+    echo "BLOCKED: Potential secret detected matching pattern: $pattern"
+    echo "$MATCHES"
+    echo ""
+    FOUND=1
+  fi
+done
+
+if [ $FOUND -eq 1 ]; then
+  echo "Commit blocked. Move secrets to .env.local or Vercel env vars."
+  echo "If this is a false positive, use: git commit --no-verify"
+  exit 1
+fi
+
+echo "Secret scan passed."
+exit 0
