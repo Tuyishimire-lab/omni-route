@@ -44,6 +44,7 @@ const NAV: NavEntry[] = [
       label: 'Explore',
       items: [
         { name: 'Leaderboard', href: '/leaderboard', icon: <Trophy    className="w-4 h-4" />, desc: 'Top AI-visible domains globally' },
+        { name: 'Directory',   href: '/directory',   icon: <Globe     className="w-4 h-4" />, desc: 'GEO scores for 1,000+ companies' },
         { name: 'Benchmark',   href: '/benchmark',   icon: <BarChart2 className="w-4 h-4" />, desc: 'Compare your GEO score'          },
         { name: 'Analytics',   href: '/analytics',   icon: <Layers    className="w-4 h-4" />, desc: 'Aggregate AI traffic trends'     },
       ],

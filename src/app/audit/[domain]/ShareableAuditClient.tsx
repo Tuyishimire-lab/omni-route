@@ -150,28 +150,81 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
         <div className="space-y-8">
           <AuditResultView report={report} />
 
-          {/* Conversion Callout */}
-          <div className="glass-panel rounded-2xl p-8 border border-[rgba(5,173,152,0.25)] relative overflow-hidden bg-gradient-to-r from-[rgba(5,173,152,0.06)] to-transparent">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              <div className="space-y-2 text-center sm:text-left">
+          {/* Pro Upgrade CTA */}
+          <div className="glass-panel rounded-2xl border border-[rgba(5,173,152,0.30)] relative overflow-hidden">
+            {/* Gradient top border accent */}
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#05AD98] to-transparent" />
+
+            <div className="p-8 space-y-6">
+              {/* Badge */}
+              <div className="flex items-center justify-between">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgba(5,173,152,0.15)] text-[#05AD98] text-[11px] font-semibold">
                   <Sparkles className="w-3 h-3" />
-                  Free GEO Audit
+                  Upgrade to Pro
                 </div>
-                <h3 className="text-xl font-extrabold text-white">
-                  Want to measure your own domain&apos;s AI citation score?
+                <span className="text-[10px] font-mono text-[#878787]">
+                  Starting at $29/mo
+                </span>
+              </div>
+
+              {/* Headline */}
+              <div className="space-y-2">
+                <h3 className="text-xl font-extrabold text-white leading-tight">
+                  Track this score weekly. Get actionable fixes.
                 </h3>
-                <p className="text-xs text-[#BBBFBF] max-w-xl leading-relaxed">
-                  Run a free real-time GEO audit to discover citation probability, zero-click resilience, and agent telemetry for your startup or business.
+                <p className="text-sm text-[#BBBFBF] leading-relaxed max-w-xl">
+                  This one-time audit is just the start. Pro members get continuous monitoring,
+                  weekly score change alerts, and specific recommendations to improve AI citation rates.
                 </p>
               </div>
-              <Link
-                href="/"
-                className="shrink-0 px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center gap-2"
-              >
-                <span>Audit Your Domain Free</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+
+              {/* Value props grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-xl bg-[rgba(5,173,152,0.04)] border border-[rgba(5,173,152,0.12)] p-4 space-y-1.5">
+                  <div className="w-8 h-8 rounded-lg bg-[rgba(5,173,152,0.10)] flex items-center justify-center">
+                    <RefreshCw className="w-4 h-4 text-[#05AD98]" />
+                  </div>
+                  <p className="text-xs font-bold text-white">Weekly GEO Tracking</p>
+                  <p className="text-[10px] text-[#878787] leading-relaxed">
+                    Automatic rescans every week with score change alerts delivered to your inbox.
+                  </p>
+                </div>
+                <div className="rounded-xl bg-[rgba(5,173,152,0.04)] border border-[rgba(5,173,152,0.12)] p-4 space-y-1.5">
+                  <div className="w-8 h-8 rounded-lg bg-[rgba(5,173,152,0.10)] flex items-center justify-center">
+                    <ShieldCheck className="w-4 h-4 text-[#05AD98]" />
+                  </div>
+                  <p className="text-xs font-bold text-white">Actionable Fixes</p>
+                  <p className="text-[10px] text-[#878787] leading-relaxed">
+                    Specific recommendations to improve structured data, entity coverage, and vector readiness.
+                  </p>
+                </div>
+                <div className="rounded-xl bg-[rgba(5,173,152,0.04)] border border-[rgba(5,173,152,0.12)] p-4 space-y-1.5">
+                  <div className="w-8 h-8 rounded-lg bg-[rgba(5,173,152,0.10)] flex items-center justify-center">
+                    <Share2 className="w-4 h-4 text-[#05AD98]" />
+                  </div>
+                  <p className="text-xs font-bold text-white">Unlimited Scans</p>
+                  <p className="text-[10px] text-[#878787] leading-relaxed">
+                    Monitor up to 10 competitor domains and benchmark your progress against industry leaders.
+                  </p>
+                </div>
+              </div>
+
+              {/* CTA buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <Link
+                  href="/pricing"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center justify-center gap-2"
+                >
+                  <span>Start Pro Trial</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/"
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#1A2020] hover:bg-[#222A2A] border border-[rgba(187,191,191,0.12)] text-[#BBBFBF] hover:text-white text-sm font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Audit Another Domain</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
