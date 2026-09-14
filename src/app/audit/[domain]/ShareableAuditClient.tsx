@@ -163,7 +163,7 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
                   Upgrade to Pro
                 </div>
                 <span className="text-[10px] font-mono text-[#878787]">
-                  Starting at $29/mo
+                  Starting at $79/mo
                 </span>
               </div>
 
