@@ -6,7 +6,7 @@ import { Mail, ArrowRight, ShieldCheck, Loader2, X } from 'lucide-react';
 interface EmailGateModalProps {
   open: boolean;
   onClose: () => void;
-  onVerified: () => void;
+  onVerified: (email?: string) => void;
   /** When set (e.g. from EMAIL_EXPIRED), skip the email-entry step and auto-send a new code. */
   initialEmail?: string;
 }
@@ -114,7 +114,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
       const data = await res.json();
 
       if (res.ok && data.success) {
-        onVerified();
+        onVerified(data.email || email.trim().toLowerCase());
       } else {
         setError(data.error || 'Invalid code. Please try again.');
         setCode(['', '', '', '', '', '']);

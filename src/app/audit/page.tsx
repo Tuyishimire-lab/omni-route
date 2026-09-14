@@ -18,11 +18,32 @@ function AuditContent() {
   // Burst protection: short countdown (30 req/min anti-abuse window)
   const [rateLimitRetryAfter, setRateLimitRetryAfter] = useState<number | null>(null);
   // Monthly quota exhaustion: hard wall until next billing period or upgrade
-  const [quotaExhausted, setQuotaExhausted] = useState<{ upgradeTier: string } | null>(null);
+  const [quotaExhausted, setQuotaExhausted] = useState<{ upgradeTier: string; email?: string } | null>(null);
   // Email verification gate for anonymous users
   const [emailGateOpen, setEmailGateOpen] = useState(false);
   const [expiredEmail, setExpiredEmail] = useState<string | undefined>();
+  const [verifiedEmail, setVerifiedEmail] = useState<string>('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pendingScanDomain = useRef<string | null>(null);
+
+  // Sync saved verified email and session on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('citeroute_verified_email');
+      if (stored) setVerifiedEmail(stored);
+    } catch {
+      // Ignore
+    }
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.user) {
+          setIsLoggedIn(true);
+          if (d.user.email) setVerifiedEmail(d.user.email);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Tick down the retry counter every second so the user sees a live countdown
   useEffect(() => {
@@ -56,7 +77,11 @@ function AuditContent() {
       } else if (res.status === 429) {
         if (data.code === 'TIER_SCAN_LIMIT') {
           // Monthly quota exhausted - hard wall, no countdown
-          setQuotaExhausted({ upgradeTier: data.upgradeTier ?? 'pro' });
+          const emailCandidate = data.email || verifiedEmail || (typeof window !== 'undefined' ? localStorage.getItem('citeroute_verified_email') : undefined);
+          setQuotaExhausted({
+            upgradeTier: data.upgradeTier ?? 'pro',
+            email: emailCandidate || undefined,
+          });
         } else {
           // Burst protection - show countdown from Retry-After header
           const retryAfterHeader = res.headers.get('Retry-After');
@@ -89,8 +114,16 @@ function AuditContent() {
   };
 
   // After email verification succeeds, retry the pending scan
-  const handleEmailVerified = useCallback(() => {
+  const handleEmailVerified = useCallback((confirmedEmail?: string) => {
     setEmailGateOpen(false);
+    if (confirmedEmail) {
+      setVerifiedEmail(confirmedEmail);
+      try {
+        localStorage.setItem('citeroute_verified_email', confirmedEmail);
+      } catch {
+        // Ignore
+      }
+    }
     const domain = pendingScanDomain.current;
     if (domain) {
       pendingScanDomain.current = null;
@@ -157,27 +190,38 @@ function AuditContent() {
         </form>
 
         {/* Monthly quota exhausted - hard wall with upgrade CTA */}
-        {quotaExhausted && (
-          <div className="p-4 bg-rose-500/10 border border-rose-500/25 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-rose-300 mb-0.5">Monthly scan limit reached</p>
-              <p className="text-rose-400/80">
-                Free accounts include <strong>10 GEO scans per month</strong>. Your limit has been reached for this billing period.
-              </p>
+        {quotaExhausted && (() => {
+          const currentDomain = (domainInput.trim() || activeReport?.domain || '').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+          const activeEmail = quotaExhausted.email || verifiedEmail || (typeof window !== 'undefined' ? localStorage.getItem('citeroute_verified_email') || '' : '');
+          const pricingDest = `/pricing?tier=pro${currentDomain ? `&domain=${encodeURIComponent(currentDomain)}` : ''}`;
+          const upgradeUrl = isLoggedIn
+            ? pricingDest
+            : `/register?redirect=${encodeURIComponent(pricingDest)}${activeEmail ? `&email=${encodeURIComponent(activeEmail)}` : ''}${currentDomain ? `&domain=${encodeURIComponent(currentDomain)}` : ''}`;
+          const auditDest = `/audit${currentDomain ? `?domain=${encodeURIComponent(currentDomain)}` : ''}`;
+          const freeSignupUrl = `/register?redirect=${encodeURIComponent(auditDest)}${activeEmail ? `&email=${encodeURIComponent(activeEmail)}` : ''}${currentDomain ? `&domain=${encodeURIComponent(currentDomain)}` : ''}`;
+
+          return (
+            <div className="p-4 bg-rose-500/10 border border-rose-500/25 rounded-xl text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <p className="font-semibold text-rose-300 mb-0.5">Monthly scan limit reached</p>
+                <p className="text-rose-400/80">
+                  Free accounts include <strong>10 GEO scans per month</strong>. Your limit has been reached for this billing period.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <a
+                  href={upgradeUrl}
+                  className="px-3 py-1.5 rounded-lg bg-[#05AD98] text-white font-semibold hover:bg-[#038a79] transition-colors whitespace-nowrap shadow-sm shadow-[rgba(5,173,152,0.25)]"
+                >
+                  Upgrade to Pro
+                </a>
+                <a href={freeSignupUrl} className="text-rose-300 underline hover:text-rose-200 whitespace-nowrap">
+                  Sign up free
+                </a>
+              </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <a
-                href="/register?redirect=/pricing&tier=pro"
-                className="px-3 py-1.5 rounded-lg bg-[#05AD98] text-white font-semibold hover:bg-[#038a79] transition-colors whitespace-nowrap"
-              >
-                Upgrade to Pro
-              </a>
-              <a href="/register?redirect=/audit" className="text-rose-300 underline hover:text-rose-200 whitespace-nowrap">
-                Sign up free
-              </a>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Burst protection - short countdown */}
         {!quotaExhausted && rateLimitRetryAfter !== null && (

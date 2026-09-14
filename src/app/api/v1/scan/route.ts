@@ -14,6 +14,7 @@ const VERIFIED_EMAIL_COOKIE = 'citeroute_verified_email';
 async function verifyScanAllowance(ip: string, session: SessionPayload) {
   let tier = 'free';
   let trackingId = `ip:${ip}`;
+  let emailForTracking: string | undefined = undefined;
 
   if (session) {
     if (session.role === 'admin') {
@@ -21,10 +22,11 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
     }
     const user = await prisma.user.findUnique({
       where: { id: session.userId },
-      select: { tier: true },
+      select: { tier: true, email: true },
     });
     tier = user?.tier ?? 'free';
     trackingId = `user:${session.userId}`;
+    emailForTracking = user?.email || session.email;
   } else {
     // Anonymous user - require verified email
     const cookieStore = await cookies();
@@ -59,6 +61,7 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
 
     // Track by verified email instead of IP
     trackingId = `email:${verifiedEmail}`;
+    emailForTracking = verifiedEmail;
   }
 
   // Pro, Agency, Enterprise get unlimited scans
@@ -76,6 +79,7 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
       error: 'You have reached your monthly limit of 10 free GEO scans. Upgrade to Pro for unlimited scans.',
       code: 'TIER_SCAN_LIMIT',
       upgradeTier: 'pro',
+      email: emailForTracking,
     };
   }
 

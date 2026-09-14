@@ -84,6 +84,15 @@ export default function MySitesPage() {
       if (params.get('upgraded') === 'true') {
         setShowUpgradeSuccess(true);
       }
+      const domainParam = params.get('domain') || localStorage.getItem('citeroute_pending_domain');
+      if (domainParam) {
+        setAddDomain(domainParam.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, ''));
+        try {
+          localStorage.removeItem('citeroute_pending_domain');
+        } catch {
+          // Ignore
+        }
+      }
     }
   }, [router, fetchSites]);
 

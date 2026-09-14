@@ -58,7 +58,9 @@ export default function PricingPage() {
 
       {/* Pricing Cards */}
       <section>
-        <PricingCards />
+        <React.Suspense fallback={<div className="text-center py-12 text-[#878787]">Loading plans...</div>}>
+          <PricingCards />
+        </React.Suspense>
       </section>
 
       {/* API Pricing */}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -18,12 +18,38 @@ function RegisterPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/';
+  const emailParam = searchParams.get('email') || '';
+  const domainParam = searchParams.get('domain') || '';
+
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(emailParam);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Pre-fill email, persist pending domain, and redirect if session exists
+  useEffect(() => {
+    if (emailParam && !email) {
+      setEmail(emailParam);
+    }
+    if (domainParam && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('citeroute_pending_domain', domainParam);
+      } catch {
+        // Ignore
+      }
+    }
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.user) {
+          const safeDest = redirectTo.startsWith('/') ? redirectTo : '/';
+          router.replace(safeDest);
+        }
+      })
+      .catch(() => {});
+  }, [emailParam, domainParam, email, redirectTo, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +73,14 @@ function RegisterPageInner() {
       if (!res.ok) {
         setError(data.error || 'Registration failed.');
         return;
+      }
+
+      if (domainParam && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('citeroute_pending_domain', domainParam);
+        } catch {
+          // Ignore
+        }
       }
 
       // Redirect to the specified destination (or home)
@@ -190,7 +224,10 @@ function RegisterPageInner() {
 
         <p className="text-center text-xs text-[#878787]">
           Already have an account?{' '}
-          <Link href="/login" className="text-[#05AD98] hover:underline font-semibold">
+          <Link
+            href={`/login?redirect=${encodeURIComponent(redirectTo)}${email ? `&email=${encodeURIComponent(email)}` : ''}${domainParam ? `&domain=${encodeURIComponent(domainParam)}` : ''}`}
+            className="text-[#05AD98] hover:underline font-semibold"
+          >
             Sign in
           </Link>
         </p>

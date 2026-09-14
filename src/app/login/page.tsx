@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -9,12 +9,29 @@ import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/';
+  const emailParam = searchParams.get('email') || '';
+  const domainParam = searchParams.get('domain') || '';
   const errorParam = searchParams.get('error');
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(emailParam);
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(errorParam ? 'OAuth login failed. Please try again.' : '');
+
+  // If domainParam or emailParam is present, sync state and localStorage
+  useEffect(() => {
+    if (emailParam && !email) {
+      setEmail(emailParam);
+    }
+    if (domainParam && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('citeroute_pending_domain', domainParam);
+      } catch {
+        // Ignore
+      }
+    }
+  }, [emailParam, domainParam, email]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +51,16 @@ function LoginForm() {
         return;
       }
 
-      router.push('/');
+      if (domainParam && typeof window !== 'undefined') {
+        try {
+          localStorage.setItem('citeroute_pending_domain', domainParam);
+        } catch {
+          // Ignore
+        }
+      }
+
+      const safeDest = redirectTo.startsWith('/') ? redirectTo : '/';
+      router.push(safeDest);
       router.refresh();
     } catch {
       setError('Network error. Please try again.');
@@ -151,7 +177,10 @@ function LoginForm() {
         {/* Footer */}
         <p className="text-center text-xs text-[#878787]">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-[#05AD98] hover:underline font-semibold">
+          <Link
+            href={`/register?redirect=${encodeURIComponent(redirectTo)}${email ? `&email=${encodeURIComponent(email)}` : ''}${domainParam ? `&domain=${encodeURIComponent(domainParam)}` : ''}`}
+            className="text-[#05AD98] hover:underline font-semibold"
+          >
             Create one
           </Link>
         </p>

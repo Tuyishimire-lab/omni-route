@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Check, X, Zap, Shield, Crown, Users, Loader2, ArrowRight, ExternalLink } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Check, X, Zap, Shield, Crown, Users, Loader2, ArrowRight, ExternalLink, Globe } from 'lucide-react';
 
 interface UserSession {
   userId: string;
@@ -105,10 +105,24 @@ const PLANS = [
 
 export default function PricingCards() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const targetTier = searchParams.get('tier');
+  const [domainParam, setDomainParam] = useState<string>('');
+  const autoTriggeredRef = useRef(false);
+
   const [user, setUser] = useState<UserSession | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fromUrl = searchParams.get('domain');
+    const fromStorage = typeof window !== 'undefined' ? localStorage.getItem('citeroute_pending_domain') : null;
+    const resolved = fromUrl || fromStorage || '';
+    if (resolved) {
+      setDomainParam(resolved);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -131,7 +145,8 @@ export default function PricingCards() {
         win.LemonSqueezy?.Setup({
           eventHandler: (event) => {
             if (event.event === 'Checkout.Success') {
-              router.push('/my-sites?upgraded=true');
+              const dest = domainParam ? `/my-sites?upgraded=true&domain=${encodeURIComponent(domainParam)}` : '/my-sites?upgraded=true';
+              router.push(dest);
             }
           },
         });
@@ -141,12 +156,14 @@ export default function PricingCards() {
       const timer = setTimeout(setupLemonSqueezy, 1000);
       return () => clearTimeout(timer);
     }
-  }, [router]);
+  }, [router, domainParam]);
 
-  const handleCheckout = async (tier: 'pro' | 'agency') => {
+  const handleCheckout = async (tier: 'pro' | 'agency', domainToPass?: string) => {
     setError(null);
+    const domain = domainToPass || domainParam;
     if (!user) {
-      router.push(`/login?redirect=/pricing`);
+      const redirectDest = `/pricing?tier=${tier}${domain ? `&domain=${encodeURIComponent(domain)}` : ''}`;
+      router.push(`/login?redirect=${encodeURIComponent(redirectDest)}`);
       return;
     }
 
@@ -155,7 +172,7 @@ export default function PricingCards() {
       const res = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier }),
+        body: JSON.stringify({ tier, domain }),
       });
 
       const data = await res.json();
@@ -189,8 +206,27 @@ export default function PricingCards() {
 
   const currentTier = user?.tier?.toLowerCase() || 'free';
 
+  // Automatically trigger checkout when arriving directly with tier=pro or tier=agency from audit quota loop
+  useEffect(() => {
+    if (!authChecked || !user || autoTriggeredRef.current) return;
+    const tierFromUrl = targetTier?.toLowerCase();
+    if ((tierFromUrl === 'pro' || tierFromUrl === 'agency') && currentTier === 'free') {
+      autoTriggeredRef.current = true;
+      handleCheckout(tierFromUrl as 'pro' | 'agency', domainParam);
+    }
+  }, [authChecked, user, targetTier, currentTier, domainParam]);
+
   return (
     <div className="space-y-6">
+      {domainParam && (
+        <div className="flex items-center justify-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.25)] text-xs text-[#05AD98] font-mono shadow-sm">
+            <Globe className="w-3.5 h-3.5" />
+            <span>Target Domain: <strong className="text-white font-semibold">{domainParam}</strong></span>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs text-center max-w-md mx-auto">
           {error}
@@ -256,7 +292,7 @@ export default function PricingCards() {
                     </div>
                   ) : (
                     <Link
-                      href={user ? '/my-sites' : '/register'}
+                      href={user ? (domainParam ? `/my-sites?domain=${encodeURIComponent(domainParam)}` : '/my-sites') : (domainParam ? `/register?domain=${encodeURIComponent(domainParam)}` : '/register')}
                       className="block text-center py-2.5 rounded-xl text-sm font-bold bg-[#1A2020] text-[#BBBFBF] border border-[rgba(187,191,191,0.15)] hover:text-white hover:border-[#05AD98] transition-all"
                     >
                       {user ? 'Go to Dashboard' : 'Get Started Free'}
@@ -297,7 +333,7 @@ export default function PricingCards() {
                 ) : (
                   <div>
                     <button
-                      onClick={() => handleCheckout(plan.id as 'pro' | 'agency')}
+                      onClick={() => handleCheckout(plan.id as 'pro' | 'agency', domainParam)}
                       disabled={isLoading || loadingTier !== null}
                       className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
                         plan.highlight

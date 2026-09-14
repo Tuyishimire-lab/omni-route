@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { tier } = body;
+    const { tier, domain } = body;
 
     if (tier !== 'pro' && tier !== 'agency') {
       return NextResponse.json(
@@ -39,12 +39,19 @@ export async function POST(req: NextRequest) {
     // If the account has ever had a subscription or trial, skip the trial so they pay immediately
     const hasUsedTrial = Boolean(user?.lemonSubscriptionId || user?.subscriptionStatus);
 
+    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.citeroute.com').replace(/\/+$/, '');
+    const cleanDomain = typeof domain === 'string' ? domain.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '') : '';
+    const redirectUrl = cleanDomain
+      ? `${appUrl}/my-sites?upgraded=true&tier=${tier}&domain=${encodeURIComponent(cleanDomain)}`
+      : `${appUrl}/my-sites?upgraded=true&tier=${tier}`;
+
     const { checkoutUrl } = await createLemonCheckout({
       userId: session.userId,
       email: session.email,
       name: session.name,
       tier,
       skipTrial: hasUsedTrial,
+      redirectUrl,
     });
 
     return NextResponse.json({ success: true, checkoutUrl });
