@@ -22,7 +22,7 @@ export async function getCachedScanReport(
     if (!event) return null;
     if (Date.now() - event.scannedAt.getTime() > SCAN_CACHE_TTL_MS) return null;
     const report = JSON.parse(event.rawReport!) as GeoAuditReport;
-    // Engine breakdown is a live enrichment — never serve it from cache.
+    // Engine breakdown is a live enrichment - never serve it from cache.
     // Old cached blobs may have fabricated engine data; always clear it here.
     report.engineBreakdown = [];
     return report;

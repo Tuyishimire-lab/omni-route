@@ -27,32 +27,32 @@ interface DirectoryDomain {
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'AI/Tech': '🤖',
-  'Developer Tools': '⚡',
-  Fintech: '💳',
-  'SaaS/Productivity': '📊',
-  'Design/Creative': '🎨',
-  'E-Commerce': '🛒',
-  'Marketing/Sales': '📈',
-  'Security/Compliance': '🔒',
-  'Analytics/Data': '📉',
-  'Cloud/Infrastructure': '☁️',
-  'HR/Recruiting': '👥',
-  'Education/EdTech': '🎓',
-  'Healthcare/BioTech': '🧬',
-  'Media/Content': '📱',
-  'Legal/GovTech': '⚖️',
-  'Sustainability/Climate': '🌱',
-  'Crypto/Web3': '🪙',
-  'Telecom/Communications': '📞',
-  'Consumer Apps': '📲',
-  'Logistics/Supply Chain': '📦',
+  'AI/Tech': '',
+  'Developer Tools': '',
+  Fintech: '',
+  'SaaS/Productivity': '',
+  'Design/Creative': '',
+  'E-Commerce': '',
+  'Marketing/Sales': '',
+  'Security/Compliance': '',
+  'Analytics/Data': '',
+  'Cloud/Infrastructure': '',
+  'HR/Recruiting': '',
+  'Education/EdTech': '',
+  'Healthcare/BioTech': '',
+  'Media/Content': '',
+  'Legal/GovTech': '',
+  'Sustainability/Climate': '',
+  'Crypto/Web3': '',
+  'Telecom/Communications': '',
+  'Consumer Apps': '',
+  'Logistics/Supply Chain': '',
 };
 
 function ScoreBadge({ score }: { score: number }) {
   if (score === 0) {
     return (
-      <span className="text-xs text-[#64748B] font-mono">—</span>
+      <span className="text-xs text-[#64748B] font-mono">-</span>
     );
   }
   const color = score >= 85 ? '#05AD98' : score >= 70 ? '#F59E0B' : '#EF4444';
@@ -184,7 +184,7 @@ export default function DirectoryClient() {
           </div>
           <div className="w-px h-8 bg-[rgba(187,191,191,0.12)]" />
           <div className="text-center">
-            <div className="text-xl font-extrabold text-white">{avgScore || '—'}</div>
+            <div className="text-xl font-extrabold text-white">{avgScore || '-'}</div>
             <div className="text-[10px] text-[#878787] uppercase tracking-wider">Avg GEO</div>
           </div>
         </div>
@@ -265,7 +265,7 @@ export default function DirectoryClient() {
                 <div>
                   <h2 className="text-base font-bold text-white">{category}</h2>
                   <p className="text-[10px] text-[#878787]">
-                    {domainList.length} domains · Avg GEO: {categoryAvg || '—'}
+                    {domainList.length} domains - Avg GEO: {categoryAvg || '-'}
                   </p>
                 </div>
               </div>

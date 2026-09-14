@@ -26,7 +26,7 @@ async function getDomainScore(domain: string): Promise<{ score: number | null; s
       };
     }
   } catch {
-    // Silent fallback — don't block page render
+    // Silent fallback - don't block page render
   }
   return { score: null, status: null, category: null };
 }

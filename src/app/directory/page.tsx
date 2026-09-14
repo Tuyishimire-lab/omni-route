@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import DirectoryClient from './DirectoryClient';
 
 export const metadata: Metadata = {
-  title: 'AI Citation Readiness Directory — GEO Scores for 1,000+ SaaS Companies | CiteRoute',
+  title: 'AI Citation Readiness Directory - GEO Scores for 1,000+ SaaS Companies | CiteRoute',
   description:
     'Browse GEO scores and AI citation readiness for 1,000+ SaaS companies. See how brands like Stripe, Notion, and Vercel perform across ChatGPT, Claude, Gemini, and Perplexity.',
   alternates: {

@@ -3,7 +3,7 @@ import { createClient } from '@libsql/client';
 
 /**
  * Dynamic sitemap that includes all core routes AND all /audit/{domain} pages
- * from the database. This is the backbone of programmatic SEO — every seeded
+ * from the database. This is the backbone of programmatic SEO - every seeded
  * domain automatically appears in the sitemap for Google to crawl.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

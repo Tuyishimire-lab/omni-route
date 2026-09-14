@@ -471,7 +471,7 @@ export default function AgentJsonEditor() {
                 { id: 'nextjs', label: 'Next.js (Vercel)' },
                 { id: 'cloudflare', label: 'Cloudflare Worker' },
                 { id: 'fastapi', label: 'FastAPI (Python)' },
-                { id: 'edgeworker', label: '⚡ Edge + Bot Detection' }
+                { id: 'edgeworker', label: 'Edge + Bot Detection' }
               ].map((p) => (
                 <button
                   key={p.id}

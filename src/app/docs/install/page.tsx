@@ -15,19 +15,19 @@ const TAG = `<!-- CiteRoute Tag -->
 
 const MIDDLEWARE_FRAMEWORKS = [
   { id: 'nextjs-middleware', label: 'Next.js / Vercel', icon: '▲' },
-  { id: 'cloudflare-worker', label: 'Cloudflare Worker', icon: '⚡' },
-  { id: 'express-node',      label: 'Node.js / Express', icon: '🟢' },
+  { id: 'cloudflare-worker', label: 'Cloudflare Worker', icon: '' },
+  { id: 'express-node',      label: 'Node.js / Express', icon: '' },
 ];
 
 const CLIENT_FRAMEWORKS = [
   { id: 'html',          label: 'HTML',          icon: '🌐' },
   { id: 'nextjs-app',   label: 'Next.js App',    icon: '▲'  },
   { id: 'nextjs-pages', label: 'Next.js Pages',  icon: '▲'  },
-  { id: 'react',        label: 'React / Vite',   icon: '⚛'  },
-  { id: 'wordpress',    label: 'WordPress',      icon: '🔵' },
-  { id: 'shopify',      label: 'Shopify',        icon: '🛒' },
-  { id: 'webflow',      label: 'Webflow',        icon: '🌊' },
-  { id: 'nuxt',         label: 'Nuxt.js',        icon: '💚' },
+  { id: 'react',        label: 'React / Vite',   icon: ''  },
+  { id: 'wordpress',    label: 'WordPress',      icon: '' },
+  { id: 'shopify',      label: 'Shopify',        icon: '' },
+  { id: 'webflow',      label: 'Webflow',        icon: '' },
+  { id: 'nuxt',         label: 'Nuxt.js',        icon: '' },
 ];
 
 const MIDDLEWARE_SNIPPETS: Record<string, { file: string; code: string; note: string }> = {

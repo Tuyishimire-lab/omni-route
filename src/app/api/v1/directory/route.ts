@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 /**
  * GET /api/v1/directory
  * Returns all domains in the database for the public directory page.
- * No auth required — this is a public browsing endpoint.
+ * No auth required - this is a public browsing endpoint.
  */
 export async function GET() {
   try {

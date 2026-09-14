@@ -70,7 +70,7 @@ async function handleWeeklyDigest(req: NextRequest) {
       // ── Collect domains from all sources ────────────────────────────────
       const domainSet = new Set<string>();
 
-      // 1. WatchlistEntry relational table (primary — the new system)
+      // 1. WatchlistEntry relational table (primary - the new system)
       for (const entry of user.watchlistEntries) {
         domainSet.add(entry.domain.toLowerCase().trim());
       }
@@ -208,7 +208,7 @@ async function handleWeeklyDigest(req: NextRequest) {
           previousGeoScore = oldest.geoScore;
           trendDelta = latest.geoScore - oldest.geoScore;
         } else if (scans.length === 1) {
-          // Only one scan in the window — no delta available
+          // Only one scan in the window - no delta available
           previousGeoScore = scans[0].geoScore;
           trendDelta = 0;
         }

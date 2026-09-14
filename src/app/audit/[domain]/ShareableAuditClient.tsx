@@ -51,7 +51,7 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
   const score = report ? report.overallGeoScore : 88;
 
   const tweetText = encodeURIComponent(
-    `Check out the Generative Engine Optimization (GEO) score for ${initialDomain} on @CiteRoute: ${score}/100! 🚀 Discover how ChatGPT, Claude & Perplexity cite your domain:`
+    `Check out the Generative Engine Optimization (GEO) score for ${initialDomain} on @CiteRoute: ${score}/100! Discover how ChatGPT, Claude & Perplexity cite your domain:`
   );
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${encodeURIComponent(currentUrl)}`;
   const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
