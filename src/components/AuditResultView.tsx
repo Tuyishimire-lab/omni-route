@@ -43,7 +43,7 @@ function ConnectEnginesCallout({ domain }: { domain: string }) {
   };
 
   return (
-    <div className="mt-4 rounded-2xl border border-[rgba(5,173,152,0.20)] bg-[rgba(5,173,152,0.04)] p-4 flex items-start gap-3">
+    <div className="mt-4 rounded-2xl border border-[rgba(5,173,152,0.20)] bg-[rgba(5,173,152,0.04)] p-4 flex items-start gap-3 print:hidden">
       <div className="w-8 h-8 rounded-xl bg-[rgba(5,173,152,0.12)] flex items-center justify-center shrink-0">
         <Key className="w-4 h-4 text-[#05AD98]" />
       </div>
@@ -146,6 +146,33 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 print:space-y-4">
+      {/* Executive Report Header - Visible only in Print/PDF */}
+      <div className="hidden print:flex flex-col border-b border-[rgba(5,173,152,0.35)] pb-4 mb-2 print-break-avoid">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[rgba(5,173,152,0.15)] border border-[rgba(5,173,152,0.35)] flex items-center justify-center font-bold text-white tracking-wider">
+              <span className="text-[#05AD98] font-mono text-sm font-extrabold">CR</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-white text-base tracking-wider">CITE<span className="text-[#05AD98]">ROUTE</span></span>
+                <span className="text-slate-600 text-xs">/</span>
+                <span className="text-xs font-semibold text-[#BBBFBF]">Executive GEO &amp; AI Visibility Audit</span>
+              </div>
+              <p className="text-[10px] text-[#878787]">
+                Generative Engine Optimization Inspection &amp; Autonomous Agent Citation Report
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-mono font-bold text-[#05AD98]">{cleanDomain}</div>
+            <div className="text-[10px] text-[#878787]">
+              Audited: {new Date(report.analyzedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Top Action Bar (Print & Save) */}
       <div className="flex items-center justify-between gap-3 pb-1 print:hidden">
         <div className="flex items-center gap-2">
@@ -209,7 +236,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
       {/* Live Scanned DOM Metadata Strip */}
       {report.liveMetadata?.isLiveScanned && (
-        <div className="glass-card rounded-2xl p-4 border border-[rgba(5,173,152,0.20)] bg-emerald-950/10 space-y-2 text-xs">
+        <div className="glass-card rounded-2xl p-4 border border-[rgba(5,173,152,0.20)] bg-emerald-950/10 space-y-2 text-xs print-break-avoid">
           <div className="flex items-center justify-between">
             <span className="font-bold text-white flex items-center gap-2">
               <Globe className="w-4 h-4 text-[#05AD98]" />
@@ -247,13 +274,13 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
       )}
 
       {/* Top Overview Banner */}
-      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-[rgba(187,191,191,0.10)] relative overflow-hidden">
-        <div className="absolute -right-24 -top-24 w-96 h-96 bg-[rgba(5,173,152,0.10)] rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-[rgba(5,173,152,0.08)] rounded-full blur-3xl pointer-events-none" />
+      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-[rgba(187,191,191,0.10)] relative overflow-hidden print-break-avoid">
+        <div className="absolute -right-24 -top-24 w-96 h-96 bg-[rgba(5,173,152,0.10)] rounded-full blur-3xl pointer-events-none print:hidden" />
+        <div className="absolute -left-24 -bottom-24 w-96 h-96 bg-[rgba(5,173,152,0.08)] rounded-full blur-3xl pointer-events-none print:hidden" />
 
         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
           {/* Main Score Gauge */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#111514]/60 rounded-2xl border border-[rgba(187,191,191,0.10)] text-center">
+          <div className="lg:col-span-4 flex flex-col items-center justify-center p-4 sm:p-6 bg-[#111514]/60 rounded-2xl border border-[rgba(187,191,191,0.10)] text-center print-break-avoid">
             <span className="text-[10px] sm:text-xs uppercase tracking-widest font-semibold text-[#878787]">
               Generative Engine Optimization (GEO) Index
             </span>
@@ -262,7 +289,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
               {/* Outer Score Circle */}
               <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-[rgba(187,191,191,0.10)] flex items-center justify-center relative shadow-inner">
                 <div
-                  className="absolute inset-0 rounded-full border-4 border-[#05AD98] border-t-transparent animate-spin"
+                  className="absolute inset-0 rounded-full border-4 border-[#05AD98] border-t-transparent animate-spin print:border-t-[#05AD98] print:animate-none"
                   style={{ animationDuration: '18s' }}
                 />
                 <div className="text-center">
@@ -379,7 +406,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
       </div>
 
       {/* Foundation Model & Generative Answer Engine Diagnostics */}
-      <div>
+      <div className="print-break-avoid">
         <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4 flex items-center gap-2">
           <Cpu className="w-4 h-4 sm:w-5 sm:h-5 text-[#05AD98]" />
           Foundation Model &amp; Generative Answer Engine Diagnostics
@@ -389,7 +416,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
           <>
             <div className={`grid grid-cols-1 gap-3 sm:gap-4 ${report.engineBreakdown.length === 1 ? 'sm:grid-cols-1 max-w-sm' : report.engineBreakdown.length === 2 ? 'sm:grid-cols-2' : report.engineBreakdown.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4'}`}>
               {report.engineBreakdown.map((engine) => (
-                <div key={engine.engine} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(5,173,152,0.30)] space-y-3">
+                <div key={engine.engine} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(5,173,152,0.30)] space-y-3 print-break-avoid">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-xs sm:text-sm text-white">{engine.name}</span>
                     <div className="flex items-center gap-1.5">
@@ -428,7 +455,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
             {/* Partial coverage note if fewer than 4 engines are connected */}
             {report.engineBreakdown.length < 4 && (
-              <p className="mt-3 text-[11px] text-[#878787]">
+              <p className="mt-3 text-[11px] text-[#878787] print:hidden">
                 Showing {report.engineBreakdown.length} of 4 engines.{' '}
                 <a href="/dashboard/engine-settings" className="text-[#05AD98] hover:underline">
                   Connect more API keys
@@ -444,7 +471,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
 
       {/* Detected Entity Knowledge Graph Anchor */}
-      <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-[rgba(187,191,191,0.10)]">
+      <div className="glass-panel rounded-2xl p-4 sm:p-6 border border-[rgba(187,191,191,0.10)] print-break-avoid">
         <h3 className="text-sm sm:text-md font-bold text-white mb-2 sm:mb-3 flex items-center gap-2">
           <Layers className="w-4 h-4 text-[#05AD98]" />
           Recognized Knowledge Graph Entities (Vector Disambiguation)
@@ -507,7 +534,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
 
         <div className="space-y-3 sm:space-y-4">
           {filteredRecommendations.map((rec) => (
-            <div key={rec.id} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(187,191,191,0.10)] space-y-3">
+            <div key={rec.id} className="glass-card rounded-2xl p-4 sm:p-5 border border-[rgba(187,191,191,0.10)] space-y-3 print-break-avoid">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${getPriorityBadge(rec.priority)}`}>
@@ -523,7 +550,7 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
               <p className="text-xs sm:text-sm text-[#BBBFBF] leading-relaxed">{rec.description}</p>
 
               {rec.codeSnippet && (
-                <div className="mt-3 rounded-xl bg-[#0A0E0E] border border-[rgba(187,191,191,0.10)] p-3 relative group">
+                <div className="mt-3 rounded-xl bg-[#0A0E0E] border border-[rgba(187,191,191,0.10)] p-3 relative group print-break-avoid">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-850 text-xs text-[#878787] font-mono">
                     <span className="text-[11px]">Target Deployment Patch</span>
                     <button
@@ -549,6 +576,12 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Executive Report Footer - Visible only in Print/PDF */}
+      <div className="hidden print:flex items-center justify-between border-t border-[rgba(187,191,191,0.20)] pt-4 mt-6 text-[10px] text-[#878787] print-break-avoid">
+        <span>Generated by CiteRoute Platform • <strong className="text-[#05AD98]">https://www.citeroute.com</strong></span>
+        <span>Confidential &amp; Proprietary • Page Intelligence &amp; Autonomous Agent Observability</span>
       </div>
 
       <UpgradeModal

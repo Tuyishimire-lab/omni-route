@@ -117,14 +117,16 @@ export default function RootLayout({
           Skip to main content
         </a>
         <OnboardingWizard />
-        <Navbar />
+        <div className="print:hidden">
+          <Navbar />
+        </div>
 
-        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12 print:p-0 print:m-0 print:max-w-full print:space-y-4">
           {children}
         </main>
         
         {/* Modern Glass Footer */}
-        <footer className="w-full border-t border-slate-850 bg-[#0A0E0E]/80 py-10 mt-16 text-xs text-[#878787]">
+        <footer className="w-full border-t border-slate-850 bg-[#0A0E0E]/80 py-10 mt-16 text-xs text-[#878787] print:hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Image

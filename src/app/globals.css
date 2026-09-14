@@ -133,3 +133,41 @@ body {
 
 /* ---- Selection ---- */
 ::selection { background: rgba(5, 173, 152, 0.3); color: #ffffff; }
+
+/* ============================================================
+   PRINT / PDF EXPORT STYLES
+   ============================================================ */
+@media print {
+  @page {
+    size: portrait;
+    margin: 12mm 12mm 14mm 12mm;
+  }
+
+  html, body {
+    background-color: #0A0E0E !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 10.5pt !important;
+  }
+
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .print-break-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Force background colors on cards */
+  .glass-panel, .glass-card {
+    background-color: #111514 !important;
+    border-color: rgba(187, 191, 191, 0.15) !important;
+    box-shadow: none !important;
+  }
+}
+

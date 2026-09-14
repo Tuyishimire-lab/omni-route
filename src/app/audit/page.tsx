@@ -89,7 +89,7 @@ function AuditContent() {
   return (
     <div className="space-y-8">
       {/* Top Banner & Scanner */}
-      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-[rgba(187,191,191,0.10)] space-y-6">
+      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-[rgba(187,191,191,0.10)] space-y-6 print:hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] text-xs font-semibold text-[#05AD98] mb-2">
