@@ -342,7 +342,10 @@ export async function getGlobalStats() {
   try {
     const [dbDomains, avgScore, eventCount] = await Promise.all([
       prisma.domain.findMany({ select: { domain: true } }),
-      prisma.domain.aggregate({ _avg: { latestGeoScore: true } }),
+      prisma.domain.aggregate({
+        _avg: { latestGeoScore: true },
+        where: { scanCount: { gte: 1 } },
+      }),
       prisma.scanEvent.count(),
     ]);
 
