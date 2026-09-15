@@ -12,6 +12,12 @@ function LoginForm() {
   const redirectTo = searchParams.get('redirect') || '/';
   const emailParam = searchParams.get('email') || '';
   const domainParam = searchParams.get('domain') || '';
+  const errorParam = searchParams.get('error');
+
+  const [email, setEmail] = useState(emailParam);
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const getOAuthErrorMessage = (err: string | null) => {
     if (!err) return '';
     switch (err) {
