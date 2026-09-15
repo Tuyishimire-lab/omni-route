@@ -12,12 +12,23 @@ function LoginForm() {
   const redirectTo = searchParams.get('redirect') || '/';
   const emailParam = searchParams.get('email') || '';
   const domainParam = searchParams.get('domain') || '';
-  const errorParam = searchParams.get('error');
+  const getOAuthErrorMessage = (err: string | null) => {
+    if (!err) return '';
+    switch (err) {
+      case 'missing_env':
+        return 'OAuth configuration is missing on the server. Please check environment variables.';
+      case 'token_failed':
+        return 'Authentication token exchange with the provider failed. Please try again.';
+      case 'no_email':
+        return 'No verified email was returned by your OAuth provider.';
+      case 'no_code':
+        return 'No authorization code was received from the provider.';
+      default:
+        return 'OAuth login failed. Please try again.';
+    }
+  };
 
-  const [email, setEmail] = useState(emailParam);
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(errorParam ? 'OAuth login failed. Please try again.' : '');
+  const [error, setError] = useState(getOAuthErrorMessage(errorParam));
 
   // If domainParam or emailParam is present, sync state and localStorage
   useEffect(() => {
