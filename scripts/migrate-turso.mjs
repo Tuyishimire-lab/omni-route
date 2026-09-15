@@ -1,6 +1,16 @@
 import { createClient } from '@libsql/client';
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load .env.local if present using Node's built-in env loader (Node 20+)
+const envLocalPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envLocalPath) && typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile(envLocalPath);
+  } catch {
+    // Ignore error if env file fails to parse
+  }
+}
 
 async function migrate() {
   if (!process.env.DATABASE_URL || !process.env.DATABASE_AUTH_TOKEN) {

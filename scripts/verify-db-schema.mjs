@@ -1,11 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
-import dotenv from 'dotenv';
+import fs from 'node:fs';
 import path from 'node:path';
 
-// Load .env.local if present
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
-dotenv.config();
+// Load .env.local if present using Node's built-in env loader (Node 20+)
+const envLocalPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envLocalPath) && typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile(envLocalPath);
+  } catch {
+    // Ignore error if env file fails to parse
+  }
+}
 
 const DB_URL = process.env.DATABASE_URL || 'file:./citeroute.db';
 const AUTH_TOKEN = process.env.DATABASE_AUTH_TOKEN;
@@ -41,12 +47,30 @@ async function verify() {
   let hasErrors = false;
 
   for (const { name, probe } of MODELS) {
-    try {
-      await probe();
+    let passed = false;
+    let lastError = null;
+
+    // Retry up to 3 times for transient network/handshake blips on remote Turso
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await probe();
+        passed = true;
+        break;
+      } catch (err) {
+        lastError = err;
+        if (attempt < 3 && String(err?.message || err).includes('fetch failed')) {
+          await new Promise((r) => setTimeout(r, 500 * attempt));
+          continue;
+        }
+        break;
+      }
+    }
+
+    if (passed) {
       console.log(`  ✔ [PASS] ${name.padEnd(20)} - Schema & columns match`);
-    } catch (err) {
+    } else {
       hasErrors = true;
-      console.error(`  ✖ [FAIL] ${name.padEnd(20)} - ${err.message || err}`);
+      console.error(`  ✖ [FAIL] ${name.padEnd(20)} - ${lastError?.message || lastError}`);
     }
   }
 
