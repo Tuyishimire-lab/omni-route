@@ -19,6 +19,8 @@
     "seed:directory": "node --env-file=.env.local scripts/seed-and-index.mjs",
     "seed:dry-run": "node --env-file=.env.local scripts/seed-and-index.mjs --dry-run",
     "seed:pre-crawl": "node --env-file=.env.local scripts/seed-and-index.mjs --pre-crawl",
+    "db:verify": "node scripts/verify-db-schema.mjs",
+    "db:migrate:turso": "node scripts/migrate-turso.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {

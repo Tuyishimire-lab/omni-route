@@ -36,6 +36,11 @@ jobs:
         env:
           DATABASE_URL: 'file:./test.db'
 
+      - name: Verify DB Schema
+        run: pnpm run db:verify
+        env:
+          DATABASE_URL: 'file:./test.db'
+
       - name: Type check
         run: pnpm exec tsc --noEmit
 
