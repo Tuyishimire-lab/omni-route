@@ -274,7 +274,13 @@ function AuditContent() {
         </div>
       )}
 
-      {activeReport && <AuditResultView report={activeReport} />}
+      {activeReport && (
+        <AuditResultView
+          report={activeReport}
+          isVerified={Boolean(isLoggedIn || verifiedEmail)}
+          onRequireEmail={() => setEmailGateOpen(true)}
+        />
+      )}
 
       {/* Email verification gate modal */}
       <EmailGateModal

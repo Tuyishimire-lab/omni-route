@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { GeoAuditReport } from '../../lib/types';
 import { Scale, Plus, X, Search, Loader2, GitCompare, ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
+import EmailGateModal from '../../components/EmailGateModal';
 
 // recharts (~200KB) is lazy-loaded - only fetched when comparison results render
 const BenchmarkMatrix = dynamic(() => import('../../components/BenchmarkMatrix'), {
@@ -41,8 +42,12 @@ async function scanDomain(domain: string): Promise<GeoAuditReport> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url: domain }),
   });
-  if (!res.ok) throw new Error(`Scan failed (${res.status})`);
-  const json = await res.json();
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const err = new Error(json.error || `Scan failed (${res.status})`) as Error & { code?: string };
+    err.code = json.code;
+    throw err;
+  }
   return json.data as GeoAuditReport;
 }
 
@@ -67,6 +72,7 @@ export default function BenchmarkPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [hasRun, setHasRun]       = useState(false);
   const [globalError, setGlobalError] = useState('');
+  const [emailGateOpen, setEmailGateOpen] = useState(false);
 
   // Completed reports - streams in as each domain finishes
   const completedReports = domainStates
@@ -119,8 +125,16 @@ export default function BenchmarkPage() {
         setDomainStates((prev) =>
           prev.map((s) => s.domain === domain ? { ...s, status: 'done', report } : s)
         );
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : 'Unknown error';
+      } catch (e: unknown) {
+        const errObj = e as (Error & { code?: string });
+        const msg = errObj?.message || 'Unknown error';
+        if (errObj?.code === 'EMAIL_REQUIRED') {
+          setEmailGateOpen(true);
+          setDomainStates((prev) =>
+            prev.map((s) => s.domain === domain ? { ...s, status: 'error', error: 'Email verification required to benchmark multiple domains.' } : s)
+          );
+          break; // Stop remaining scans until verified
+        }
         setDomainStates((prev) =>
           prev.map((s) => s.domain === domain ? { ...s, status: 'error', error: msg } : s)
         );
@@ -340,6 +354,17 @@ export default function BenchmarkPage() {
             </Link>
           </div>
         )}
+
+        <EmailGateModal
+          open={emailGateOpen}
+          onClose={() => setEmailGateOpen(false)}
+          onVerified={() => {
+            setEmailGateOpen(false);
+            runBenchmark();
+          }}
+          title="Unlock Benchmark Arena"
+          subtitle="Multi-domain competitor comparisons require email verification. Verify your email to unlock 10 free monthly scans and side-by-side matrices."
+        />
 
       </div>
     </div>

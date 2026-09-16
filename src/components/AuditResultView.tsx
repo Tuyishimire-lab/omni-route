@@ -173,9 +173,11 @@ function ScoreHistoryPanel({ domain, isWhiteLabel }: { domain: string; isWhiteLa
 
 interface AuditResultViewProps {
   report: GeoAuditReport;
+  isVerified?: boolean;
+  onRequireEmail?: () => void;
 }
 
-export default function AuditResultView({ report }: AuditResultViewProps) {
+export default function AuditResultView({ report, isVerified, onRequireEmail }: AuditResultViewProps) {
   const [copiedSnippetId, setCopiedSnippetId] = useState<string | null>(null);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('ALL');
   const [isSavedToWatchlist, setIsSavedToWatchlist] = useState(false);
@@ -241,6 +243,12 @@ export default function AuditResultView({ report }: AuditResultViewProps) {
   };
 
   const handlePrintPdf = () => {
+    if (!user && !isVerified) {
+      if (onRequireEmail) {
+        onRequireEmail();
+        return;
+      }
+    }
     window.print();
   };
 

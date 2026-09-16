@@ -145,7 +145,7 @@ describe('POST /api/v1/scan', () => {
     expect(data.upgradeTier).toBe('pro');
   });
 
-  it('returns 429 EMAIL_REQUIRED when anonymous user lacks verified email cookie', async () => {
+  it('allows 1 free instant scan with 200 for anonymous user without email cookie', async () => {
     const { cookies } = await import('next/headers');
     (cookies as any).mockResolvedValueOnce({
       get: vi.fn(() => undefined),
@@ -156,13 +156,36 @@ describe('POST /api/v1/scan', () => {
     vi.spyOn(rateLimiterModule, 'checkRateLimit').mockResolvedValue(allowedRL());
     vi.spyOn(rateLimiterModule, 'getClientIp').mockReturnValue('1.2.3.4');
     vi.spyOn(authModule, 'getSession').mockResolvedValue(null);
+    vi.spyOn(liveCrawlerModule, 'crawlAndAnalyzeUrl').mockResolvedValue(MOCK_REPORT as any);
+
+    const res = await POST(makePostRequest({ url: 'stripe.com' }));
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.success).toBe(true);
+    expect(data.isAnonymousFirstScan).toBe(true);
+  });
+
+  it('returns 429 EMAIL_REQUIRED on 2nd anonymous scan when instant scan limit is exceeded', async () => {
+    const { cookies } = await import('next/headers');
+    (cookies as any).mockResolvedValueOnce({
+      get: vi.fn(() => undefined),
+      set: vi.fn(),
+      delete: vi.fn(),
+    });
+
+    // 1st rate check is burst (allowed), 2nd is anon-instant (blocked)
+    vi.spyOn(rateLimiterModule, 'checkRateLimit')
+      .mockResolvedValueOnce(allowedRL())
+      .mockResolvedValueOnce(blockedRL(86400));
+    vi.spyOn(rateLimiterModule, 'getClientIp').mockReturnValue('1.2.3.4');
+    vi.spyOn(authModule, 'getSession').mockResolvedValue(null);
 
     const res = await POST(makePostRequest({ url: 'stripe.com' }));
     expect(res.status).toBe(429);
     const data = await res.json();
     expect(data.code).toBe('EMAIL_REQUIRED');
     expect(data.email).toBeUndefined();
-    expect(data.error).toMatch(/verify your email/i);
+    expect(data.error).toMatch(/used your 1 free instant scan/i);
   });
 
   it('returns 500 and does not leak internal error on crawl failure', async () => {

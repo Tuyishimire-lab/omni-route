@@ -33,15 +33,23 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
     const verifiedEmail = cookieStore.get(VERIFIED_EMAIL_COOKIE)?.value;
 
     if (!verifiedEmail) {
-      return {
-        allowed: false,
-        tier: 'free',
-        error: 'Please verify your email to run a free GEO scan.',
-        code: 'EMAIL_REQUIRED',
-      };
+      // 1 Free Instant Scan Strategy:
+      // Allow first-time visitors 1 free instant scan per 24 hours per IP with zero email required.
+      // 2nd scan and onward require verified email.
+      const anonLimit = await checkRateLimit(`anon:${ip}`, 'scan:anon-instant', 24 * 60 * 60 * 1000, 1);
+      if (!anonLimit.allowed) {
+        return {
+          allowed: false,
+          tier: 'free',
+          error: 'You have used your 1 free instant scan. Enter your email to unlock 10 free scans per month.',
+          code: 'EMAIL_REQUIRED',
+        };
+      }
+
+      return { allowed: true, tier: 'free', isAnonymousFirstScan: true };
     }
 
-    // Track by verified email instead of IP
+    // Verified anonymous user: track by verified email instead of IP (10 scans per 30 days)
     trackingId = `email:${verifiedEmail}`;
     emailForTracking = verifiedEmail;
   }
@@ -101,7 +109,7 @@ export async function POST(req: NextRequest) {
     // Resolve session once - reused for quota check and bypassCache gating
     const session = validatedKey ? null : await getSession();
 
-    let quotaCheck: { allowed: boolean; tier?: string; error?: string; code?: string; upgradeTier?: string; email?: string } | undefined;
+    let quotaCheck: { allowed: boolean; tier?: string; error?: string; code?: string; upgradeTier?: string; email?: string; isAnonymousFirstScan?: boolean } | undefined;
     if (!validatedKey) {
       quotaCheck = await verifyScanAllowance(ip, session);
       if (!quotaCheck.allowed) {
@@ -140,7 +148,7 @@ export async function POST(req: NextRequest) {
     );
 
     const response = NextResponse.json(
-      { success: true, data: report, cached: !bypassCache },
+      { success: true, data: report, cached: !bypassCache, isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
       { status: 200, headers: { 'X-RateLimit-Remaining': String(rateCheck.remaining) } }
     );
 
@@ -208,7 +216,7 @@ export async function GET(req: NextRequest) {
     );
 
     return NextResponse.json(
-      { success: true, data: report, cached: !bypassCache },
+      { success: true, data: report, cached: !bypassCache, isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
       { status: 200, headers: { 'X-RateLimit-Remaining': String(rateCheck.remaining) } }
     );
   } catch (error: unknown) {

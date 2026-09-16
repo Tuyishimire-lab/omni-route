@@ -9,11 +9,13 @@ interface EmailGateModalProps {
   onVerified: (email?: string) => void;
   /** Optional pre-filled email to populate the input field. User must still click Send. */
   initialEmail?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 type Step = 'email' | 'code';
 
-export default function EmailGateModal({ open, onClose, onVerified, initialEmail }: EmailGateModalProps) {
+export default function EmailGateModal({ open, onClose, onVerified, initialEmail, title, subtitle }: EmailGateModalProps) {
   const [step, setStep] = useState<Step>('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState(['', '', '', '', '', '']);
@@ -184,11 +186,11 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
             )}
           </div>
           <h2 className="text-xl font-bold text-white mb-1">
-            {step === 'email' ? 'Verify your email' : 'Enter verification code'}
+            {step === 'email' ? (title || 'Unlock 10 Free Scans & PDF Export') : 'Enter verification code'}
           </h2>
           <p className="text-sm text-[#878787]">
             {step === 'email' ? (
-              'Enter your email to run a free GEO scan. We\'ll send a 6-digit verification code.'
+              subtitle || 'Enter your email to unlock 10 monthly scans, full PDF exports, and change alerts.'
             ) : (
               <>
                 We sent a 6-digit code to{' '}
