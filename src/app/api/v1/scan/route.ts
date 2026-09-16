@@ -33,24 +33,6 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
     const verifiedEmail = cookieStore.get(VERIFIED_EMAIL_COOKIE)?.value;
 
     if (!verifiedEmail) {
-      // Check if this user previously verified - if so, their cookie expired
-      // and we can offer a streamlined re-verification instead of the cold-start flow.
-      const previousVerification = await prisma.emailVerification.findFirst({
-        where: { verified: true },
-        orderBy: { createdAt: 'desc' },
-        select: { email: true },
-      }).catch(() => null);
-
-      if (previousVerification) {
-        return {
-          allowed: false,
-          tier: 'free',
-          error: 'Your email verification has expired. Please re-verify to continue scanning.',
-          code: 'EMAIL_EXPIRED',
-          email: previousVerification.email,
-        };
-      }
-
       return {
         allowed: false,
         tier: 'free',

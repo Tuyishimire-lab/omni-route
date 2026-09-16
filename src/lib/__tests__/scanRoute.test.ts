@@ -145,6 +145,26 @@ describe('POST /api/v1/scan', () => {
     expect(data.upgradeTier).toBe('pro');
   });
 
+  it('returns 429 EMAIL_REQUIRED when anonymous user lacks verified email cookie', async () => {
+    const { cookies } = await import('next/headers');
+    (cookies as any).mockResolvedValueOnce({
+      get: vi.fn(() => undefined),
+      set: vi.fn(),
+      delete: vi.fn(),
+    });
+
+    vi.spyOn(rateLimiterModule, 'checkRateLimit').mockResolvedValue(allowedRL());
+    vi.spyOn(rateLimiterModule, 'getClientIp').mockReturnValue('1.2.3.4');
+    vi.spyOn(authModule, 'getSession').mockResolvedValue(null);
+
+    const res = await POST(makePostRequest({ url: 'stripe.com' }));
+    expect(res.status).toBe(429);
+    const data = await res.json();
+    expect(data.code).toBe('EMAIL_REQUIRED');
+    expect(data.email).toBeUndefined();
+    expect(data.error).toMatch(/verify your email/i);
+  });
+
   it('returns 500 and does not leak internal error on crawl failure', async () => {
     vi.spyOn(rateLimiterModule, 'checkRateLimit').mockResolvedValue(allowedRL());
     vi.spyOn(rateLimiterModule, 'getClientIp').mockReturnValue('1.2.3.4');

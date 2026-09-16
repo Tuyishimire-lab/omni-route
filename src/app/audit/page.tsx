@@ -21,7 +21,6 @@ function AuditContent() {
   const [quotaExhausted, setQuotaExhausted] = useState<{ upgradeTier: string; email?: string } | null>(null);
   // Email verification gate for anonymous users
   const [emailGateOpen, setEmailGateOpen] = useState(false);
-  const [expiredEmail, setExpiredEmail] = useState<string | undefined>();
   const [verifiedEmail, setVerifiedEmail] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const pendingScanDomain = useRef<string | null>(null);
@@ -69,10 +68,9 @@ function AuditContent() {
       const data = await res.json();
       if (data.success && data.data) {
         setActiveReport(data.data);
-      } else if (data.code === 'EMAIL_REQUIRED' || data.code === 'EMAIL_EXPIRED') {
-        // Anonymous user needs to verify email first (or re-verify if cookie expired)
+      } else if (data.code === 'EMAIL_REQUIRED') {
+        // Anonymous user needs to verify email first
         pendingScanDomain.current = target;
-        setExpiredEmail(data.code === 'EMAIL_EXPIRED' ? data.email : undefined);
         setEmailGateOpen(true);
       } else if (res.status === 429) {
         if (data.code === 'TIER_SCAN_LIMIT') {
@@ -281,9 +279,8 @@ function AuditContent() {
       {/* Email verification gate modal */}
       <EmailGateModal
         open={emailGateOpen}
-        onClose={() => { setEmailGateOpen(false); setExpiredEmail(undefined); }}
+        onClose={() => setEmailGateOpen(false)}
         onVerified={handleEmailVerified}
-        initialEmail={expiredEmail}
       />
     </div>
   );

@@ -7,7 +7,7 @@ interface EmailGateModalProps {
   open: boolean;
   onClose: () => void;
   onVerified: (email?: string) => void;
-  /** When set (e.g. from EMAIL_EXPIRED), skip the email-entry step and auto-send a new code. */
+  /** Optional pre-filled email to populate the input field. User must still click Send. */
   initialEmail?: string;
 }
 
@@ -23,43 +23,17 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
   const codeInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus email input on open
+  // Reset state and focus email input whenever modal opens
   useEffect(() => {
-    if (open && step === 'email') {
+    if (open) {
+      setStep('email');
+      setError(null);
+      setCode(['', '', '', '', '', '']);
+      if (initialEmail) {
+        setEmail(initialEmail);
+      }
       setTimeout(() => emailInputRef.current?.focus(), 100);
     }
-  }, [open, step]);
-
-  // When opened with a pre-filled email (re-verification), auto-send the code
-  useEffect(() => {
-    if (open && initialEmail) {
-      setEmail(initialEmail);
-      // Trigger code send immediately - skips the email-entry step
-      const sendCode = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-          const res = await fetch('/api/v1/verify-email/send', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: initialEmail.trim().toLowerCase() }),
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            setStep('code');
-            setCode(['', '', '', '', '', '']);
-          } else {
-            setError(data.error || 'Failed to send code. Try again.');
-          }
-        } catch {
-          setError('Network error. Please check your connection.');
-        } finally {
-          setLoading(false);
-        }
-      };
-      sendCode();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initialEmail]);
 
   // Focus first code input when switching to code step
@@ -210,22 +184,17 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
             )}
           </div>
           <h2 className="text-xl font-bold text-white mb-1">
-            {step === 'email'
-              ? (initialEmail ? 'Re-verify your email' : 'Verify your email')
-              : 'Enter verification code'}
+            {step === 'email' ? 'Verify your email' : 'Enter verification code'}
           </h2>
           <p className="text-sm text-[#878787]">
-            {step === 'email'
-              ? (initialEmail
-                ? 'Your previous verification expired. We\'ll send a new code.'
-                : 'We need your email to run a free GEO scan.')
-              : (
-                <>
-                  We sent a 6-digit code to{' '}
-                  <span className="text-[#05AD98] font-medium">{email}</span>
-                </>
-              )
-            }
+            {step === 'email' ? (
+              'Enter your email to run a free GEO scan. We\'ll send a 6-digit verification code.'
+            ) : (
+              <>
+                We sent a 6-digit code to{' '}
+                <span className="text-[#05AD98] font-medium">{email}</span>
+              </>
+            )}
           </p>
         </div>
 
