@@ -14,7 +14,26 @@ interface UserSession {
   hasUsedTrial?: boolean;
 }
 
-const PLANS = [
+interface PlanFeature {
+  text: string;
+  included: boolean;
+  comingSoon?: boolean;
+}
+
+interface PlanDefinition {
+  id: string;
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  iconColor: string;
+  price: string;
+  period: string;
+  description: string;
+  highlight?: boolean;
+  badge?: string;
+  features: PlanFeature[];
+}
+
+const PLANS: PlanDefinition[] = [
   {
     id: 'free',
     name: 'Free',
@@ -32,7 +51,7 @@ const PLANS = [
       { text: 'Tracking tag & AI bot traffic detection', included: false },
       { text: 'API key access', included: false },
       { text: 'Daily automated re-scans', included: false },
-      { text: 'Email score alerts', included: false },
+      { text: 'Weekly email performance digest', included: false },
       { text: 'Community support', included: true },
     ],
   },
@@ -52,7 +71,7 @@ const PLANS = [
       { text: 'agent.json Studio + Templates', included: true },
       { text: 'API key (500 req/day)', included: true },
       { text: 'Daily automated re-scans', included: true },
-      { text: 'Email score drop alerts', included: true },
+      { text: 'Weekly GEO performance digest', included: true },
       { text: 'GEO history & trend charts', included: true },
       { text: 'Priority support', included: true },
     ],
@@ -72,11 +91,11 @@ const PLANS = [
       { text: '10 verified client sites', included: true },
       { text: 'Unlimited watchlist domains', included: true },
       { text: 'White-label GEO reports (PDF)', included: true },
-      { text: 'Client-facing leaderboard embed', included: true },
+      { text: 'Embeddable GEO verification badge', included: true },
       { text: 'API key (10,000 req/day)', included: true },
-      { text: 'Webhook score change events', included: true },
-      { text: 'Slack / Teams score alerts', included: true },
-      { text: 'Bulk domain audit (CSV import)', included: true },
+      { text: 'Multi-site analytics dashboard', included: true },
+      { text: 'Daily automated re-scans', included: true },
+      { text: 'Weekly GEO performance digests', included: true },
       { text: 'Dedicated account support', included: true },
     ],
   },
@@ -92,10 +111,8 @@ const PLANS = [
       { text: 'Unlimited verified sites', included: true },
       { text: 'Raw AI crawler traffic data export', included: true },
       { text: 'Competitive AI citation benchmarking', included: true },
-      { text: 'Custom leaderboard categories', included: true },
       { text: 'Dedicated API (unlimited req/day)', included: true },
       { text: 'Private leaderboard data feed', included: true },
-      { text: 'SSO & team management', included: true },
       { text: 'Custom analytics dashboards', included: true },
       { text: 'SLA + uptime guarantee', included: true },
       { text: 'Dedicated account manager', included: true },
@@ -276,9 +293,16 @@ export default function PricingCards() {
                     ) : (
                       <X className="w-3.5 h-3.5 text-[#878787]/30 shrink-0 mt-0.5" />
                     )}
-                    <span className={`text-[11px] leading-relaxed ${feature.included ? 'text-[#BBBFBF]' : 'text-[#878787]/40'}`}>
-                      {feature.text}
-                    </span>
+                    <div className="flex items-center flex-wrap gap-1.5 leading-relaxed">
+                      <span className={`text-[11px] ${feature.included ? 'text-[#BBBFBF]' : 'text-[#878787]/40'}`}>
+                        {feature.text}
+                      </span>
+                      {feature.comingSoon && (
+                        <span className="px-1.5 py-0.5 rounded text-[8px] font-bold text-[#05AD98] bg-[rgba(5,173,152,0.1)] border border-[rgba(5,173,152,0.25)] tracking-wide whitespace-nowrap">
+                          COMING SOON
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -363,8 +387,8 @@ export default function PricingCards() {
                     </button>
                     <p className="text-[10px] text-center text-[#878787] mt-2">
                       {user?.hasUsedTrial
-                        ? `${plan.price} billed monthly &bull; Cancel anytime`
-                        : '14 days free &bull; Cancel anytime'}
+                        ? `${plan.price} billed monthly · Cancel anytime`
+                        : '14 days free · Cancel anytime'}
                     </p>
                   </div>
                 )}

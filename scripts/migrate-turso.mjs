@@ -64,6 +64,16 @@ async function migrate() {
       "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
     );`,
+
+    // 5. RevokedToken table for JTI session revocation
+    `CREATE TABLE IF NOT EXISTS "RevokedToken" (
+      "jti" TEXT NOT NULL PRIMARY KEY,
+      "userId" TEXT,
+      "expiresAt" DATETIME NOT NULL,
+      "revokedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );`,
+    `CREATE INDEX IF NOT EXISTS "RevokedToken_expiresAt_idx" ON "RevokedToken"("expiresAt");`,
+    `CREATE INDEX IF NOT EXISTS "RevokedToken_userId_idx" ON "RevokedToken"("userId");`,
   ];
 
   for (const sql of statements) {

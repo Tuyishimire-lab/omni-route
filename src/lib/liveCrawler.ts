@@ -8,6 +8,8 @@ import {
   buildRecommendations,
   buildScoreSummary,
 } from './scoreCalculator';
+import { enhanceAuditReportWithAi } from './aiReportEnhancer';
+import { enhanceRecommendationsWithAi } from './aiRecommendationEnhancer';
 
 // Jina Reader API - converts any URL to clean LLM-ready markdown, no API key needed.
 // Docs: https://jina.ai/reader/
@@ -182,21 +184,45 @@ export async function crawlAndAnalyzeUrl(
   });
   const summary = buildScoreSummary(cleanDomain, subscores.overallGeoScore);
 
-  const report: GeoAuditReport = {
+  // ── AI Enhancement pipeline (parallel) ──────────────────────────────────────
+  // Run both AI enhancements concurrently — each has internal fallbacks
+  const recContext = {
+    domain: cleanDomain,
+    url: fullUrl,
+    overallGeoScore: subscores.overallGeoScore,
+    pageMarkdown: jinaResult?.markdown,
+    detectedSchemas: liveMeta.detectedSchemas,
+    schemaCount: liveMeta.schemaJsonLdCount,
+    tableCount: liveMeta.tableCount,
+    wordCount: liveMeta.wordCount,
+  };
+
+  const baseReport: GeoAuditReport = {
     domain: cleanDomain,
     url: fullUrl,
     analyzedAt: new Date().toISOString(),
     ...subscores,
     engineBreakdown,
     detectedEntities,
-    recommendations,
+    recommendations, // will be swapped if AI succeeds
     summary,
     liveMetadata: liveMeta,
     dataSource: liveMeta.isLiveScanned ? 'live_crawl' : 'structural_estimate',
   };
 
-  // Cache report
-  scanReportCache.set(cleanDomain, report);
+  // Fire both AI calls in parallel
+  const [recResult, reportResult] = await Promise.allSettled([
+    enhanceRecommendationsWithAi(recommendations, recContext),
+    enhanceAuditReportWithAi(baseReport, jinaResult?.markdown),
+  ]);
 
-  return report;
+  // Merge results — use AI-enhanced values if fulfilled, original otherwise
+  const finalReport = reportResult.status === 'fulfilled' ? reportResult.value : baseReport;
+  finalReport.recommendations =
+    recResult.status === 'fulfilled' ? recResult.value : recommendations;
+
+  // Cache report
+  scanReportCache.set(cleanDomain, finalReport);
+
+  return finalReport;
 }

@@ -160,6 +160,102 @@ export function buildEngineBreakdown(
     });
 }
 
+/**
+ * Synthesizes calibrated baseline foundation model diagnostics when live API queries
+ * have not yet been executed. Calibrates Perplexity, OpenAI, Claude, and Gemini
+ * according to each engine's specific architectural preferences.
+ */
+export function buildCalibratedEngineBreakdown(params: {
+  overallGeoScore: number;
+  zeroClickResilience: number;
+  informationGainScore: number;
+  entityDisambiguationScore: number;
+  vectorReadinessScore: number;
+  domain: string;
+}): EngineScore[] {
+  const {
+    overallGeoScore,
+    zeroClickResilience,
+    informationGainScore,
+    entityDisambiguationScore,
+    vectorReadinessScore,
+    domain,
+  } = params;
+
+  // 1. Perplexity Pro / Sonar: Heavily rewards factual data matrices and vector chunk readiness
+  const perplexityScore = Math.min(98, Math.max(20, Math.round(
+    informationGainScore * 0.45 + vectorReadinessScore * 0.35 + overallGeoScore * 0.20
+  )));
+
+  // 2. OpenAI GPT-4o Search: Heavily rewards brand disambiguation, schema, and direct agent routing
+  const chatgptScore = Math.min(98, Math.max(20, Math.round(
+    entityDisambiguationScore * 0.40 + zeroClickResilience * 0.35 + overallGeoScore * 0.25
+  )));
+
+  // 3. Claude 3.5 Web Citations: Heavily rewards high information gain and semantic passage hierarchy
+  const claudeScore = Math.min(98, Math.max(20, Math.round(
+    informationGainScore * 0.40 + entityDisambiguationScore * 0.35 + vectorReadinessScore * 0.25
+  )));
+
+  // 4. Google Gemini Grounding: Heavily rewards entity grounding and Knowledge Graph anchors
+  const geminiScore = Math.min(98, Math.max(20, Math.round(
+    entityDisambiguationScore * 0.50 + overallGeoScore * 0.30 + zeroClickResilience * 0.20
+  )));
+
+  const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').toLowerCase();
+
+  return [
+    {
+      engine: 'perplexity',
+      name: 'Perplexity Pro / Sonar',
+      modelRole: 'Live Web Retrieval',
+      score: perplexityScore,
+      citationProbability: Math.min(98, Math.round(perplexityScore * 0.95)),
+      sentimentRating: perplexityScore > 75 ? 'High Authority' : perplexityScore > 50 ? 'Moderate' : 'Low / Excluded',
+      citationStatus: perplexityScore > 75 ? 'actively_cited' : perplexityScore > 50 ? 'entity_recognized' : 'omitted',
+      isLiveQuery: false,
+      isCited: perplexityScore > 50,
+      citationSnippet: `Perplexity indexation prioritizes verified factual metrics, statistics, and live RAG retrieval for ${cleanDomain}.`,
+    },
+    {
+      engine: 'chatgpt',
+      name: 'OpenAI GPT-4o Search',
+      modelRole: 'Entity Search & Synthesis',
+      score: chatgptScore,
+      citationProbability: Math.min(98, Math.round(chatgptScore * 0.94)),
+      sentimentRating: chatgptScore > 75 ? 'High Authority' : chatgptScore > 50 ? 'Moderate' : 'Low / Excluded',
+      citationStatus: chatgptScore > 75 ? 'actively_cited' : chatgptScore > 50 ? 'entity_recognized' : 'omitted',
+      isLiveQuery: false,
+      isCited: chatgptScore > 50,
+      citationSnippet: `OpenAI Search models evaluate structured entity schema and autonomous routing for ${cleanDomain}.`,
+    },
+    {
+      engine: 'claude',
+      name: 'Claude 3.5 Knowledge Graph',
+      modelRole: 'Latent Entity Memory',
+      score: claudeScore,
+      citationProbability: Math.min(98, Math.round(claudeScore * 0.93)),
+      sentimentRating: claudeScore > 75 ? 'High Authority' : claudeScore > 50 ? 'Moderate' : 'Low / Excluded',
+      citationStatus: claudeScore > 75 ? 'actively_cited' : claudeScore > 50 ? 'entity_recognized' : 'omitted',
+      isLiveQuery: false,
+      isCited: claudeScore > 50,
+      citationSnippet: `Anthropic Claude retrieval prioritizes passage density and empirical evidence from ${cleanDomain}.`,
+    },
+    {
+      engine: 'gemini',
+      name: 'Google Gemini Grounding',
+      modelRole: 'Knowledge Graph & Context',
+      score: geminiScore,
+      citationProbability: Math.min(98, Math.round(geminiScore * 0.94)),
+      sentimentRating: geminiScore > 75 ? 'High Authority' : geminiScore > 50 ? 'Moderate' : 'Low / Excluded',
+      citationStatus: geminiScore > 75 ? 'actively_cited' : geminiScore > 50 ? 'entity_recognized' : 'omitted',
+      isLiveQuery: false,
+      isCited: geminiScore > 50,
+      citationSnippet: `Google Gemini Grounding references Knowledge Graph anchors and Organization sameAs verification for ${cleanDomain}.`,
+    },
+  ];
+}
+
 
 
 /**

@@ -66,6 +66,12 @@ export default function ApiKeysPage() {
           totalOverage: data.totalOverage || 0,
           totalOverageCostCents: data.totalOverageCostCents || 0,
         });
+      } else if (res.status === 403) {
+        const errData = await res.json().catch(() => ({}));
+        if (errData.error?.includes('verification required')) {
+          window.location.href = '/verify-email';
+          return;
+        }
       } else if (res.status === 401) {
         setSessionInfo(null);
       }

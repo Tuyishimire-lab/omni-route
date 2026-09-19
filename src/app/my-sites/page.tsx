@@ -74,6 +74,10 @@ export default function MySitesPage() {
   useEffect(() => {
     fetch('/api/auth/me').then(r => r.json()).then(d => {
       if (!d.user) { router.push('/login?next=/my-sites'); return; }
+      if (d.user.emailVerified === false) {
+        router.push(`/verify-email?email=${encodeURIComponent(d.user.email)}`);
+        return;
+      }
       setAuthed(true);
       setUserTier(d.user.tier || 'free');
       fetchSites();
@@ -314,7 +318,7 @@ export default function MySitesPage() {
                 {site.aiEvents === 0 && (
                   <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-[rgba(5,173,152,0.05)] border border-[rgba(5,173,152,0.15)] text-xs text-[#878787]">
                     <AlertCircle className="w-3.5 h-3.5 text-[#05AD98]" />
-                    No AI traffic recorded yet. Events appear within 24–48 h of your first AI crawler visit.
+                    No AI traffic recorded yet. Events appear within 24-48 h of your first AI crawler visit.
                   </div>
                 )}
 

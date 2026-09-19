@@ -126,10 +126,12 @@ model User {
   createdAt     DateTime  @default(now())
   lastLoginAt   DateTime?
   isActive      Boolean   @default(true)
+  tokenVersion  Int       @default(1)
 
   apiKeys          ApiKey[]
   registeredSites  RegisteredSite[]
   watchlistEntries WatchlistEntry[]
+  passwordResetTokens PasswordResetToken[]
 
   // Lemon Squeezy Subscription Details
   lemonCustomerId          String?
@@ -248,5 +250,31 @@ model EnterpriseInquiry {
   @@index([email])
   @@index([createdAt])
   @@index([status])
+}
+
+// Password reset tokens with single-active-token invalidation and replay protection.
+// When a new reset request is made, all older active tokens for the user are invalidated.
+model PasswordResetToken {
+  id        String   @id // unique token id
+  userId    String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// Revoked session tokens (jti blacklist) for instantaneous post-logout invalidation
+model RevokedToken {
+  jti       String   @id // unique JWT ID
+  userId    String?
+  expiresAt DateTime     // timestamp when the JWT would naturally expire
+  revokedAt DateTime @default(now())
+
+  @@index([expiresAt])
+  @@index([userId])
 }
 

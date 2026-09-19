@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { GeoAuditReport } from '../../../lib/types';
 import AuditResultView from '../../../components/AuditResultView';
+import ScanTerminalStream from '../../../components/ScanTerminalStream';
 import {
   Share2,
   Copy,
@@ -126,14 +127,12 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
 
       {/* Main Content */}
       {isScanning ? (
-        <div className="glass-panel rounded-2xl p-16 text-center space-y-4 border border-[rgba(187,191,191,0.10)]">
-          <div className="w-12 h-12 rounded-full border-3 border-[#05AD98] border-t-transparent animate-spin mx-auto" />
-          <div className="space-y-1">
-            <h3 className="text-base font-bold text-white">Analyzing {initialDomain}</h3>
-            <p className="text-xs text-[#878787]">
-              Simulating crawler access across ChatGPT, Claude, and Perplexity...
-            </p>
-          </div>
+        <div className="py-2">
+          <ScanTerminalStream
+            domain={initialDomain}
+            mode="scan"
+            title="PUBLIC AUDIT TELEMETRY STREAM"
+          />
         </div>
       ) : error ? (
         <div className="glass-panel rounded-2xl p-10 text-center space-y-4 border border-rose-900/30">
@@ -148,7 +147,7 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
         </div>
       ) : report ? (
         <div className="space-y-8">
-          <AuditResultView report={report} />
+          <AuditResultView key={`report-${report.domain}`} report={report} />
 
           {/* Pro Upgrade CTA */}
           <div className="glass-panel rounded-2xl border border-[rgba(5,173,152,0.30)] relative overflow-hidden">

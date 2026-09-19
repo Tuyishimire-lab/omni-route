@@ -4,7 +4,10 @@ import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { UserPlus, Mail, Lock, User, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { PasswordRequirementsIndicator } from '../../components/PasswordRequirementsIndicator';
+import { validatePasswordPolicy } from '../../lib/passwordPolicy';
+import { validateAndSanitizeName } from '../../lib/sanitizeText';
 
 export default function RegisterPage() {
   return (
@@ -25,6 +28,7 @@ function RegisterPageInner() {
   const [email, setEmail] = useState(emailParam);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -37,7 +41,7 @@ function RegisterPageInner() {
       try {
         localStorage.setItem('citeroute_pending_domain', domainParam);
       } catch {
-        // Ignore
+        // Ignore storage exceptions
       }
     }
     fetch('/api/auth/me')
@@ -51,27 +55,51 @@ function RegisterPageInner() {
       .catch(() => {});
   }, [emailParam, domainParam, email, redirectTo, router]);
 
+  const [honeypot, setHoneypot] = useState('');
+  const [formRenderTimestamp] = useState<number>(() => Date.now());
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
+
+    // Client-side name validation (blocks URL injection, HTML, and script tags)
+    const nameResult = validateAndSanitizeName(name);
+    if (!nameResult.isValid) {
+      setError(nameResult.error || 'Please enter a valid name.');
+      return;
+    }
+
+    // Client-side password policy validation
+    const policyResult = validatePasswordPolicy(password);
+    if (!policyResult.isValid) {
+      setError(policyResult.error || 'Password does not meet enterprise security requirements.');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
-      setIsLoading(false);
       return;
     }
+
+    setIsLoading(true);
 
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name, password }),
+        body: JSON.stringify({
+          email,
+          name,
+          password,
+          hp_website_trap: honeypot,
+          formRenderTimestamp,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || 'Registration failed.');
+        setIsLoading(false);
         return;
       }
 
@@ -83,14 +111,11 @@ function RegisterPageInner() {
         }
       }
 
-      // Redirect to the specified destination (or home)
-      // Validate redirect is a relative path to prevent open redirects
-      const safeDest = redirectTo.startsWith('/') ? redirectTo : '/';
-      router.push(safeDest);
+      // Mandatory Email Verification Gating: direct user to verify-email
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
       router.refresh();
     } catch {
       setError('Network error. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -147,6 +172,18 @@ function RegisterPageInner() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="glass-panel rounded-2xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
+          {/* Anti-Bot Honeypot */}
+          <div className="absolute opacity-0 -z-50 pointer-events-none h-0 w-0 overflow-hidden" aria-hidden="true">
+            <input
+              type="text"
+              name="hp_website_trap"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <div>
             <label className="text-xs text-[#878787] block mb-1.5 flex items-center gap-1.5">
               <User className="w-3 h-3" /> Full Name
@@ -158,6 +195,7 @@ function RegisterPageInner() {
               placeholder="Jane Doe"
               required
               minLength={2}
+              maxLength={70}
               className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#05AD98] placeholder-[#878787]/50"
             />
           </div>
@@ -180,15 +218,28 @@ function RegisterPageInner() {
             <label className="text-xs text-[#878787] block mb-1.5 flex items-center gap-1.5">
               <Lock className="w-3 h-3" /> Password
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Min. 8 characters"
-              required
-              minLength={8}
-              className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-[#05AD98] placeholder-[#878787]/50"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Min. 8 characters"
+                required
+                minLength={8}
+                className="w-full bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] rounded-xl px-4 py-3 pr-10 text-sm text-white font-mono focus:outline-none focus:border-[#05AD98] placeholder-[#878787]/50"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#878787] hover:text-white transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+
+            {/* Dynamic Password Policy & Strength Feedback */}
+            <PasswordRequirementsIndicator password={password} />
           </div>
 
           <div>
@@ -196,7 +247,7 @@ function RegisterPageInner() {
               <Lock className="w-3 h-3" /> Confirm Password
             </label>
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Repeat password"
@@ -207,16 +258,16 @@ function RegisterPageInner() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-xs text-rose-400">
-              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-              {error}
+            <div className="flex items-center gap-2 text-xs text-rose-400 bg-rose-950/30 border border-rose-900/50 rounded-xl p-3">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-[rgba(5,173,152,0.2)]"
           >
             {isLoading ? 'Creating account...' : 'Create Account'}
           </button>

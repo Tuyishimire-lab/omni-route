@@ -2,6 +2,10 @@ import { prisma } from './prisma';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { sendWelcomeEmail } from './email';
+import { validatePasswordPolicy } from './passwordPolicy';
+import { issueAndSendVerification, isUserEmailVerified } from './emailVerification';
+import { validateAndSanitizeName } from './sanitizeText';
+import { revokeToken, isTokenRevoked } from './tokenRevocation';
 
 // ─── Password Hashing (bcryptjs - pure JS, works in serverless) ─────────────
 
@@ -61,23 +65,54 @@ export interface SessionPayload {
   role: string;
   tier: string;
   avatarUrl?: string | null;
+  emailVerified?: boolean;
+  tokenVersion?: number;
+  jti?: string;
 }
 
 export async function createSessionToken(payload: SessionPayload): Promise<string> {
-  return new SignJWT({ ...payload })
+  const jti = payload.jti || crypto.randomUUID();
+  return new SignJWT({ ...payload, jti })
     .setProtectedHeader({ alg: 'HS256' })
+    .setJti(jti)
     .setIssuedAt()
     .setExpirationTime(`${SESSION_MAX_AGE}s`)
     .sign(getJwtSecret());
 }
 
-export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
+export async function verifySessionToken(
+  token: string,
+  options?: { checkRevocation?: boolean }
+): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
-    const session = payload as unknown as SessionPayload;
+    const session = payload as unknown as SessionPayload & { tokenVersion?: number; jti?: string };
     if (session.role === 'admin') {
       session.tier = 'enterprise';
     }
+
+    if (options?.checkRevocation) {
+      // Check JTI revocation blacklist
+      const jti = session.jti || (payload.jti as string | undefined);
+      if (jti && (await isTokenRevoked(jti))) {
+        return null;
+      }
+
+      if (session.userId) {
+        const user = await prisma.user.findUnique({
+          where: { id: session.userId },
+          select: { tokenVersion: true, isActive: true },
+        });
+        if (!user || !user.isActive) return null;
+        if (
+          (session.tokenVersion !== undefined && user.tokenVersion !== undefined && session.tokenVersion !== user.tokenVersion) ||
+          (session.tokenVersion === undefined && user.tokenVersion > 1)
+        ) {
+          return null;
+        }
+      }
+    }
+
     return session;
   } catch {
     return null;
@@ -96,6 +131,19 @@ export async function setSessionCookie(payload: SessionPayload): Promise<void> {
   });
 }
 
+/**
+ * Server-side session revocation:
+ * Increments the user's tokenVersion in the database, invalidating all existing active sessions across all devices.
+ */
+export async function revokeAllUserSessions(userId: string): Promise<void> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      tokenVersion: { increment: 1 },
+    },
+  });
+}
+
 export async function getSession(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
@@ -103,9 +151,60 @@ export async function getSession(): Promise<SessionPayload | null> {
 
   try {
     const { payload } = await jwtVerify(token, getJwtSecret());
-    const session = payload as unknown as SessionPayload & { iat?: number; exp?: number };
+    const session = payload as unknown as SessionPayload & { iat?: number; exp?: number; tokenVersion?: number; jti?: string };
+    if (!session || !session.userId) return null;
+
+    // Check if token was revoked via JTI blacklist
+    const jti = session.jti || (payload.jti as string | undefined);
+    if (jti && (await isTokenRevoked(jti))) {
+      try {
+        cookieStore.delete(SESSION_COOKIE);
+      } catch {}
+      return null;
+    }
+
     if (session.role === 'admin') {
       session.tier = 'enterprise';
+    }
+
+    // Always verify user and session version against database for real-time revocation
+    let user = null;
+    try {
+      user = await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          tier: true,
+          avatarUrl: true,
+          isActive: true,
+          tokenVersion: true,
+        },
+      });
+    } catch (err) {
+      console.warn('[auth] Failed to query user during session check:', err);
+    }
+
+    // Revoke session if user does not exist or is inactive
+    if (!user || !user.isActive) {
+      try {
+        cookieStore.delete(SESSION_COOKIE);
+      } catch {}
+      return null;
+    }
+
+    // Server-side session revocation: if user's tokenVersion was incremented (e.g. via password reset),
+    // invalidate and destroy this session immediately across all devices.
+    if (
+      (session.tokenVersion !== undefined && user.tokenVersion !== undefined && session.tokenVersion !== user.tokenVersion) ||
+      (session.tokenVersion === undefined && user.tokenVersion > 1)
+    ) {
+      try {
+        cookieStore.delete(SESSION_COOKIE);
+      } catch {}
+      return null;
     }
 
     const now = Math.floor(Date.now() / 1000);
@@ -114,68 +213,44 @@ export async function getSession(): Promise<SessionPayload | null> {
     const totalLifetime = exp - iat;
     const age = now - iat;
 
+    const isVerified = await isUserEmailVerified(user);
+
     // Sliding refresh: if token is valid and > 50% through its lifetime, refresh it
-    // and verify that the user is still active in the database (preventing stale claims).
     if (totalLifetime > 0 && age > totalLifetime / 2) {
+      const refreshedSession: SessionPayload = {
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        tier: user.role === 'admin' ? 'enterprise' : user.tier,
+        avatarUrl: user.avatarUrl,
+        emailVerified: isVerified,
+        tokenVersion: user.tokenVersion,
+      };
+
+      const refreshedToken = await createSessionToken(refreshedSession);
       try {
-        const user = await prisma.user.findUnique({
-          where: { id: session.userId },
-          select: {
-            id: true,
-            email: true,
-            name: true,
-            role: true,
-            tier: true,
-            avatarUrl: true,
-            isActive: true,
-          },
+        cookieStore.set(SESSION_COOKIE, refreshedToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: SESSION_MAX_AGE,
+          path: '/',
         });
+      } catch {}
 
-        if (!user || !user.isActive) {
-          try {
-            cookieStore.delete(SESSION_COOKIE);
-          } catch {
-            // Ignore if in read-only cookie context
-          }
-          return null;
-        }
-
-        const refreshedSession: SessionPayload = {
-          userId: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          tier: user.role === 'admin' ? 'enterprise' : user.tier,
-          avatarUrl: user.avatarUrl,
-        };
-
-        const refreshedToken = await createSessionToken(refreshedSession);
-        try {
-          cookieStore.set(SESSION_COOKIE, refreshedToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: SESSION_MAX_AGE,
-            path: '/',
-          });
-        } catch {
-          // If in a context where cookies cannot be mutated, ignore silently
-        }
-
-        return refreshedSession;
-      } catch (err) {
-        // If DB read fails during refresh, fall back to returning current verified session
-        console.warn('[auth] Failed to refresh session claims from DB:', err);
-      }
+      return refreshedSession;
     }
 
     return {
-      userId: session.userId,
-      email: session.email,
-      name: session.name,
-      role: session.role,
-      tier: session.tier,
-      avatarUrl: session.avatarUrl,
+      userId: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      tier: user.role === 'admin' ? 'enterprise' : user.tier,
+      avatarUrl: user.avatarUrl,
+      emailVerified: isVerified,
+      tokenVersion: user.tokenVersion,
     };
   } catch {
     return null;
@@ -184,6 +259,23 @@ export async function getSession(): Promise<SessionPayload | null> {
 
 export async function destroySession(): Promise<void> {
   const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+
+  if (token) {
+    try {
+      const { payload } = await jwtVerify(token, getJwtSecret());
+      const jti = (payload.jti as string | undefined) || (payload as any).jti;
+      const exp = payload.exp ?? Math.floor(Date.now() / 1000) + SESSION_MAX_AGE;
+      const userId = (payload as any).userId as string | undefined;
+
+      if (jti) {
+        await revokeToken(jti, new Date(exp * 1000), userId);
+      }
+    } catch (err) {
+      console.warn('[auth] Error parsing session token during logout revocation:', err);
+    }
+  }
+
   cookieStore.delete(SESSION_COOKIE);
 }
 
@@ -193,18 +285,24 @@ export async function registerUser(
   email: string,
   name: string,
   password: string
-): Promise<{ success: boolean; user?: SessionPayload; error?: string }> {
+): Promise<{ success: boolean; user?: SessionPayload; error?: string; requiresVerification?: boolean }> {
   const normalizedEmail = email.toLowerCase().trim();
 
-  // Validate
+  // Validate email
   if (!normalizedEmail || !normalizedEmail.includes('@')) {
     return { success: false, error: 'Valid email is required.' };
   }
-  if (!name || name.trim().length < 2) {
-    return { success: false, error: 'Name must be at least 2 characters.' };
+
+  // Validate and sanitize name (blocks URL injection, HTML tags, and social engineering)
+  const nameValidation = validateAndSanitizeName(name);
+  if (!nameValidation.isValid) {
+    return { success: false, error: nameValidation.error || 'Valid name is required.' };
   }
-  if (!password || password.length < 8) {
-    return { success: false, error: 'Password must be at least 8 characters.' };
+  const cleanName = nameValidation.sanitized;
+
+  const passwordValidation = validatePasswordPolicy(password);
+  if (!passwordValidation.isValid) {
+    return { success: false, error: passwordValidation.error || 'Password does not meet security requirements.' };
   }
 
   // Check existing
@@ -222,7 +320,7 @@ export async function registerUser(
   const user = await prisma.user.create({
     data: {
       email: normalizedEmail,
-      name: name.trim(),
+      name: cleanName,
       passwordHash,
       role: isFirstUser ? 'admin' : 'user',
       tier: isFirstUser ? 'enterprise' : 'free',
@@ -230,9 +328,9 @@ export async function registerUser(
     },
   });
 
-  // Dispatch welcome onboarding email asynchronously
-  sendWelcomeEmail({ to: user.email, userName: user.name }).catch((err) => {
-    console.error('[auth/register] Failed to dispatch welcome email:', err);
+  // Dispatch account verification email with tokenized link and 6-digit code
+  issueAndSendVerification(user.id, user.email, user.name).catch((err) => {
+    console.error('[auth/register] Failed to dispatch account verification email:', err);
   });
 
   const session: SessionPayload = {
@@ -242,16 +340,18 @@ export async function registerUser(
     role: user.role,
     tier: isFirstUser ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
+    emailVerified: false,
+    tokenVersion: user.tokenVersion ?? 1,
   };
 
   await setSessionCookie(session);
-  return { success: true, user: session };
+  return { success: true, user: session, requiresVerification: true };
 }
 
 export async function loginUser(
   email: string,
   password: string
-): Promise<{ success: boolean; user?: SessionPayload; error?: string }> {
+): Promise<{ success: boolean; user?: SessionPayload; error?: string; requiresVerification?: boolean }> {
   const normalizedEmail = email.toLowerCase().trim();
 
   const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
@@ -278,6 +378,8 @@ export async function loginUser(
     data: { lastLoginAt: new Date() },
   });
 
+  const emailVerified = await isUserEmailVerified(user);
+
   const session: SessionPayload = {
     userId: user.id,
     email: user.email,
@@ -285,10 +387,12 @@ export async function loginUser(
     role: user.role,
     tier: user.role === 'admin' ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
+    emailVerified,
+    tokenVersion: user.tokenVersion ?? 1,
   };
 
   await setSessionCookie(session);
-  return { success: true, user: session };
+  return { success: true, user: session, requiresVerification: !emailVerified };
 }
 
 // ─── OAuth User Upsert ──────────────────────────────────────────────────────
@@ -353,6 +457,8 @@ export async function upsertOAuthUser(profile: {
     role: user.role,
     tier: user.role === 'admin' ? 'enterprise' : user.tier,
     avatarUrl: user.avatarUrl,
+    emailVerified: true,
+    tokenVersion: user.tokenVersion ?? 1,
   };
 
   await setSessionCookie(session);
@@ -382,8 +488,13 @@ export interface PasswordResetPayload {
   email: string;
   purpose: 'password_reset';
   hashSnippet: string;
+  tokenId: string;
 }
 
+/**
+ * Creates a single-use, time-limited password reset token.
+ * Automatically invalidates all previously issued reset tokens for this user.
+ */
 export async function createPasswordResetToken(user: {
   id: string;
   email: string;
@@ -391,23 +502,56 @@ export async function createPasswordResetToken(user: {
 }): Promise<string> {
   const secret = getJwtSecret();
   const hashSnippet = user.passwordHash ? user.passwordHash.slice(-12) : 'no-prior-hash';
+  const tokenId = crypto.randomUUID();
+  const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+  // 1. Invalidate all previously issued reset tokens for this user
+  await prisma.passwordResetToken.updateMany({
+    where: {
+      userId: user.id,
+      used: false,
+    },
+    data: {
+      used: true,
+    },
+  });
+
+  // 2. Persist the newly created token as the sole active token
+  await prisma.passwordResetToken.create({
+    data: {
+      id: tokenId,
+      userId: user.id,
+      expiresAt,
+      used: false,
+    },
+  });
 
   return new SignJWT({
     userId: user.id,
     email: user.email,
     purpose: 'password_reset',
     hashSnippet,
+    tokenId,
   })
     .setProtectedHeader({ alg: 'HS256' })
+    .setJti(tokenId)
     .setIssuedAt()
     .setExpirationTime('30m')
     .sign(secret);
 }
 
+/**
+ * Validates a password reset token:
+ * - Checks cryptographic signature and 30-minute expiry
+ * - Verifies user exists and is active
+ * - Confirms the password hasn't changed since token issuance
+ * - Ensures the token exists in the database, is marked unused, and is the latest active token issued
+ */
 export async function verifyPasswordResetToken(token: string): Promise<{
   valid: boolean;
   userId?: string;
   email?: string;
+  tokenId?: string;
   error?: string;
 }> {
   try {
@@ -421,6 +565,11 @@ export async function verifyPasswordResetToken(token: string): Promise<{
     const userId = payload.userId as string;
     const email = payload.email as string;
     const tokenSnippet = payload.hashSnippet as string;
+    const tokenId = (payload.tokenId || payload.jti) as string;
+
+    if (!userId || !tokenId) {
+      return { valid: false, error: 'Malformed or incomplete reset token.' };
+    }
 
     // Fetch user from DB to verify current state
     const user = await prisma.user.findUnique({
@@ -437,10 +586,46 @@ export async function verifyPasswordResetToken(token: string): Promise<{
       return { valid: false, error: 'This reset link has already been used. Please request a new one.' };
     }
 
-    return { valid: true, userId: user.id, email: user.email };
+    // Verify against database record for active status
+    const dbToken = await prisma.passwordResetToken.findUnique({
+      where: { id: tokenId },
+    });
+
+    if (!dbToken || dbToken.userId !== user.id) {
+      return { valid: false, error: 'This reset link is invalid or has expired. Please request a new one.' };
+    }
+
+    if (dbToken.used) {
+      return {
+        valid: false,
+        error: 'This reset link is no longer valid because a newer reset link was requested or it has already been used. Please request a new link.',
+      };
+    }
+
+    if (new Date() > dbToken.expiresAt) {
+      return { valid: false, error: 'This reset link has expired. Please request a new one.' };
+    }
+
+    // Check if any newer reset token was generated after this token
+    const newerToken = await prisma.passwordResetToken.findFirst({
+      where: {
+        userId: user.id,
+        createdAt: { gt: dbToken.createdAt },
+      },
+    });
+
+    if (newerToken) {
+      return {
+        valid: false,
+        error: 'This reset link is no longer valid because a newer reset link was requested. Please use the latest link sent to your email.',
+      };
+    }
+
+    return { valid: true, userId: user.id, email: user.email, tokenId: dbToken.id };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Invalid or expired token';
     return { valid: false, error: message };
   }
 }
+
 

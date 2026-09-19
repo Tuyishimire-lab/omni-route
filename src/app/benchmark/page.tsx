@@ -169,7 +169,7 @@ export default function BenchmarkPage() {
             Domain <span className="text-gradient">Benchmark Arena</span>
           </h1>
           <p className="text-sm text-[#878787] leading-relaxed">
-            Compare 2–5 domains head-to-head across every GEO citation authority dimension.
+            Compare 2 to 5 domains head-to-head across every GEO citation authority dimension.
             Each domain is live-crawled via Jina Reader for real scores.
           </p>
         </div>

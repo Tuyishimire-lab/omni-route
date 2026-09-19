@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, Suspense, useCallback } from 'react
 import { useSearchParams } from 'next/navigation';
 import { GeoAuditReport } from '../../lib/types';
 import AuditResultView from '../../components/AuditResultView';
+import ScanTerminalStream from '../../components/ScanTerminalStream';
 import EmailGateModal from '../../components/EmailGateModal';
 import { Search, Globe2, Info, RefreshCw, Radio } from 'lucide-react';
 
@@ -57,6 +58,7 @@ function AuditContent() {
     // Don't attempt a scan if the monthly quota is known to be exhausted
     if (quotaExhausted) return;
     setIsScanning(true);
+    setActiveReport(null);
     setErrorMessage(null);
     setRateLimitRetryAfter(null);
     try {
@@ -266,16 +268,20 @@ function AuditContent() {
       </div>
 
       {/* Main Audit Diagnostic Breakdown */}
-      {isScanning && !activeReport && (
-        <div className="glass-panel rounded-3xl p-12 text-center border border-[rgba(187,191,191,0.10)] space-y-4">
-          <div className="w-8 h-8 border-3 border-[#05AD98] border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-sm font-semibold text-white">Inspecting Live Web Page & Entity Disambiguation...</p>
-          <p className="text-xs text-[#878787]">Extracting JSON-LD schemas, heading hierarchies, and testing foundation model citation probabilities.</p>
+      {isScanning && (
+        <div className="py-4">
+          <ScanTerminalStream
+            key={`scan-terminal-${(domainInput.trim() || initialDomain).replace(/^https?:\/\//, '').replace(/\/.*$/, '').toLowerCase()}`}
+            domain={domainInput.trim() || initialDomain}
+            mode="scan"
+            title="CITEROUTE AUDIT & GEO TELEMETRY STREAM"
+          />
         </div>
       )}
 
-      {activeReport && (
+      {!isScanning && activeReport && (
         <AuditResultView
+          key={`report-${activeReport.domain}`}
           report={activeReport}
           isVerified={Boolean(isLoggedIn || verifiedEmail)}
           onRequireEmail={() => setEmailGateOpen(true)}

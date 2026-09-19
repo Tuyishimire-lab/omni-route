@@ -14,6 +14,7 @@ import {
   Filter,
   ChevronDown,
   ChevronUp,
+  Folder,
 } from 'lucide-react';
 
 interface DirectoryDomain {
@@ -214,7 +215,7 @@ export default function DirectoryClient() {
                   : 'bg-[#0A0E0E] text-[#BBBFBF] hover:bg-[#1A2020] border border-[rgba(187,191,191,0.08)]'
               }`}
             >
-              {cat === 'All' ? 'All' : `${CATEGORY_ICONS[cat] || '📁'} ${cat}`}
+              {cat}
             </button>
           ))}
           {categories.length > 8 && (
@@ -261,7 +262,9 @@ export default function DirectoryClient() {
             {/* Category Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(187,191,191,0.08)] bg-[rgba(5,173,152,0.03)]">
               <div className="flex items-center gap-3">
-                <span className="text-xl">{CATEGORY_ICONS[category] || '📁'}</span>
+                <div className="w-8 h-8 rounded-lg bg-[rgba(5,173,152,0.12)] flex items-center justify-center shrink-0">
+                  <Folder className="w-4 h-4 text-[#05AD98]" />
+                </div>
                 <div>
                   <h2 className="text-base font-bold text-white">{category}</h2>
                   <p className="text-[10px] text-[#878787]">

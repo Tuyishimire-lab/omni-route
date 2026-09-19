@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, ArrowRight } from 'lucide-react';
+import { PasswordRequirementsIndicator } from '../../components/PasswordRequirementsIndicator';
+import { validatePasswordPolicy } from '../../lib/passwordPolicy';
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -44,27 +46,13 @@ function ResetPasswordForm() {
     checkToken();
   }, [token]);
 
-  // Password strength calculation
-  const getStrength = (pass: string) => {
-    if (!pass) return 0;
-    let score = 0;
-    if (pass.length >= 8) score += 1;
-    if (pass.length >= 12) score += 1;
-    if (/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score += 1;
-    if (/\d/.test(pass) || /[^A-Za-z0-9]/.test(pass)) score += 1;
-    return score;
-  };
-
-  const strength = getStrength(password);
-  const strengthLabels = ['Too Short', 'Weak', 'Fair', 'Strong'];
-  const strengthColors = ['bg-rose-500', 'bg-amber-500', 'bg-blue-400', 'bg-[#05AD98]'];
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+    const policyResult = validatePasswordPolicy(password);
+    if (!policyResult.isValid) {
+      setError(policyResult.error || 'Password does not meet enterprise security requirements.');
       return;
     }
 
@@ -195,27 +183,8 @@ function ResetPasswordForm() {
                   </button>
                 </div>
 
-                {/* Strength Meter */}
-                {password && (
-                  <div className="mt-2 space-y-1">
-                    <div className="grid grid-cols-4 gap-1.5 h-1">
-                      {[0, 1, 2, 3].map((idx) => (
-                        <div
-                          key={idx}
-                          className={`h-full rounded-full transition-all ${
-                            idx < strength ? strengthColors[strength - 1] : 'bg-[#1A2020]'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-between text-[10px] text-[#878787]">
-                      <span>Strength</span>
-                      <span className="font-semibold text-white">
-                        {strength > 0 ? strengthLabels[strength - 1] : 'Too Short'}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                {/* Dynamic Password Policy & Strength Feedback */}
+                <PasswordRequirementsIndicator password={password} />
               </div>
 
               <div>

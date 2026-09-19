@@ -68,6 +68,11 @@ function LoginForm() {
         return;
       }
 
+      if (data.requiresVerification) {
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        return;
+      }
+
       if (domainParam && typeof window !== 'undefined') {
         try {
           localStorage.setItem('citeroute_pending_domain', domainParam);

@@ -24,7 +24,9 @@ import {
   Layers,
   Sparkles,
   Server,
-  Zap
+  Zap,
+  Loader2,
+  Bot
 } from 'lucide-react';
 
 export default function AgentJsonEditor() {
@@ -33,6 +35,9 @@ export default function AgentJsonEditor() {
   const [activeTab, setActiveTab] = useState<'visual' | 'json' | 'deploy'>('visual');
   const [deployPlatform, setDeployPlatform] = useState<'nextjs' | 'cloudflare' | 'fastapi' | 'edgeworker'>('nextjs');
   const [copiedText, setCopiedText] = useState<string | null>(null);
+  const [aiDomain, setAiDomain] = useState('');
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Auto-populate if domain query param is passed from audit/leaderboard
   useEffect(() => {
@@ -77,6 +82,36 @@ export default function AgentJsonEditor() {
       setManifest(defaultSampleManifest);
     } else if (INDUSTRY_TEMPLATES[templateKey]) {
       setManifest(INDUSTRY_TEMPLATES[templateKey].manifest);
+    }
+  };
+
+  const generateWithAi = async () => {
+    const d = (aiDomain || manifest.domain || '').trim().replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
+    if (!d || !d.includes('.')) {
+      setAiError('Enter a valid domain (e.g. stripe.com)');
+      return;
+    }
+    setAiGenerating(true);
+    setAiError(null);
+    try {
+      const res = await fetch('/api/v1/tools/generate-manifest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: d }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setAiError(data.error || 'Generation failed. Please try again.');
+        return;
+      }
+      if (data.manifest) {
+        setManifest(data.manifest);
+        setAiDomain('');
+      }
+    } catch {
+      setAiError('Network error. Please try again.');
+    } finally {
+      setAiGenerating(false);
     }
   };
 
@@ -172,6 +207,46 @@ export default function AgentJsonEditor() {
               Download .json
             </button>
           </div>
+        </div>
+
+        {/* CiteRoute Engine Generation Section */}
+        <div className="pt-3 border-t border-[rgba(187,191,191,0.08)]">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <Cpu className="w-3.5 h-3.5 text-[#05AD98]" />
+              <span className="text-xs text-[#878787] font-semibold">CiteRoute Engine:</span>
+            </div>
+            <div className="flex-1 flex items-center gap-2">
+              <input
+                type="text"
+                value={aiDomain}
+                onChange={(e) => { setAiDomain(e.target.value); setAiError(null); }}
+                onKeyDown={(e) => e.key === 'Enter' && !aiGenerating && generateWithAi()}
+                placeholder="Enter domain (e.g. stripe.com)"
+                className="flex-1 px-3 py-1.5 rounded-lg bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] text-xs text-white placeholder:text-[#878787] outline-none focus:border-[rgba(5,173,152,0.40)] transition-colors font-mono"
+                disabled={aiGenerating}
+              />
+              <button
+                onClick={generateWithAi}
+                disabled={aiGenerating}
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-emerald-600 text-white text-xs font-bold transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+              >
+                {aiGenerating ? (
+                  <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Analyzing site...</>
+                ) : (
+                  <><Cpu className="w-3.5 h-3.5" /> Generate with Engine</>
+                )}
+              </button>
+            </div>
+          </div>
+          {aiError && (
+            <p className="text-[11px] text-rose-400 mt-1.5 pl-5">{aiError}</p>
+          )}
+          {aiGenerating && (
+            <p className="text-[11px] text-[#878787] mt-1.5 pl-5 animate-pulse">
+              Crawling site content and generating a production-ready manifest...
+            </p>
+          )}
         </div>
 
         {/* 1-Click Industry Templates */}

@@ -14,16 +14,16 @@ const TAG = `<!-- CiteRoute Tag -->
 <script async src="${ENDPOINT}/api/v1/track.js?site=yourdomain.com"></script>`;
 
 const MIDDLEWARE_FRAMEWORKS = [
-  { id: 'nextjs-middleware', label: 'Next.js / Vercel', icon: '▲' },
+  { id: 'nextjs-middleware', label: 'Next.js / Vercel', icon: '' },
   { id: 'cloudflare-worker', label: 'Cloudflare Worker', icon: '' },
   { id: 'express-node',      label: 'Node.js / Express', icon: '' },
 ];
 
 const CLIENT_FRAMEWORKS = [
-  { id: 'html',          label: 'HTML',          icon: '🌐' },
-  { id: 'nextjs-app',   label: 'Next.js App',    icon: '▲'  },
-  { id: 'nextjs-pages', label: 'Next.js Pages',  icon: '▲'  },
-  { id: 'react',        label: 'React / Vite',   icon: ''  },
+  { id: 'html',          label: 'HTML',          icon: '' },
+  { id: 'nextjs-app',   label: 'Next.js App',    icon: '' },
+  { id: 'nextjs-pages', label: 'Next.js Pages',  icon: '' },
+  { id: 'react',        label: 'React / Vite',   icon: '' },
   { id: 'wordpress',    label: 'WordPress',      icon: '' },
   { id: 'shopify',      label: 'Shopify',        icon: '' },
   { id: 'webflow',      label: 'Webflow',        icon: '' },
@@ -474,7 +474,7 @@ export default function InstallPage() {
           {[
             { n: '1', title: 'Open your site + DevTools', body: 'Network tab → filter "track". You should see a POST to citeroute.com/api/v1/track fire on page load.', code: undefined },
             { n: '2', title: 'Check the response', body: 'You will see:', code: '{ "success": true, "recorded": false, "classification": "HUMAN" }' },
-            { n: '3', title: 'All good', body: 'Human visits are not stored by design. AI crawlers appear in your analytics within 24–48 h. Run a GEO Audit to kick-start crawling.', code: undefined },
+            { n: '3', title: 'All good', body: 'Human visits are not stored by design. AI crawlers appear in your analytics within 24-48 h. Run a GEO Audit to kick-start crawling.', code: undefined },
           ].map((item) => (
             <div key={item.n} className="flex gap-4">
               <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(5,173,152,0.15)] text-[#05AD98] text-xs font-bold shrink-0 mt-0.5">{item.n}</span>

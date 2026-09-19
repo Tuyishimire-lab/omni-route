@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
-import { hashPassword, verifyPasswordResetToken } from '../../../../lib/auth';
+import { hashPassword, verifyPasswordResetToken, destroySession } from '../../../../lib/auth';
+import { validatePasswordPolicy } from '../../../../lib/passwordPolicy';
 import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
 
 export async function GET(req: NextRequest) {
@@ -54,16 +55,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (password.length < 8) {
+    const passwordValidation = validatePasswordPolicy(password);
+    if (!passwordValidation.isValid) {
       return NextResponse.json(
-        { error: 'Password must be at least 8 characters long.' },
-        { status: 400 }
-      );
-    }
-
-    if (password.length > 128) {
-      return NextResponse.json(
-        { error: 'Password cannot exceed 128 characters.' },
+        { error: passwordValidation.error || 'Password does not meet security requirements.' },
         { status: 400 }
       );
     }
@@ -80,13 +75,23 @@ export async function POST(req: NextRequest) {
     // Hash the new password with bcrypt (work factor 12)
     const newHash = await hashPassword(password);
 
-    // Update password hash in database
+    // Update password hash and increment tokenVersion to immediately revoke all active sessions across all devices
     await prisma.user.update({
       where: { id: verification.userId },
       data: {
         passwordHash: newHash,
+        tokenVersion: { increment: 1 },
       },
     });
+
+    // Invalidate all active password reset tokens for this user
+    await prisma.passwordResetToken.updateMany({
+      where: { userId: verification.userId },
+      data: { used: true },
+    });
+
+    // Revoke any existing session cookie on the resetting browser
+    await destroySession().catch(() => {});
 
     return NextResponse.json({
       success: true,

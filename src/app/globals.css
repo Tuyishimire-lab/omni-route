@@ -140,7 +140,7 @@ body {
 @media print {
   @page {
     size: portrait;
-    margin: 12mm 12mm 14mm 12mm;
+    margin: 10mm 12mm 12mm 12mm;
   }
 
   html, body {
@@ -148,7 +148,7 @@ body {
     color: #FFFFFF !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    font-size: 10.5pt !important;
+    font-size: 10pt !important;
   }
 
   *, *::before, *::after {
@@ -168,6 +168,23 @@ body {
     background-color: #111514 !important;
     border-color: rgba(187, 191, 191, 0.15) !important;
     box-shadow: none !important;
+  }
+
+  /* Wrap preformatted code neatly inside printable page margins */
+  pre, code {
+    white-space: pre-wrap !important;
+    word-break: break-all !important;
+    overflow: visible !important;
+    font-size: 8pt !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Brighten muted text for high contrast on exported PDFs */
+  .text-\[\#878787\], .text-slate-400, .text-slate-500 {
+    color: #9CA3AF !important;
+  }
+  .text-\[\#BBBFBF\] {
+    color: #D1D5DB !important;
   }
 }
 

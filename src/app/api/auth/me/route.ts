@@ -26,6 +26,7 @@ export async function GET() {
     return NextResponse.json({
       user: {
         ...session,
+        emailVerified: session.emailVerified ?? false,
         tier: dbUser?.tier || session.tier,
         subscriptionStatus: dbUser?.subscriptionStatus || null,
         hasUsedTrial,

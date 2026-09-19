@@ -111,6 +111,12 @@ export async function POST(req: NextRequest) {
 
     const session = await getSession();
     if (session) {
+      if (!session.emailVerified) {
+        return NextResponse.json(
+          { error: 'Email verification required. Please verify your email before modifying your watchlist.' },
+          { status: 403 }
+        );
+      }
       const user = await prisma.user.findUnique({ where: { id: session.userId }, select: { tier: true } });
       const current = await getUserWatchlist(session.userId);
       if (!current.includes(domain)) {

@@ -25,8 +25,8 @@ const STEPS = [
     iconBg: 'from-[#05AD98]/20 to-[#038a79]/10 border-[rgba(5,173,152,0.25)]',
     badge: 'Step 1 of 3',
     title: 'Scan Your Domain, Free and Instant',
-    body: 'CiteRoute\'s heuristic AI engine analyzes any domain in seconds. No sign-up required. No API keys needed. Just enter your domain and get a full GEO audit across Perplexity, ChatGPT, Claude, and Gemini.',
-    detail: 'You\'ll receive a GEO Score (0–100), engine-by-engine diagnostics, entity grounding analysis, and targeted optimization code patches.'
+    body: 'CiteRoute\'s heuristic engine analyzes any domain in seconds. No sign-up required. No API keys needed. Just enter your domain and get a full GEO audit across Perplexity, ChatGPT, Claude, and Gemini.',
+    detail: 'You\'ll receive a GEO Score (0-100), engine-by-engine diagnostics, entity grounding analysis, and targeted optimization code patches.'
   },
   {
     id: 2,

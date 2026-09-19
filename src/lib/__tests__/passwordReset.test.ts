@@ -7,8 +7,56 @@ import { prisma } from '../prisma';
 import { sendPasswordResetEmail } from '../email';
 
 describe('Password Reset Token Management', () => {
+  let tokenStore: Array<{
+    id: string;
+    userId: string;
+    expiresAt: Date;
+    used: boolean;
+    createdAt: Date;
+  }> = [];
+
   beforeEach(() => {
     vi.restoreAllMocks();
+    tokenStore = [];
+
+    (vi.spyOn(prisma.passwordResetToken, 'updateMany') as any).mockImplementation(async ({ where, data }: any) => {
+      let count = 0;
+      tokenStore.forEach((t) => {
+        const matchesUser = !where.userId || t.userId === where.userId;
+        const matchesUsed = where.used === undefined || t.used === where.used;
+        if (matchesUser && matchesUsed) {
+          if (data.used !== undefined) t.used = data.used;
+          count++;
+        }
+      });
+      return { count };
+    });
+
+    (vi.spyOn(prisma.passwordResetToken, 'create') as any).mockImplementation(async ({ data }: any) => {
+      const record = {
+        id: data.id,
+        userId: data.userId,
+        expiresAt: data.expiresAt,
+        used: data.used ?? false,
+        createdAt: data.createdAt || new Date(),
+      };
+      tokenStore.push(record);
+      return record as any;
+    });
+
+    (vi.spyOn(prisma.passwordResetToken, 'findUnique') as any).mockImplementation(async ({ where }: any) => {
+      const found = tokenStore.find((t) => t.id === where.id);
+      return (found ? { ...found } : null) as any;
+    });
+
+    (vi.spyOn(prisma.passwordResetToken, 'findFirst') as any).mockImplementation(async ({ where }: any) => {
+      const found = tokenStore.find((t) => {
+        if (where.userId && t.userId !== where.userId) return false;
+        if (where.createdAt?.gt && !(t.createdAt > where.createdAt.gt)) return false;
+        return true;
+      });
+      return (found ? { ...found } : null) as any;
+    });
   });
 
   it('creates and verifies a valid password reset token', async () => {
@@ -37,6 +85,43 @@ describe('Password Reset Token Management', () => {
     expect(result.error).toBeDefined();
   });
 
+  it('invalidates older reset token (Link A) when a new reset token (Link B) is generated (OWASP A07)', async () => {
+    const mockUser = {
+      id: 'usr_reset_multi',
+      email: 'victim@example.com',
+      passwordHash: '$2a$12$originalSecureHash123456',
+      isActive: true,
+    };
+
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
+
+    // 1. User requests Link A
+    const tokenA = await createPasswordResetToken(mockUser);
+    expect(tokenStore).toHaveLength(1);
+    expect(tokenStore[0].used).toBe(false);
+
+    // Give a slight millisecond offset to differentiate creation timestamps
+    await new Promise((resolve) => setTimeout(resolve, 10));
+
+    // 2. User requests Link B before using Link A
+    const tokenB = await createPasswordResetToken(mockUser);
+    expect(tokenStore).toHaveLength(2);
+    // Link A must now be marked as used/superseded
+    expect(tokenStore[0].used).toBe(true);
+    // Link B must be active
+    expect(tokenStore[1].used).toBe(false);
+
+    // 3. User or attacker attempts to use Link A
+    const resultA = await verifyPasswordResetToken(tokenA);
+    expect(resultA.valid).toBe(false);
+    expect(resultA.error).toContain('newer reset link was requested');
+
+    // 4. User attempts to use Link B (the most recent one)
+    const resultB = await verifyPasswordResetToken(tokenB);
+    expect(resultB.valid).toBe(true);
+    expect(resultB.userId).toBe(mockUser.id);
+  });
+
   it('automatically invalidates previous reset tokens once password is changed', async () => {
     const initialUser = {
       id: 'usr_reset_2',
@@ -44,6 +129,8 @@ describe('Password Reset Token Management', () => {
       passwordHash: '$2a$12$initialHashOldPassword123',
       isActive: true,
     };
+
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(initialUser as any);
 
     const token = await createPasswordResetToken(initialUser);
 
@@ -65,6 +152,8 @@ describe('Password Reset Token Management', () => {
       passwordHash: '$2a$12$somehash12345678901234',
       isActive: true,
     };
+
+    vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
 
     const token = await createPasswordResetToken(mockUser);
 

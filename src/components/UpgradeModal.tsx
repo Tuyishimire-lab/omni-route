@@ -60,7 +60,7 @@ export default function UpgradeModal({
         'Unlimited watchlist domains',
         'White-label PDF reports',
         'API key access (10,000 req/day)',
-        'Dedicated webhook score alerts',
+        'Embeddable verification badge',
       ],
     },
     enterprise: {

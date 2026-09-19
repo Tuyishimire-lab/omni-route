@@ -16,6 +16,13 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!session.emailVerified) {
+      return NextResponse.json(
+        { error: 'Email verification required. Please verify your email before accessing API keys.' },
+        { status: 403 }
+      );
+    }
+
     const tierConfig = getTierConfig(session.tier);
     const keys = await getUserApiKeys(session.userId);
 
@@ -48,6 +55,13 @@ export async function POST(req: NextRequest) {
     const session = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!session.emailVerified) {
+      return NextResponse.json(
+        { error: 'Email verification required. Please verify your email before creating API keys.' },
+        { status: 403 }
+      );
     }
 
     // Check tier eligibility (Pro, Agency, Enterprise, or Admin)

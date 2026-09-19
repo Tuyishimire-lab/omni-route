@@ -156,14 +156,15 @@ export default function EngineSettingsPage() {
         </div>
       </div>
 
-      {/* Privacy Notice */}
-      <div className="glass-panel rounded-2xl p-4 border border-[rgba(5,173,152,0.20)] bg-[rgba(5,173,152,0.04)] flex items-start gap-3">
-        <Info className="w-4 h-4 text-[#05AD98] shrink-0 mt-0.5" />
+      {/* OpenRouter Central Active Status */}
+      <div className="glass-panel rounded-2xl p-4 border border-[rgba(5,173,152,0.30)] bg-[rgba(5,173,152,0.06)] flex items-start gap-3">
+        <Zap className="w-4 h-4 text-[#05AD98] shrink-0 mt-0.5" />
         <div className="text-xs text-[#BBBFBF] leading-relaxed">
-          <span className="font-semibold text-white block mb-1">Your keys stay in your browser</span>
-          These API keys are stored only in your browser&apos;s localStorage and are sent directly to
-          each engine API when you run a GEO scan. CiteRoute&apos;s servers never store, log, or
-          transmit your third-party API keys. You can clear them at any time.
+          <span className="font-semibold text-white block mb-0.5">
+            CiteRoute Engine is Centrally Powered via OpenRouter
+          </span>
+          Multi-model diagnostics across Perplexity, OpenAI, Anthropic, and Gemini are already enabled system-wide.
+          Connecting personal API keys below is completely optional and only needed if you wish to override standard engine routing with your own private quota.
         </div>
       </div>
 

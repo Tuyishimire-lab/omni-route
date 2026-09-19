@@ -43,7 +43,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: result.error }, { status: 401 });
     }
 
-    return NextResponse.json({ success: true, user: result.user });
+    return NextResponse.json({
+      success: true,
+      user: result.user,
+      requiresVerification: Boolean(result.requiresVerification),
+    });
   } catch (err) {
     console.error('[auth/login] Error:', err);
     return NextResponse.json({ error: 'Login failed. Please try again.' }, { status: 500 });

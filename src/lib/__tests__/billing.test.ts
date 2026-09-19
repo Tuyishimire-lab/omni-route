@@ -79,6 +79,7 @@ describe('Lemon Squeezy Billing Engine', () => {
         name: 'User',
         role: 'user',
         tier: 'free',
+        emailVerified: true,
       });
 
       const req = new NextRequest('http://localhost:3000/api/billing/checkout', {
@@ -99,6 +100,7 @@ describe('Lemon Squeezy Billing Engine', () => {
         name: 'Jane Doe',
         role: 'user',
         tier: 'free',
+        emailVerified: true,
       });
 
       vi.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
@@ -137,6 +139,7 @@ describe('Lemon Squeezy Billing Engine', () => {
         name: 'Jane Doe',
         role: 'user',
         tier: 'free',
+        emailVerified: true,
       });
 
       vi.spyOn(prisma.user, 'findUnique').mockResolvedValue({

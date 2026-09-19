@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { sendWeeklyDigestEmail, getWeeklyTip, GEO_TIPS, MonitoredDomainDigest } from '../email';
+import {
+  sendWeeklyDigestEmail,
+  getWeeklyTip,
+  GEO_TIPS,
+  MonitoredDomainDigest,
+  computePriorityFix,
+  computeEngineVisibility,
+} from '../email';
 import { GET as handleCron } from '../../app/api/cron/weekly-digest/route';
 import { NextRequest } from 'next/server';
 
@@ -176,5 +183,47 @@ describe('Weekly GEO Tip Rotation', () => {
 
   it('has at least 8 curated tips', () => {
     expect(GEO_TIPS.length).toBeGreaterThanOrEqual(8);
+  });
+});
+
+describe('Weekly Digest Automated Enrichments', () => {
+  it('computes baseline fix for never scanned domains', () => {
+    const d = mockDomain({ dataSource: 'never_scanned', scanCount: 0 });
+    const fix = computePriorityFix(d);
+    expect(fix.pillar).toBe('Baseline Audit');
+    expect(fix.action).toContain('Run an initial scan');
+  });
+
+  it('targets lowest subscore for priority action recommendation', () => {
+    const d = mockDomain({
+      zeroClickResilience: 90,
+      infoGainScore: 45, // lowest
+      entityScore: 80,
+      vectorReadiness: 75,
+      dataSource: 'live_crawl',
+      scanCount: 3,
+    });
+    const fix = computePriorityFix(d);
+    expect(fix.pillar).toBe('Info Gain Score');
+    expect(fix.title).toBe('Infuse Proprietary Data');
+  });
+
+  it('computes foundation model visibility indicators correctly', () => {
+    const d = mockDomain({
+      geoScore: 88,
+      topBots: ['PerplexityBot', 'GPTBot'],
+    });
+    const engines = computeEngineVisibility(d);
+    expect(engines).toHaveLength(4);
+
+    const perplexity = engines.find((e) => e.name === 'Perplexity');
+    const chatgpt = engines.find((e) => e.name === 'ChatGPT');
+    const claude = engines.find((e) => e.name === 'Claude');
+
+    expect(perplexity?.botDetected).toBe(true);
+    expect(perplexity?.status).toBe('OPTIMAL');
+    expect(chatgpt?.botDetected).toBe(true);
+    expect(chatgpt?.status).toBe('OPTIMAL');
+    expect(claude?.botDetected).toBe(false);
   });
 });

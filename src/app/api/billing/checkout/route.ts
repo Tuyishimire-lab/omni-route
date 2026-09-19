@@ -15,6 +15,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!session.emailVerified) {
+      return NextResponse.json(
+        { error: 'Email verification required. Please verify your email before subscribing.', code: 'EMAIL_VERIFICATION_REQUIRED' },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const { tier, domain } = body;
 

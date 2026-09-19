@@ -41,6 +41,8 @@ const MODELS = [
   { name: 'WatchlistEntry', probe: () => prisma.watchlistEntry.findFirst() },
   { name: 'EmailVerification', probe: () => prisma.emailVerification.findFirst() },
   { name: 'EnterpriseInquiry', probe: () => prisma.enterpriseInquiry.findFirst() },
+  { name: 'PasswordResetToken', probe: () => prisma.passwordResetToken.findFirst() },
+  { name: 'RevokedToken', probe: () => prisma.revokedToken.findFirst() },
 ];
 
 async function verify() {
