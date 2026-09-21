@@ -1,8 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import dotenv from 'dotenv';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+// Load .env.local if present using Node's native env loader (Node 20+)
+const envLocalPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envLocalPath) && typeof process.loadEnvFile === 'function') {
+  try {
+    process.loadEnvFile(envLocalPath);
+  } catch {
+    // Ignore if not present
+  }
+}
 
 import { probeAllEngines, TARGET_ENGINES } from '../citationProber';
 
