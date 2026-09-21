@@ -289,8 +289,9 @@ export default function MySitesPage() {
                   <button
                     onClick={() => removeSite(site.domain)}
                     disabled={removeLoading === site.domain}
-                    className="p-1.5 rounded-lg text-[#878787] hover:text-red-400 hover:bg-red-500/10 transition-all"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[#878787] hover:text-red-400 hover:bg-red-500/10 transition-all active:scale-95"
                     title="Remove site"
+                    aria-label="Remove site"
                   >
                     {removeLoading === site.domain
                       ? <Loader2 className="w-4 h-4 animate-spin" />

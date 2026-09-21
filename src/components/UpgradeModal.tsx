@@ -180,10 +180,10 @@ export default function UpgradeModal({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 pt-2">
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-xl border border-[rgba(255,255,255,0.1)] text-xs font-semibold text-[#BBBFBF] hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors cursor-pointer"
+            className="w-full sm:flex-1 px-4 py-2.5 rounded-xl border border-[rgba(255,255,255,0.1)] text-xs font-semibold text-[#BBBFBF] hover:text-white hover:border-[rgba(255,255,255,0.2)] transition-colors cursor-pointer text-center active:scale-[0.98]"
           >
             Not Now
           </button>
@@ -191,7 +191,7 @@ export default function UpgradeModal({
           <button
             onClick={handleInstantUpgrade}
             disabled={isUpgrading}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white hover:opacity-95 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all cursor-pointer"
+            className="w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white hover:opacity-95 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all cursor-pointer active:scale-[0.98]"
           >
             {isUpgrading ? (
               <>
@@ -200,14 +200,14 @@ export default function UpgradeModal({
               </>
             ) : (
               <>
-                <span>
+                <span className="truncate">
                   {targetTier === 'enterprise'
                     ? 'Contact Sales'
                     : hasUsedTrial
                     ? `Upgrade to ${tierDetails.name}`
                     : `Start 14-day ${tierDetails.name} Trial`}
                 </span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </>
             )}
           </button>

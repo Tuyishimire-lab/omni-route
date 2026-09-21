@@ -272,8 +272,9 @@ export default function WatchlistManager() {
                     </Link>
                     <button
                       onClick={() => handleRemove(item.id)}
-                      className="text-slate-600 hover:text-rose-400 transition-colors p-1"
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors active:scale-95"
                       title="Remove from watchlist"
+                      aria-label="Remove from watchlist"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>

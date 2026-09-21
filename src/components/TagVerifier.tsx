@@ -44,7 +44,7 @@ export default function TagVerifier() {
   return (
     <div className="space-y-4">
       {/* Input row */}
-      <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row gap-2">
         <div className="flex-1 flex items-center gap-2 px-4 py-3 rounded-xl bg-[#111514] border border-[rgba(187,191,191,0.15)] focus-within:border-[rgba(5,173,152,0.50)] transition-colors">
           <Search className="w-4 h-4 text-[#878787] shrink-0" />
           <input
@@ -59,7 +59,7 @@ export default function TagVerifier() {
         <button
           onClick={verify}
           disabled={loading || !domain.trim()}
-          className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center gap-2 shrink-0"
+          className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2 shrink-0 active:scale-[0.98]"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
           {loading ? 'Checking…' : 'Verify Tag'}

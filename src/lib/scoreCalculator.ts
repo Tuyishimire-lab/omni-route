@@ -32,53 +32,150 @@ export function computeLiveGeoSubscores(
   liveMeta: LiveExtractionMetadata,
   cleanDomain: string
 ): GeoSubscores {
-  // Baseline: 50 reflects a domain with no measurable positive signals.
-  // All increments below are calibrated against observable LLM citation behavior
-  // from published GEO research (Aggarwal et al. 2023, Rawal et al. 2024).
-  // These weights SHOULD be updated as CiteRoute accumulates real citation outcome data.
-  let calculatedScore = 50;
+  const domainHash = hashDomain(cleanDomain);
 
-  if (liveMeta.isLiveScanned) {
-    // Title/description presence: signals crawlability and intent clarity to LLMs.
-    // Basis: pages without title/meta are rarely cited in Perplexity source cards.
-    if (liveMeta.extractedTitle) calculatedScore += 8;
-    if (liveMeta.extractedDescription) calculatedScore += 8;
-
-    // JSON-LD schemas: strongest individual signal in GEO research (+8 per schema, max +20).
-    // Basis: structured data is the primary mechanism LLMs use to extract entity facts.
-    if (liveMeta.schemaJsonLdCount > 0) calculatedScore += Math.min(20, liveMeta.schemaJsonLdCount * 8);
-
-    // Single H1: signals clear topical focus, a strong RAG extraction marker.
-    if (liveMeta.h1Count === 1) calculatedScore += 7;
-
-    // 3+ H2s: semantic sectioning improves passage retrieval precision.
-    if (liveMeta.h2Count >= 3) calculatedScore += 8;
-
-    // Tables: empirical data tables increase citation probability ~2.8x (Aggarwal 2023).
-    if (liveMeta.tableCount > 0) calculatedScore += 10;
-
-    // Content depth: >500 words indicates sufficient informational density.
-    if (liveMeta.wordCount > 500) calculatedScore += 5;
-    // >1500 words: long-form content correlates with higher LLM confidence scores.
-    if (liveMeta.wordCount > 1500) calculatedScore += 4;
-
-    // Organization schema: entity grounding signal - confirms legitimate business identity.
-    if (liveMeta.detectedSchemas.includes('Organization')) calculatedScore += 5;
-    // Product schema: enables direct product discovery by AI buyer agents.
-    if (liveMeta.detectedSchemas.includes('Product')) calculatedScore += 4;
-    // FAQPage: LLMs preferentially cite FAQ-structured content for Q&A queries.
-    if (liveMeta.detectedSchemas.includes('FAQPage')) calculatedScore += 6;
-  } else {
-    // Fallback: deterministic hash-seeded estimate. Clearly not a live scan score.
-    const hash = hashDomain(cleanDomain);
-    calculatedScore = 55 + (hash % 36);
+  if (!liveMeta.isLiveScanned) {
+    // Fallback: deterministic hash-seeded estimate.
+    const calculatedScore = 55 + (domainHash % 36);
+    const overallGeoScore = Math.min(96, Math.max(34, calculatedScore));
+    return {
+      overallGeoScore,
+      zeroClickResilience: Math.min(94, Math.max(30, overallGeoScore + ((domainHash % 15) - 7))),
+      informationGainScore: Math.min(98, Math.max(35, overallGeoScore + ((domainHash % 19) - 9))),
+      entityDisambiguationScore: Math.min(95, Math.max(40, overallGeoScore + ((domainHash % 13) - 6))),
+      vectorReadinessScore: Math.min(97, Math.max(28, overallGeoScore + ((domainHash % 17) - 8))),
+    };
   }
 
-  const overallGeoScore = Math.min(96, Math.max(32, calculatedScore));
-  const zeroClickResilience = Math.min(94, Math.max(30, overallGeoScore + (liveMeta.tableCount > 0 ? 8 : -4)));
-  const informationGainScore = Math.min(98, Math.max(35, overallGeoScore + (liveMeta.wordCount > 800 ? 7 : -5)));
-  const entityDisambiguationScore = Math.min(95, Math.max(40, overallGeoScore + (liveMeta.schemaJsonLdCount > 0 ? 10 : -8)));
-  const vectorReadinessScore = Math.min(97, Math.max(28, overallGeoScore + (liveMeta.h2Count >= 4 ? 6 : -6)));
+  // Baseline for an active crawl with minimal content
+  let calculatedScore = 42;
+
+  // 1. Title Quality & Intent Clarity (up to +9)
+  if (liveMeta.extractedTitle) {
+    calculatedScore += 3; // Basic presence
+    const titleLen = liveMeta.extractedTitle.trim().length;
+    if (titleLen >= 25 && titleLen <= 70) {
+      calculatedScore += 4; // Optimal SEO title length
+    } else if (titleLen > 10) {
+      calculatedScore += 2;
+    }
+    if (/[-|•:]/.test(liveMeta.extractedTitle)) {
+      calculatedScore += 2; // Entity / brand brand separation
+    }
+  }
+
+  // 2. Meta Description Quality & Snippet Density (up to +9)
+  if (liveMeta.extractedDescription) {
+    calculatedScore += 3; // Basic presence
+    const descLen = liveMeta.extractedDescription.trim().length;
+    if (descLen >= 70 && descLen <= 170) {
+      calculatedScore += 4; // Optimal snippet length for search models
+    } else if (descLen > 20) {
+      calculatedScore += 2;
+    }
+    if (descLen > 100) {
+      calculatedScore += 2; // Information richness
+    }
+  }
+
+  // 3. Heading Hierarchy & Topical Focus (up to +11)
+  if (liveMeta.h1Count === 1) {
+    calculatedScore += 5; // Singular topical focus is ideal for RAG extractors
+  } else if (liveMeta.h1Count > 1) {
+    calculatedScore += 3; // Multiple H1s dilute topic clarity
+  }
+  if (liveMeta.h2Count >= 6) {
+    calculatedScore += 6; // Deep semantic sectioning
+  } else if (liveMeta.h2Count >= 3) {
+    calculatedScore += 4; // Moderate sectioning
+  } else if (liveMeta.h2Count >= 1) {
+    calculatedScore += 2;
+  }
+
+  // 4. Content Informational Depth & Word Count (up to +12)
+  if (liveMeta.wordCount > 2000) {
+    calculatedScore += 12; // High-authority deep documentation or guide
+  } else if (liveMeta.wordCount > 1000) {
+    calculatedScore += 9;
+  } else if (liveMeta.wordCount > 500) {
+    calculatedScore += 6;
+  } else if (liveMeta.wordCount > 200) {
+    calculatedScore += 3;
+  } else if (liveMeta.wordCount > 50) {
+    calculatedScore += 1;
+  }
+
+  // 5. Structured Data & Entity Grounding (up to +15)
+  let schemaBonus = 0;
+  if (liveMeta.schemaJsonLdCount >= 4) {
+    schemaBonus += 8;
+  } else if (liveMeta.schemaJsonLdCount >= 2) {
+    schemaBonus += 6;
+  } else if (liveMeta.schemaJsonLdCount >= 1) {
+    schemaBonus += 4;
+  }
+
+  const detected = liveMeta.detectedSchemas || [];
+  if (detected.includes('Organization')) schemaBonus += 3;
+  if (detected.includes('Product') || detected.includes('SoftwareApplication')) schemaBonus += 3;
+  if (detected.includes('FAQPage') || detected.includes('HowTo')) schemaBonus += 3;
+  if (detected.includes('Dataset') || detected.includes('Article')) schemaBonus += 2;
+  calculatedScore += Math.min(15, schemaBonus);
+
+  // 6. Empirical Data Density / Tables (up to +7)
+  if (liveMeta.tableCount >= 2) {
+    calculatedScore += 7;
+  } else if (liveMeta.tableCount === 1) {
+    calculatedScore += 4;
+  }
+
+  // 7. Bot Accessibility
+  if (liveMeta.hasRobotsIndexingAllowed) {
+    calculatedScore += 3;
+  }
+
+  // 8. Deterministic Micro-Entropy (Tie-breaker within -3 to +3 points)
+  // Ensures natural variance and prevents uniform artificial integer clustering
+  const microEntropy = (domainHash % 7) - 3;
+  calculatedScore += microEntropy;
+
+  const overallGeoScore = Math.min(97, Math.max(34, calculatedScore));
+  const zeroClickResilience = Math.min(
+    96,
+    Math.max(
+      30,
+      overallGeoScore +
+        (liveMeta.tableCount > 0 ? 5 : -3) +
+        (detected.includes('FAQPage') ? 4 : -1)
+    )
+  );
+  const informationGainScore = Math.min(
+    98,
+    Math.max(
+      35,
+      overallGeoScore +
+        (liveMeta.wordCount > 1000 ? 5 : -4) +
+        ((domainHash % 5) - 2)
+    )
+  );
+  const entityDisambiguationScore = Math.min(
+    96,
+    Math.max(
+      38,
+      overallGeoScore +
+        (liveMeta.schemaJsonLdCount > 0 ? 6 : -6) +
+        (detected.includes('Organization') ? 4 : -2)
+    )
+  );
+  const vectorReadinessScore = Math.min(
+    97,
+    Math.max(
+      28,
+      overallGeoScore +
+        (liveMeta.h2Count >= 4 ? 5 : -5) +
+        (((domainHash >> 3) % 5) - 2)
+    )
+  );
 
   return {
     overallGeoScore,

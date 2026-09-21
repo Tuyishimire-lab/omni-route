@@ -144,14 +144,15 @@ export default function TrafficTelemetry({ initialEvents }: TrafficTelemetryProp
           <button
             onClick={fetchEvents}
             title="Refresh now"
-            className="p-1.5 rounded-lg text-[#878787] hover:text-[#05AD98] hover:bg-[rgba(5,173,152,0.08)] transition-all"
+            aria-label="Refresh telemetry events"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#878787] hover:text-[#05AD98] hover:bg-[rgba(5,173,152,0.08)] transition-all active:scale-95"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
           {/* Pause / Resume */}
           <button
             onClick={() => setIsLive((prev) => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all active:scale-95 ${
               isLive
                 ? 'bg-[rgba(5,173,152,0.10)] text-[#05AD98] border-[rgba(5,173,152,0.25)]'
                 : 'bg-[#1A2020] text-[#878787] border-[rgba(187,191,191,0.12)]'

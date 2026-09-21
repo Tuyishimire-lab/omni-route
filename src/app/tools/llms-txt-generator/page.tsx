@@ -390,10 +390,10 @@ Allow: /
       {/* Tabs */}
       <div className="space-y-6">
         <div className="flex items-center justify-center">
-          <div className="inline-flex rounded-xl bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] p-1">
+          <div className="inline-flex rounded-xl bg-[#0A0E0E] border border-[rgba(187,191,191,0.12)] p-1 max-w-full overflow-x-auto">
             <button
               onClick={() => setActiveTab('robots')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all active:scale-[0.98] ${
                 activeTab === 'robots'
                   ? 'bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white shadow-md'
                   : 'text-[#878787] hover:text-white'
@@ -404,7 +404,7 @@ Allow: /
             </button>
             <button
               onClick={() => setActiveTab('llms')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all active:scale-[0.98] ${
                 activeTab === 'llms'
                   ? 'bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white shadow-md'
                   : 'text-[#878787] hover:text-white'
@@ -468,19 +468,19 @@ Allow: /
             <div className="relative bg-[#050707] border border-[rgba(187,191,191,0.15)] rounded-xl overflow-hidden">
               <div className="flex items-center justify-between px-4 py-2.5 bg-[#0A0E0E] border-b border-[rgba(187,191,191,0.10)] text-xs text-[#878787] font-mono">
                 <span>robots.txt</span>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => copyToClipboard(getRobotsSnippet(), 'robots')}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1A2020] text-[#BBBFBF] hover:text-white transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1A2020] text-[#BBBFBF] hover:text-white transition-colors active:scale-95 text-xs"
                   >
-                    {copiedRobots ? <CheckCircle2 className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
+                    {copiedRobots ? <CheckCircle2 className="w-3.5 h-3.5 text-[#05AD98]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedRobots ? 'Copied!' : 'Copy'}</span>
                   </button>
                   <button
                     onClick={() => downloadFile('robots.txt', getRobotsSnippet())}
-                    className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1A2020] text-[#BBBFBF] hover:text-white transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1A2020] text-[#BBBFBF] hover:text-white transition-colors active:scale-95 text-xs"
                   >
-                    <Download className="w-3 h-3" />
+                    <Download className="w-3.5 h-3.5" />
                     <span>Download</span>
                   </button>
                 </div>
@@ -557,24 +557,24 @@ Allow: /
 
             {/* Preview Column */}
             <div className="lg:col-span-7 glass-panel rounded-2xl p-6 border border-[rgba(187,191,191,0.12)] space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
                   <h2 className="text-base font-bold text-white">Generated /llms.txt</h2>
                   <p className="text-xs text-[#878787]">Host this file at the root of your domain (<code className="text-[#05AD98]">https://yourdomain.com/llms.txt</code>).</p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => copyToClipboard(getLlmsTxtSnippet(), 'llms')}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#1A2020] text-xs text-[#BBBFBF] hover:text-white transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1A2020] text-xs text-[#BBBFBF] hover:text-white transition-colors active:scale-95"
                   >
-                    {copiedLlms ? <CheckCircle2 className="w-3 h-3 text-[#05AD98]" /> : <Copy className="w-3 h-3" />}
+                    {copiedLlms ? <CheckCircle2 className="w-3.5 h-3.5 text-[#05AD98]" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedLlms ? 'Copied!' : 'Copy'}</span>
                   </button>
                   <button
                     onClick={() => downloadFile('llms.txt', getLlmsTxtSnippet())}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs text-white font-semibold transition-all shadow-md shadow-[rgba(5,173,152,0.2)]"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs text-white font-semibold transition-all shadow-md shadow-[rgba(5,173,152,0.2)] active:scale-95"
                   >
-                    <Download className="w-3 h-3" />
+                    <Download className="w-3.5 h-3.5" />
                     <span>Download</span>
                   </button>
                 </div>

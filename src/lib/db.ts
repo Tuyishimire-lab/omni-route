@@ -49,8 +49,9 @@ export async function saveScanToDB(
 
   // Upsert domain - update latest scores if it already exists
   const existing = await prisma.domain.findUnique({ where: { domain: report.domain } });
-  const prevScore = existing?.latestGeoScore ?? report.overallGeoScore;
-  const delta = report.overallGeoScore - prevScore;
+  const isFirstRealScan = !existing || existing.scanCount === 0 || existing.latestGeoScore === 0;
+  const prevScore = isFirstRealScan ? report.overallGeoScore : existing.latestGeoScore;
+  const delta = isFirstRealScan ? 0 : report.overallGeoScore - prevScore;
   const trend = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat';
 
   const domain = await prisma.domain.upsert({

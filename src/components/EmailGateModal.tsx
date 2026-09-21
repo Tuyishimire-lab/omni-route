@@ -175,7 +175,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
         </button>
 
         {/* Header */}
-        <div className="px-8 pt-8 pb-4 text-center border-b border-[rgba(187,191,191,0.08)]">
+        <div className="px-4 sm:px-8 pt-8 pb-4 text-center border-b border-[rgba(187,191,191,0.08)]">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4"
             style={{ backgroundColor: 'rgba(5,173,152,0.1)', border: '1px solid rgba(5,173,152,0.2)' }}
           >
@@ -201,7 +201,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
         </div>
 
         {/* Body */}
-        <div className="px-8 py-6">
+        <div className="px-4 sm:px-8 py-6">
           {step === 'email' ? (
             <form onSubmit={handleSendCode}>
               <div className="flex items-center gap-3 px-4 py-3.5 bg-[#0A0E0E] rounded-xl border border-[rgba(187,191,191,0.10)] focus-within:border-[rgba(5,173,152,0.4)] transition-colors">
@@ -225,7 +225,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
               <button
                 type="submit"
                 disabled={loading || !email.trim()}
-                className="mt-5 w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-5 w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -240,7 +240,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
           ) : (
             <div>
               {/* 6-digit code inputs */}
-              <div className="flex items-center justify-center gap-2.5">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-2.5">
                 {code.map((digit, i) => (
                   <input
                     key={i}
@@ -252,7 +252,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
                     onChange={(e) => handleCodeChange(i, e.target.value)}
                     onKeyDown={(e) => handleCodeKeyDown(i, e)}
                     onPaste={i === 0 ? handleCodePaste : undefined}
-                    className="w-12 h-14 text-center text-xl font-bold text-white bg-[#0A0E0E] rounded-xl border border-[rgba(187,191,191,0.12)] focus:border-[#05AD98] focus:ring-1 focus:ring-[rgba(5,173,152,0.3)] focus:outline-none transition-all"
+                    className="w-9 sm:w-12 h-12 sm:h-14 text-center text-lg sm:text-xl font-bold text-white bg-[#0A0E0E] rounded-xl border border-[rgba(187,191,191,0.12)] focus:border-[#05AD98] focus:ring-1 focus:ring-[rgba(5,173,152,0.3)] focus:outline-none transition-all"
                     autoComplete="one-time-code"
                   />
                 ))}

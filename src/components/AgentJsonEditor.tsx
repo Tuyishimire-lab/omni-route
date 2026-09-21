@@ -274,10 +274,10 @@ export default function AgentJsonEditor() {
       </div>
 
       {/* Main Tabs Navigation */}
-      <div className="flex border-b border-[rgba(187,191,191,0.10)]">
+      <div className="flex border-b border-[rgba(187,191,191,0.10)] overflow-x-auto whitespace-nowrap scrollbar-none">
         <button
           onClick={() => setActiveTab('visual')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition-all ${
+          className={`shrink-0 px-5 py-2.5 text-xs font-bold border-b-2 transition-all active:scale-[0.98] ${
             activeTab === 'visual'
               ? 'border-[#05AD98] text-[#05AD98] bg-[rgba(5,173,152,0.05)]'
               : 'border-transparent text-[#878787] hover:text-white'
@@ -287,7 +287,7 @@ export default function AgentJsonEditor() {
         </button>
         <button
           onClick={() => setActiveTab('json')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition-all ${
+          className={`shrink-0 px-5 py-2.5 text-xs font-bold border-b-2 transition-all active:scale-[0.98] ${
             activeTab === 'json'
               ? 'border-[#05AD98] text-[#05AD98] bg-[rgba(5,173,152,0.05)]'
               : 'border-transparent text-[#878787] hover:text-white'
@@ -297,7 +297,7 @@ export default function AgentJsonEditor() {
         </button>
         <button
           onClick={() => setActiveTab('deploy')}
-          className={`px-5 py-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+          className={`shrink-0 px-5 py-2.5 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 active:scale-[0.98] ${
             activeTab === 'deploy'
               ? 'border-[#05AD98] text-[#05AD98] bg-[rgba(5,173,152,0.05)]'
               : 'border-transparent text-[#878787] hover:text-white'

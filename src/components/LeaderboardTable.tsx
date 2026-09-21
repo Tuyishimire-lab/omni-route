@@ -159,7 +159,7 @@ export default function LeaderboardTable({
       {/* Table */}
       <div className="glass-panel rounded-2xl border border-[rgba(187,191,191,0.10)] overflow-hidden">
         {/* Table Head */}
-        <div className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
+        <div className="grid grid-cols-[38px_1fr_64px_54px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-3.5 sm:px-5 py-3 border-b border-[rgba(187,191,191,0.10)] bg-[#111514]/60 text-[10px] text-[#878787] uppercase tracking-wider font-semibold">
           <span className="text-center">#</span>
           <span>Domain</span>
           <span className="text-center">GEO Score</span>
@@ -190,7 +190,7 @@ export default function LeaderboardTable({
         {!isLoading && filtered.map((entry, idx) => (
           <div
             key={entry.domain}
-            className="grid grid-cols-[48px_1fr_80px_120px_80px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
+            className="grid grid-cols-[38px_1fr_64px_54px] sm:grid-cols-[56px_1fr_96px_130px_80px_120px_80px_80px] gap-x-2 px-3.5 sm:px-5 py-3.5 border-b border-[rgba(187,191,191,0.10)]/60 hover:bg-[#111514]/30 transition-colors items-center group"
           >
             {/* Rank */}
             <div className="text-center">

@@ -79,6 +79,34 @@ describe('scoreCalculator', () => {
       expect(scores.overallGeoScore).toBeGreaterThanOrEqual(32);
       expect(scores.overallGeoScore).toBeLessThan(70);
     });
+
+    it('differentiates scores across different domain profiles and metadata richness', () => {
+      const standardMeta: LiveExtractionMetadata = {
+        isLiveScanned: true,
+        schemaJsonLdCount: 0,
+        h1Count: 1,
+        h2Count: 4,
+        tableCount: 0,
+        wordCount: 1200,
+        hasRobotsIndexingAllowed: true,
+        detectedSchemas: [],
+        extractedTitle: 'Leading Cloud Platform | Reliable Infrastructure',
+        extractedDescription: 'Comprehensive developer infrastructure and cloud hosting solutions for scaling fast-growing web applications.',
+      };
+
+      const score1 = computeLiveGeoSubscores(standardMeta, 'domain-one.com');
+      const score2 = computeLiveGeoSubscores(standardMeta, 'domain-two.com');
+      const scoreWithSchemas = computeLiveGeoSubscores(
+        { ...standardMeta, schemaJsonLdCount: 3, detectedSchemas: ['Organization', 'Product'] },
+        'domain-one.com'
+      );
+
+      expect(scoreWithSchemas.overallGeoScore).toBeGreaterThan(score1.overallGeoScore);
+      expect(score1.overallGeoScore).toBeGreaterThanOrEqual(70);
+      expect(score1.overallGeoScore).toBeLessThanOrEqual(95);
+      expect(score2.overallGeoScore).toBeGreaterThanOrEqual(70);
+      expect(score2.overallGeoScore).toBeLessThanOrEqual(95);
+    });
   });
 
   describe('buildEngineBreakdown', () => {
