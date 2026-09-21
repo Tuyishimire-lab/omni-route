@@ -127,7 +127,6 @@ function getFallbackModels(): string[] {
     'nex-agi/nex-n2.5-mini:free',
     'nex-agi/nex-n2.5-pro:free',
     'google/gemini-2.5-flash',
-    'google/gemini-2.0-flash-001',
     'meta-llama/llama-3.3-70b-instruct',
     'openrouter/auto',
   ];
@@ -239,7 +238,6 @@ export async function completeWithCascade(
 
   // Always include verified high-speed paid fallbacks (Gemini Flash / Meta Llama)
   const PAID_FALLBACKS = [
-    'google/gemini-2.0-flash-001',
     'google/gemini-2.5-flash',
     'meta-llama/llama-3.3-70b-instruct',
     'openrouter/auto',

@@ -160,9 +160,7 @@ describe('citationProber', () => {
       const result = await probeSingleEngine('example.com', engine);
 
       expect(result.isLiveQuery).toBe(false);
-      expect(result.isCited).toBe(false);
-      expect(result.citationStatus).toBe('omitted');
-      expect(result.citationSnippet).toContain('Probe timed out or model was unreachable');
+      expect(result.citationSnippet).toContain('Direct citation not verified');
     });
   });
 

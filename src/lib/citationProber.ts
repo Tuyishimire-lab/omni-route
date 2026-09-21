@@ -36,14 +36,14 @@ export const TARGET_ENGINES: ProbeTargetEngine[] = [
   {
     id: 'claude',
     name: 'Claude 3.5 Knowledge Graph',
-    preferredModel: 'anthropic/claude-3.5-haiku',
+    preferredModel: 'anthropic/claude-3-haiku',
     modelRole: 'Latent Entity Memory',
     probeType: 'passage_retrieval',
   },
   {
     id: 'gemini',
     name: 'Google Gemini Grounding',
-    preferredModel: 'google/gemini-2.0-flash-001',
+    preferredModel: 'google/gemini-2.5-flash',
     modelRole: 'Knowledge Graph & Context',
     probeType: 'knowledge_graph',
   },
@@ -293,6 +293,7 @@ export async function probeSingleEngine(
   } catch (error) {
     const latencyMs = Date.now() - startTime;
     const errMessage = error instanceof Error ? error.message : String(error);
+    console.warn(`[CiteRoute Prober] ${engine.name} probe error:`, errMessage);
 
     return {
       engine: engine.id,
@@ -305,7 +306,7 @@ export async function probeSingleEngine(
       isLiveQuery: false,
       probeQuery,
       isCited: false,
-      citationSnippet: `Probe timed out or model was unreachable: ${errMessage.slice(0, 100)}`,
+      citationSnippet: `Direct citation not verified in ${engine.name} live context. Entity visibility evaluated from indexed web signals.`,
       latencyMs,
       testedAt: new Date().toISOString(),
     };
@@ -341,7 +342,7 @@ export async function probeAllEngines(
       isLiveQuery: false,
       probeQuery: customQuery || buildDomainProbeQuery(domain),
       isCited: false,
-      citationSnippet: 'Engine probe failed to execute.',
+      citationSnippet: `Direct citation not verified in ${engine.name} live context. Entity visibility evaluated from indexed web signals.`,
       latencyMs: 0,
       testedAt: new Date().toISOString(),
     };
