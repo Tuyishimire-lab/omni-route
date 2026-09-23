@@ -43,7 +43,7 @@ export default function BadgePage({ params }: { params: Promise<{ domain: string
             CiteRoute GEO Authority Badge
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            GEO Badge for <span className="text-gradient font-mono">{domain}</span>
+            GEO Badge for <span className="text-[#05AD98] font-mono">{domain}</span>
           </h1>
           <p className="text-sm" style={{ color: '#878787' }}>
             Embed this verified GEO Authority badge on your website, README, or marketing materials.

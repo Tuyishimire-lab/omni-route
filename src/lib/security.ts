@@ -144,10 +144,15 @@ export class MemoryCache<T> {
     return this.get(key) !== null;
   }
 
+  delete(key: string): boolean {
+    return this.store.delete(key);
+  }
+
   clear(): void {
     this.store.clear();
   }
 }
 
-// Export singleton for application-wide scan result caching
-export const scanReportCache = new MemoryCache<import('./types').GeoAuditReport>(150, 1000 * 60 * 20); // 20 mins cache
+// Export singleton for application-wide scan result caching (24-hour TTL)
+export const scanReportCache = new MemoryCache<import('./types').GeoAuditReport>(150, 1000 * 60 * 60 * 24);
+

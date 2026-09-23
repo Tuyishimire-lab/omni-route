@@ -191,7 +191,7 @@ export default function UpgradeModal({
           <button
             onClick={handleInstantUpgrade}
             disabled={isUpgrading}
-            className="w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white hover:opacity-95 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all cursor-pointer active:scale-[0.98]"
+            className="w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-3 sm:py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all cursor-pointer active:scale-[0.98]"
           >
             {isUpgrading ? (
               <>

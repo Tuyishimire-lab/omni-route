@@ -54,7 +54,7 @@ function AuditContent() {
     return () => clearTimeout(timer);
   }, [rateLimitRetryAfter]);
 
-  const fetchScan = async (target: string) => {
+  const fetchScan = async (target: string, bypassCache = false) => {
     // Don't attempt a scan if the monthly quota is known to be exhausted
     if (quotaExhausted) return;
     setIsScanning(true);
@@ -65,7 +65,7 @@ function AuditContent() {
       const res = await fetch('/api/v1/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: target })
+        body: JSON.stringify({ url: target, bypassCache })
       });
       const data = await res.json();
       if (data.success && data.data) {
@@ -173,7 +173,7 @@ function AuditContent() {
           <button
             type="submit"
             disabled={isScanning || !!quotaExhausted}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isScanning ? (
               <>
@@ -285,6 +285,7 @@ function AuditContent() {
           report={activeReport}
           isVerified={Boolean(isLoggedIn || verifiedEmail)}
           onRequireEmail={() => setEmailGateOpen(true)}
+          onRescan={(bypass) => fetchScan(activeReport.domain, Boolean(bypass))}
         />
       )}
 

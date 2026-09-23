@@ -321,7 +321,7 @@ export default function DirectoryClient() {
 
       {/* Bottom CTA */}
       {!loading && (
-        <div className="glass-panel rounded-2xl p-8 border border-[rgba(5,173,152,0.25)] text-center space-y-4 bg-gradient-to-r from-[rgba(5,173,152,0.06)] to-transparent">
+        <div className="glass-panel rounded-2xl p-8 border border-[rgba(5,173,152,0.25)] text-center space-y-4 bg-[#111514]">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[rgba(5,173,152,0.15)] text-[#05AD98] text-[11px] font-semibold">
             <Sparkles className="w-3 h-3" />
             Free GEO Audit
@@ -335,7 +335,7 @@ export default function DirectoryClient() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-lg shadow-[rgba(5,173,152,0.25)]"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors shadow-lg shadow-[rgba(5,173,152,0.25)] cursor-pointer"
           >
             Audit Your Domain Free
             <ArrowRight className="w-4 h-4" />

@@ -22,7 +22,7 @@ export default function ApiDocsPage() {
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          CiteRoute <span className="gradient-text">REST API</span>
+          CiteRoute <span className="text-[#05AD98]">REST API</span>
         </h1>
 
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed max-w-3xl">
@@ -33,7 +33,7 @@ export default function ApiDocsPage() {
         <div className="flex flex-wrap items-center gap-3 pt-2">
           <Link
             href="/api-keys"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-xs font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-xs font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-colors"
           >
             <Key className="w-4 h-4" />
             <span>Get Your API Key</span>
@@ -279,7 +279,7 @@ export default function ApiDocsPage() {
         <div className="pt-2">
           <Link
             href="/api-keys"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white shadow-lg shadow-[rgba(5,173,152,0.25)] hover:opacity-95 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-lg shadow-[rgba(5,173,152,0.25)] transition-colors"
           >
             <span>Manage API Keys</span>
             <ArrowRight className="w-4 h-4" />

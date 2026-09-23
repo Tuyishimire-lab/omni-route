@@ -26,11 +26,9 @@ export default async function Image({
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#050707',
+          backgroundColor: '#0A0E0E',
           padding: '60px 70px',
           fontFamily: 'sans-serif',
-          backgroundImage:
-            'radial-gradient(circle at 80% 20%, rgba(5, 173, 152, 0.18) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(3, 138, 121, 0.12) 0%, transparent 50%)',
         }}
       >
         {/* Top Header */}

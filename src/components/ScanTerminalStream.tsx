@@ -449,7 +449,7 @@ export default function ScanTerminalStream({
           <Cpu className="w-3.5 h-3.5 text-[#05AD98] shrink-0" />
           <div className="w-full sm:w-56 bg-[#111616] h-1.5 rounded-full overflow-hidden border border-slate-850">
             <div
-              className="bg-gradient-to-r from-[#05AD98] via-teal-400 to-emerald-400 h-full rounded-full transition-all duration-300"
+              className="bg-[#05AD98] h-full rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             />
           </div>

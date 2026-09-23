@@ -32,7 +32,7 @@ export default function DocsPage() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          agent.json <span className="gradient-text">Specification</span>
+          agent.json <span className="text-[#05AD98]">Specification</span>
         </h1>
 
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed max-w-3xl">
@@ -45,7 +45,7 @@ export default function DocsPage() {
         <div className="flex flex-wrap gap-3 pt-1">
           <Link
             href="/docs/install"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.20)] transition-colors"
           >
             Install Tracking Snippet
             <ArrowRight className="w-4 h-4" />
@@ -186,7 +186,7 @@ export default function DocsPage() {
       <section className="text-center space-y-4 py-4">
         <Link
           href="/manifest"
-          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all"
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold shadow-lg shadow-[rgba(5,173,152,0.25)] transition-colors"
         >
           Open agent.json Studio
           <ArrowRight className="w-4 h-4" />

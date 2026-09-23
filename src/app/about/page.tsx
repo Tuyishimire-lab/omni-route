@@ -20,7 +20,7 @@ export default function AboutPage() {
 
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
           The Future of Web Discovery<br />
-          <span className="gradient-text">Is Not Search - It&apos;s AI</span>
+          <span className="text-[#05AD98]">Is Not Search - It&apos;s AI</span>
         </h1>
 
         <div className="max-w-3xl space-y-4 text-sm sm:text-base text-[#BBBFBF] leading-relaxed">

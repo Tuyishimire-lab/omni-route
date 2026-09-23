@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
               <div className="pt-2">
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-md shadow-[rgba(5,173,152,0.2)]"
+                  className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors shadow-md shadow-[rgba(5,173,152,0.2)] cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Return to Sign In
@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[rgba(5,173,152,0.2)]"
+                className="w-full py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-[rgba(5,173,152,0.2)] cursor-pointer"
               >
                 {isLoading ? 'Sending Reset Link...' : 'Send Reset Link'}
               </button>

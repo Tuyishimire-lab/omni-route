@@ -212,7 +212,7 @@ export async function sendAccountVerificationEmail({
               <div style="text-align:center;margin:32px 0;">
                 <a href="${verifyUrl}"
                    target="_blank"
-                   style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#05AD98,#038a79);color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;border-radius:10px;box-shadow:0 4px 14px rgba(5,173,152,0.3);letter-spacing:0.5px;">
+                   style="display:inline-block;padding:14px 32px;background:#05AD98;color:#FFFFFF;text-decoration:none;font-size:14px;font-weight:700;border-radius:10px;box-shadow:0 4px 14px rgba(5,173,152,0.3);letter-spacing:0.5px;">
                   Verify &amp; Activate Account
                 </a>
               </div>
@@ -357,7 +357,7 @@ export async function sendPasswordResetEmail({
               <!-- CTA Button -->
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin:28px 0;">
                 <tr>
-                  <td align="center" style="border-radius:10px;background:linear-gradient(135deg,#05AD98,#038a79);">
+                  <td align="center" style="border-radius:10px;background:#05AD98;">
                     <a href="${resetUrl}" target="_blank" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:700;color:#FFFFFF;text-decoration:none;letter-spacing:0.3px;">
                       Reset Password
                     </a>

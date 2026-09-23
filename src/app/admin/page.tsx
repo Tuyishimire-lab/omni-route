@@ -193,7 +193,7 @@ export default function AdminPage() {
         <p className="text-xs text-[#878787]">You need to be logged in with an admin account to access this page.</p>
         <Link
           href="/login"
-          className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-sm font-bold"
+          className="inline-flex items-center gap-1.5 px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors cursor-pointer"
         >
           <LogIn className="w-4 h-4" />
           Sign In
@@ -396,7 +396,7 @@ export default function AdminPage() {
 
               <button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-xs font-bold flex items-center justify-center gap-1.5"
+                className="px-4 py-2 rounded-lg bg-[#05AD98] hover:bg-[#038a79] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Create Key

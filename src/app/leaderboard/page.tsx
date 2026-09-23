@@ -66,7 +66,7 @@ export default async function LeaderboardPage() {
             Global GEO Authority Rankings
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            GEO <span className="text-gradient">Leaderboard</span>
+            GEO <span className="text-[#05AD98]">Leaderboard</span>
           </h1>
           <p className="text-sm text-[#878787] leading-relaxed">
             Live rankings of top global tech domains evaluated across generative search engines (Perplexity, ChatGPT Search, Claude, and Gemini Grounding).

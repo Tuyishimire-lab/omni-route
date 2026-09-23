@@ -286,7 +286,7 @@ Allow: /
           <button
             type="submit"
             disabled={isLoading || !domainInput.trim()}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.2)]"
+            className="px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.2)] cursor-pointer"
           >
             {isLoading ? (
               <>
@@ -395,7 +395,7 @@ Allow: /
               onClick={() => setActiveTab('robots')}
               className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all active:scale-[0.98] ${
                 activeTab === 'robots'
-                  ? 'bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white shadow-md'
+                  ? 'bg-[#05AD98] text-white shadow-md'
                   : 'text-[#878787] hover:text-white'
               }`}
             >
@@ -406,7 +406,7 @@ Allow: /
               onClick={() => setActiveTab('llms')}
               className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all active:scale-[0.98] ${
                 activeTab === 'llms'
-                  ? 'bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white shadow-md'
+                  ? 'bg-[#05AD98] text-white shadow-md'
                   : 'text-[#878787] hover:text-white'
               }`}
             >
@@ -572,7 +572,7 @@ Allow: /
                   </button>
                   <button
                     onClick={() => downloadFile('llms.txt', getLlmsTxtSnippet())}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs text-white font-semibold transition-all shadow-md shadow-[rgba(5,173,152,0.2)] active:scale-95"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#05AD98] hover:bg-[#038a79] text-xs text-white font-semibold transition-all shadow-md shadow-[rgba(5,173,152,0.2)] active:scale-95 cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download</span>
@@ -591,7 +591,7 @@ Allow: /
       </div>
 
       {/* Conversion Banner to CiteRoute GEO Scanner */}
-      <div className="glass-panel rounded-2xl p-8 border border-[rgba(5,173,152,0.25)] relative overflow-hidden bg-gradient-to-r from-[rgba(5,173,152,0.06)] to-transparent">
+      <div className="glass-panel rounded-2xl p-8 border border-[rgba(5,173,152,0.25)] relative overflow-hidden bg-[#111514]">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-2 text-center sm:text-left">
             <h3 className="text-xl font-extrabold text-white">
@@ -603,7 +603,7 @@ Allow: /
           </div>
           <Link
             href="/"
-            className="shrink-0 px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center gap-2"
+            className="shrink-0 px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center gap-2"
           >
             <span>Scan Your Domain Free</span>
             <ArrowRight className="w-4 h-4" />

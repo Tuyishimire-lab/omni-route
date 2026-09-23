@@ -6,7 +6,8 @@ import { GeoAuditReport } from './types';
 // gets a fresh Map. The latest ScanEvent.rawReport serves as a shared cache
 // instead, with a TTL enforced by comparing scannedAt.
 
-const SCAN_CACHE_TTL_MS = 1000 * 60 * 20; // 20 minutes
+// Database-backed 24-hour scan cache TTL
+export const SCAN_CACHE_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
 
 export async function getCachedScanReport(
   domain: string,
@@ -14,23 +15,57 @@ export async function getCachedScanReport(
 ): Promise<GeoAuditReport | null> {
   if (options.bypassCache) return null;
   try {
+    const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
     const event = await prisma.scanEvent.findFirst({
-      where: { domain, isLiveScan: true, rawReport: { not: null } },
+      where: { domain: cleanDomain, isLiveScan: true, rawReport: { not: null } },
       orderBy: { scannedAt: 'desc' },
       select: { rawReport: true, scannedAt: true },
     });
     if (!event) return null;
-    if (Date.now() - event.scannedAt.getTime() > SCAN_CACHE_TTL_MS) return null;
+
+    const cacheAgeMs = Date.now() - event.scannedAt.getTime();
+    if (cacheAgeMs > SCAN_CACHE_TTL_MS) return null;
+
     const report = JSON.parse(event.rawReport!) as GeoAuditReport;
-    // Engine breakdown is a live enrichment - never serve it from cache.
-    // Old cached blobs may have fabricated engine data; always clear it here.
-    report.engineBreakdown = [];
+    
+    // Attach cache metadata so the client knows the data freshness
+    report.isCached = true;
+    report.cachedAt = event.scannedAt.toISOString();
+    report.cacheAgeMs = cacheAgeMs;
+
+    // Retain verified live engine breakdowns if present in cache
+    if (Array.isArray(report.engineBreakdown) && report.engineBreakdown.some((e) => e.isLiveQuery)) {
+      report.engineBreakdown = report.engineBreakdown.map((e) => ({ ...e, isCached: true }));
+    } else {
+      report.engineBreakdown = [];
+    }
+
     return report;
   } catch (e) {
     console.warn('[scanCache] DB cache read failed, will re-crawl:', e);
     return null;
   }
 }
+
+/**
+ * Invalidates cached scan reports for a specific domain.
+ * Called when a site owner makes changes or requests a forced re-scan.
+ */
+export async function invalidateDomainCache(domain: string): Promise<boolean> {
+  const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  try {
+    const oldDate = new Date(Date.now() - SCAN_CACHE_TTL_MS - 1000);
+    await prisma.scanEvent.updateMany({
+      where: { domain: cleanDomain, scannedAt: { gt: oldDate } },
+      data: { scannedAt: oldDate },
+    });
+    return true;
+  } catch (err) {
+    console.warn('[scanCache] Cache invalidation error:', err);
+    return false;
+  }
+}
+
 
 // ─── Domain + Scan Persistence ────────────────────────────────────────────────
 
@@ -115,24 +150,21 @@ export async function getLeaderboard(category?: string) {
     const where = category && category !== 'All' ? { category } : {};
 
     const domains = await prisma.domain.findMany({
-      where: { ...where, scanCount: { gte: 1 } },
+      where,
       orderBy: { latestGeoScore: 'desc' },
-      take: 250,
+      take: 2000,
     });
 
     const dbDomainMap = new Map<string, LeaderboardEntry>();
 
     if (domains && domains.length > 0) {
-      // Fetch the latest scan per domain to determine live vs fallback scoring
-      const latestScans = await prisma.scanEvent.findMany({
-        where: { domain: { in: domains.map((d: { domain: string }) => d.domain) } },
-        orderBy: { scannedAt: 'desc' },
-        select: { domain: true, isLiveScan: true },
+      // Fetch distinct domains with verified live scans
+      const liveScanRows = await prisma.scanEvent.findMany({
+        where: { isLiveScan: true },
+        select: { domain: true },
+        distinct: ['domain'],
       });
-      const liveMap = new Map<string, boolean>();
-      for (const s of latestScans) {
-        if (!liveMap.has(s.domain)) liveMap.set(s.domain, s.isLiveScan);
-      }
+      const liveSet = new Set(liveScanRows.map((s: { domain: string }) => s.domain.toLowerCase()));
 
       for (const d of domains) {
         dbDomainMap.set(d.domain.toLowerCase(), {
@@ -145,7 +177,7 @@ export async function getLeaderboard(category?: string) {
           trend: (d.trend as 'up' | 'down' | 'flat') || 'flat',
           trendDelta: d.trendDelta || 0,
           scanCount: d.scanCount,
-          isLiveScanned: liveMap.get(d.domain) ?? false,
+          isLiveScanned: liveSet.has(d.domain.toLowerCase()),
           lastScanned: d.lastScanned ? new Date(d.lastScanned).toISOString() : new Date().toISOString(),
         });
       }

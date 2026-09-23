@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { probeAllEngines, probeSingleEngine, TARGET_ENGINES } from '../../../../lib/citationProber';
 import { checkRateLimit, getClientIp } from '../../../../lib/rateLimiter';
 import { validateAndSanitizeUrl } from '../../../../lib/security';
+import { getSession } from '../../../../lib/auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +25,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: { domain?: string; query?: string; engine?: string };
+  let body: { domain?: string; query?: string; engine?: string; bypassCache?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -45,6 +46,11 @@ export async function POST(req: NextRequest) {
   const cleanDomain = validation.domain;
   const customQuery = typeof query === 'string' && query.trim().length > 0 ? query.trim().slice(0, 300) : undefined;
 
+  // Resolve session: privileged users (pro, agency, admin) can force live re-probe
+  const session = await getSession().catch(() => null);
+  const isPrivileged = session?.role === 'admin' || Boolean(session?.tier && session.tier !== 'free');
+  const bypassCache = Boolean(isPrivileged && body.bypassCache);
+
   try {
     if (engine && typeof engine === 'string') {
       const targetEngine = TARGET_ENGINES.find((e) => e.id === engine.toLowerCase());
@@ -56,18 +62,20 @@ export async function POST(req: NextRequest) {
           query: customQuery,
           engines: [result],
           probedAt: new Date().toISOString(),
+          cached: Boolean(result.isCached),
         });
       }
     }
 
-    const results = await probeAllEngines(cleanDomain, customQuery);
+    const results = await probeAllEngines(cleanDomain, customQuery, { bypassCache });
 
     return NextResponse.json({
       success: true,
       domain: cleanDomain,
       query: customQuery,
       engines: results,
-      probedAt: new Date().toISOString(),
+      probedAt: results[0]?.testedAt || new Date().toISOString(),
+      cached: Boolean(results[0]?.isCached),
     });
   } catch (error) {
     console.error('[Engine Probe] Execution error:', error);

@@ -59,7 +59,7 @@ export default function TagVerifier() {
         <button
           onClick={verify}
           disabled={loading || !domain.trim()}
-          className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2 shrink-0 active:scale-[0.98]"
+          className="px-5 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-bold transition-all flex items-center justify-center gap-2 shrink-0 active:scale-[0.98] cursor-pointer"
         >
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
           {loading ? 'Checking…' : 'Verify Tag'}

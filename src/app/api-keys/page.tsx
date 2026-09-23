@@ -178,7 +178,7 @@ export default function ApiKeysPage() {
                 setErrorMsg(null);
                 setIsModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Generate New Key</span>
@@ -204,7 +204,7 @@ export default function ApiKeysPage() {
           <div className="pt-2">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white shadow-md"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-md transition-colors"
             >
               <span>Sign In</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ export default function ApiKeysPage() {
             </div>
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white shadow-lg shadow-[rgba(5,173,152,0.25)] hover:opacity-95 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-lg shadow-[rgba(5,173,152,0.25)] transition-colors"
             >
               <span>Upgrade to Pro ($79/mo)</span>
               <ArrowRight className="w-4 h-4" />
@@ -293,7 +293,7 @@ export default function ApiKeysPage() {
                 setErrorMsg(null);
                 setIsModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:opacity-95 text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] shrink-0"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] shrink-0 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create API Key</span>
@@ -487,7 +487,7 @@ print(res.json()["data"]["overallGeoScore"])`}
                     />
                     <button
                       onClick={() => copyToClipboard(createdSecret, 'modal-key')}
-                      className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-[#038a79] text-xs font-bold text-white hover:opacity-90 flex items-center gap-1 shrink-0"
+                      className="px-3 py-1.5 rounded-lg bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white flex items-center gap-1 shrink-0 transition-colors cursor-pointer"
                     >
                       {copiedKey === 'modal-key' ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                       <span>{copiedKey === 'modal-key' ? 'Copied' : 'Copy'}</span>
@@ -559,7 +559,7 @@ print(res.json()["data"]["overallGeoScore"])`}
                   <button
                     type="submit"
                     disabled={isGenerating}
-                    className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:opacity-95 text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white shadow-md shadow-[rgba(5,173,152,0.25)] flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     {isGenerating && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                     <span>{isGenerating ? 'Generating...' : 'Create Key'}</span>

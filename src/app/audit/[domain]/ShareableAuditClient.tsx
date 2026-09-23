@@ -117,7 +117,7 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
           {/* Copy Link */}
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-xs font-bold text-white transition-all shadow-md shadow-[rgba(5,173,152,0.25)]"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-xs font-bold text-white transition-colors shadow-md shadow-[rgba(5,173,152,0.25)] cursor-pointer"
           >
             {copied ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copied ? 'Copied Link!' : 'Copy Link'}</span>
@@ -151,8 +151,8 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
 
           {/* Pro Upgrade CTA */}
           <div className="glass-panel rounded-2xl border border-[rgba(5,173,152,0.30)] relative overflow-hidden">
-            {/* Gradient top border accent */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#05AD98] to-transparent" />
+            {/* Solid top border accent */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#05AD98]" />
 
             <div className="p-8 space-y-6">
               {/* Badge */}
@@ -212,7 +212,7 @@ export default function ShareableAuditClient({ initialDomain }: { initialDomain:
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                 <Link
                   href="/pricing"
-                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold transition-all shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center justify-center gap-2"
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors shadow-lg shadow-[rgba(5,173,152,0.25)] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Start Pro Trial</span>
                   <ArrowRight className="w-4 h-4" />

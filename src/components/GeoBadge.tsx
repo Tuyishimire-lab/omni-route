@@ -52,7 +52,7 @@ function CompactBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
 function CardBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
   const scoreColor = geoScore >= 80 ? '#34d399' : geoScore >= 60 ? '#38bdf8' : '#f59e0b';
   return (
-    <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', border: '1px solid #334155', borderRadius: 16, padding: '20px 24px', fontFamily: 'Inter, system-ui, sans-serif', width: 220, textAlign: 'center' }}>
+    <div style={{ background: '#111514', border: '1px solid #334155', borderRadius: 16, padding: '20px 24px', fontFamily: 'Inter, system-ui, sans-serif', width: 220, textAlign: 'center' }}>
       <div style={{ color: '#38bdf8', fontSize: 10, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 12 }}>
         CiteRoute GEO Certified
       </div>
@@ -80,7 +80,7 @@ function CardBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
 function BannerBadge({ domain, geoScore, citationRate }: GeoBadgeProps) {
   const scoreColor = geoScore >= 80 ? '#34d399' : geoScore >= 60 ? '#38bdf8' : '#f59e0b';
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'linear-gradient(90deg, #0f172a 0%, #1e293b 100%)', border: '1px solid #334155', borderRadius: 14, padding: '14px 20px', fontFamily: 'Inter, system-ui, sans-serif', minWidth: 380, gap: 16 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#111514', border: '1px solid #334155', borderRadius: 14, padding: '14px 20px', fontFamily: 'Inter, system-ui, sans-serif', minWidth: 380, gap: 16 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <ScoreDial score={geoScore} />
         <div>

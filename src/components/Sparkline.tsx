@@ -45,7 +45,7 @@ export default function Sparkline({
 
   const polyline = points.map((p) => `${p.x},${p.y}`).join(' ');
 
-  // Gradient fill area
+  // Solid fill area
   const areaPath = [
     `M ${points[0].x},${height - padding}`,
     `L ${points[0].x},${points[0].y}`,
@@ -53,9 +53,6 @@ export default function Sparkline({
     `L ${points[points.length - 1].x},${height - padding}`,
     'Z',
   ].join(' ');
-
-  // Stable ID derived from data - avoids impure Math.random() during render
-  const gradientId = `sparkline-grad-${scores.slice(0, 4).join('-')}-${scores.length}`;
 
   // Determine trend color
   const trend = scores[scores.length - 1] - scores[0];
@@ -69,15 +66,8 @@ export default function Sparkline({
       className="inline-block"
       style={{ overflow: 'visible' }}
     >
-      <defs>
-        <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={lineColor} stopOpacity="0.25" />
-          <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-
-      {/* Fill area */}
-      <path d={areaPath} fill={`url(#${gradientId})`} />
+      {/* Flat solid fill area */}
+      <path d={areaPath} fill={lineColor} fillOpacity="0.08" />
 
       {/* Line */}
       <polyline

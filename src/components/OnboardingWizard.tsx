@@ -98,7 +98,7 @@ export default function OnboardingWizard() {
         {/* Progress Bar */}
         <div className="h-1 bg-[#1A2020]">
           <div
-            className="h-full bg-gradient-to-r from-[#05AD98] via-indigo-500 to-violet-500 transition-all duration-500 ease-out"
+            className="h-full bg-[#05AD98] transition-all duration-500 ease-out"
             style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
           />
         </div>
@@ -123,7 +123,7 @@ export default function OnboardingWizard() {
           </div>
 
           {/* Icon */}
-          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${current.iconBg} border flex items-center justify-center`}>
+          <div className="w-14 h-14 rounded-2xl bg-[#111514] border border-[#222A28] flex items-center justify-center">
             <Icon className={`w-7 h-7 ${current.iconColor}`} />
           </div>
 
@@ -170,7 +170,7 @@ export default function OnboardingWizard() {
 
             <button
               onClick={next}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-sm font-bold shadow-md shadow-[rgba(5,173,152,0.20)] transition-all active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold shadow-md shadow-[rgba(5,173,152,0.20)] transition-all active:scale-95 cursor-pointer"
             >
               {isLast ? (
                 domain.trim() ? (

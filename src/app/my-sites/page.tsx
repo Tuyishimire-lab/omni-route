@@ -174,7 +174,7 @@ export default function MySitesPage() {
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <h1 className="text-3xl font-extrabold text-white tracking-tight">
-              My <span className="gradient-text">Sites</span>
+              My <span className="text-[#05AD98]">Sites</span>
             </h1>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[rgba(5,173,152,0.12)] border border-[rgba(5,173,152,0.3)] text-[#05AD98]">
               {userTier} Plan
@@ -230,7 +230,7 @@ export default function MySitesPage() {
           <button
             onClick={addSite}
             disabled={adding || !addDomain.trim()}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2 shrink-0"
+            className="px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] disabled:opacity-40 text-white text-sm font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
             {adding ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
             {adding ? 'Verifying…' : 'Add Site'}
@@ -256,7 +256,7 @@ export default function MySitesPage() {
           <p className="text-xs text-[#878787] max-w-sm mx-auto">
             Install the CiteRoute Tag on your site, verify it above, then add it here to see your AI traffic data.
           </p>
-          <Link href="/docs/install" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] text-white text-sm font-bold">
+          <Link href="/docs/install" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-sm font-bold transition-colors">
             Install Tag <ChevronRight className="w-4 h-4" />
           </Link>
         </div>

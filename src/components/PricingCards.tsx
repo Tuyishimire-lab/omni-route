@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Check, X, Zap, Shield, Crown, Users, Loader2, ArrowRight, ExternalLink, Globe } from 'lucide-react';
+import EnterpriseInquiryModal from './EnterpriseInquiryModal';
 
 interface UserSession {
   userId: string;
@@ -44,6 +45,7 @@ const PLANS: PlanDefinition[] = [
     description: 'Explore GEO scoring and generate your agent.json manifest.',
     features: [
       { text: '10 GEO scans per month', included: true },
+      { text: '1-on-1 Competitor Comparison (2 domains)', included: true },
       { text: '3 watchlist domains', included: true },
       { text: 'Community leaderboard access', included: true },
       { text: 'agent.json Studio', included: true },
@@ -65,6 +67,8 @@ const PLANS: PlanDefinition[] = [
     description: 'For founders and marketers who need real AI crawler & citation traffic data on their own site.',
     features: [
       { text: 'Unlimited GEO scans', included: true },
+      { text: '5-Way Competitor Benchmark + Live Re-scans', included: true },
+      { text: 'Full Technical Overtake Playbook', included: true },
       { text: '1 verified site (tracking tag)', included: true },
       { text: '20 watchlist domains', included: true },
       { text: 'Real AI bot & crawler analytics dashboard', included: true },
@@ -88,6 +92,8 @@ const PLANS: PlanDefinition[] = [
     description: 'For agencies and consultants managing GEO optimization across multiple client sites.',
     features: [
       { text: 'Unlimited GEO scans', included: true },
+      { text: '5-Way Competitor Benchmark + Live Re-scans', included: true },
+      { text: 'White-Label PDF Battlecards + Multi-Competitor Tracking', included: true },
       { text: '10 verified client sites', included: true },
       { text: 'Unlimited watchlist domains', included: true },
       { text: 'White-label GEO reports (PDF)', included: true },
@@ -106,16 +112,17 @@ const PLANS: PlanDefinition[] = [
     iconColor: 'text-[#B8A04A]',
     price: 'Custom',
     period: '',
-    description: 'For large organisations needing data subscriptions, custom integrations, and SLA guarantees.',
+    description: 'For large organisations needing custom volume, bespoke integrations, and SLA guarantees.',
     features: [
       { text: 'Unlimited verified sites', included: true },
-      { text: 'Raw AI crawler traffic data export', included: true },
-      { text: 'Competitive AI citation benchmarking', included: true },
+      { text: '5-Way Competitor Benchmark + Live Re-scans', included: true },
+      { text: 'White-Label PDF Battlecards + Multi-Competitor Tracking', included: true },
       { text: 'Dedicated API (unlimited req/day)', included: true },
-      { text: 'Private leaderboard data feed', included: true },
+      { text: 'Custom AI citation benchmarks & alerts', included: true },
       { text: 'Custom analytics dashboards', included: true },
-      { text: 'SLA + uptime guarantee', included: true },
+      { text: 'SLA + 99.9% uptime guarantee', included: true },
       { text: 'Dedicated account manager', included: true },
+      { text: 'Custom security review & SSO integration', included: true },
     ],
   },
 ];
@@ -131,6 +138,7 @@ export default function PricingCards() {
   const [authChecked, setAuthChecked] = useState(false);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isEnterpriseModalOpen, setIsEnterpriseModalOpen] = useState(false);
 
   useEffect(() => {
     const fromUrl = searchParams.get('domain');
@@ -266,7 +274,7 @@ export default function PricingCards() {
               }`}
             >
               {plan.badge && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#05AD98] to-[#038a79] text-[10px] font-bold text-white uppercase tracking-wider whitespace-nowrap">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#05AD98] text-[10px] font-bold text-white uppercase tracking-wider whitespace-nowrap shadow-sm">
                   {plan.badge}
                 </div>
               )}
@@ -325,17 +333,7 @@ export default function PricingCards() {
                 ) : plan.id === 'enterprise' ? (
                   <button
                     type="button"
-                    onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        const el = document.getElementById('enterprise-data');
-                        if (el) el.scrollIntoView({ behavior: 'smooth' });
-                        window.dispatchEvent(
-                          new CustomEvent('open-enterprise-inquiry', {
-                            detail: { productName: 'Full Index Access' },
-                          })
-                        );
-                      }
-                    }}
+                    onClick={() => setIsEnterpriseModalOpen(true)}
                     className="w-full text-center py-2.5 rounded-xl text-sm font-bold bg-[rgba(184,160,74,0.12)] text-[#B8A04A] border border-[rgba(184,160,74,0.25)] hover:bg-[rgba(184,160,74,0.22)] transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>Contact Sales</span>
@@ -361,7 +359,7 @@ export default function PricingCards() {
                       disabled={isLoading || loadingTier !== null}
                       className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
                         plan.highlight
-                          ? 'bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white shadow-lg shadow-[rgba(5,173,152,0.25)]'
+                          ? 'bg-[#05AD98] hover:bg-[#038a79] text-white shadow-lg shadow-[rgba(5,173,152,0.25)]'
                           : 'bg-[#1A2020] text-[#BBBFBF] border border-[rgba(187,191,191,0.15)] hover:text-white hover:border-[#05AD98]'
                       }`}
                     >
@@ -397,6 +395,11 @@ export default function PricingCards() {
           );
         })}
       </div>
+
+      <EnterpriseInquiryModal
+        isOpen={isEnterpriseModalOpen}
+        onClose={() => setIsEnterpriseModalOpen(false)}
+      />
     </div>
   );
 }

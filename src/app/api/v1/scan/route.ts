@@ -56,7 +56,7 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
 
   // Pro, Agency, Enterprise get unlimited scans
   if (tier !== 'free') {
-    return { allowed: true, tier };
+    return { allowed: true, tier, isVerifiedEmail: Boolean(emailForTracking) };
   }
 
   // Free / anonymous: 10 scans per 30-day window
@@ -73,7 +73,7 @@ async function verifyScanAllowance(ip: string, session: SessionPayload) {
     };
   }
 
-  return { allowed: true, tier };
+  return { allowed: true, tier, isVerifiedEmail: Boolean(emailForTracking) };
 }
 
 export async function POST(req: NextRequest) {
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     // Resolve session once - reused for quota check and bypassCache gating
     const session = validatedKey ? null : await getSession();
 
-    let quotaCheck: { allowed: boolean; tier?: string; error?: string; code?: string; upgradeTier?: string; email?: string; isAnonymousFirstScan?: boolean } | undefined;
+    let quotaCheck: { allowed: boolean; tier?: string; error?: string; code?: string; upgradeTier?: string; email?: string; isAnonymousFirstScan?: boolean; isVerifiedEmail?: boolean } | undefined;
     if (!validatedKey) {
       quotaCheck = await verifyScanAllowance(ip, session);
       if (!quotaCheck.allowed) {
@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
     );
 
     const response = NextResponse.json(
-      { success: true, data: report, cached: !bypassCache, isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
+      { success: true, data: report, cached: Boolean(report.isCached), isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
       { status: 200, headers: { 'X-RateLimit-Remaining': String(rateCheck.remaining) } }
     );
 
@@ -207,7 +207,6 @@ export async function GET(req: NextRequest) {
       req.nextUrl.searchParams.get('force') === 'true'
     );
 
-
     const report = await crawlAndAnalyzeUrl(targetUrl, { bypassCache });
 
     after(() =>
@@ -216,7 +215,7 @@ export async function GET(req: NextRequest) {
     );
 
     return NextResponse.json(
-      { success: true, data: report, cached: !bypassCache, isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
+      { success: true, data: report, cached: Boolean(report.isCached), isAnonymousFirstScan: quotaCheck?.isAnonymousFirstScan },
       { status: 200, headers: { 'X-RateLimit-Remaining': String(rateCheck.remaining) } }
     );
   } catch (error: unknown) {

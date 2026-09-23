@@ -182,7 +182,7 @@ export default function EngineSettingsPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${engine.color} flex items-center justify-center`}>
+                  <div className="w-8 h-8 rounded-xl bg-[#05AD98] flex items-center justify-center">
                     <Zap className="w-4 h-4 text-white" />
                   </div>
                   <div>
@@ -257,7 +257,7 @@ export default function EngineSettingsPage() {
           id="save-engine-keys"
           onClick={handleSave}
           disabled={!anyKeySet}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-lg shadow-[rgba(5,173,152,0.20)]"
+          className="px-6 py-3 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-lg shadow-[rgba(5,173,152,0.20)] cursor-pointer"
         >
           {saved ? 'Saved to browser' : 'Save Keys'}
         </button>

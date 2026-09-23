@@ -206,7 +206,7 @@ export default function EnterpriseInquiries() {
           <p className="text-xs text-[#878787] max-w-sm mx-auto">
             {searchQuery || statusFilter !== 'all'
               ? 'Try adjusting your filters or search term.'
-              : 'Incoming leads from the /pricing Data Subscriptions section will appear here automatically.'}
+              : 'Incoming leads from enterprise plan inquiries will appear here automatically.'}
           </p>
         </div>
       ) : (

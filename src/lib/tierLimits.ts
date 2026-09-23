@@ -20,6 +20,10 @@ export interface TierConfig {
   hasWhiteLabelReports: boolean;
   hasRawDataExport: boolean;
   hasWebhookAlerts: boolean;
+  maxBenchmarkDomains: number;
+  canLiveRescanBenchmark: boolean;
+  hasFullOvertakePlaybook: boolean;
+  canExportBenchmarkPdf: boolean;
 }
 
 export const TIER_CONFIG: Record<UserTier, TierConfig> = {
@@ -33,6 +37,10 @@ export const TIER_CONFIG: Record<UserTier, TierConfig> = {
     hasWhiteLabelReports: false,
     hasRawDataExport: false,
     hasWebhookAlerts: false,
+    maxBenchmarkDomains: 2,
+    canLiveRescanBenchmark: false,
+    hasFullOvertakePlaybook: false,
+    canExportBenchmarkPdf: false,
   },
   pro: {
     displayName: 'Pro',
@@ -44,6 +52,10 @@ export const TIER_CONFIG: Record<UserTier, TierConfig> = {
     hasWhiteLabelReports: false,
     hasRawDataExport: false,
     hasWebhookAlerts: false,
+    maxBenchmarkDomains: 5,
+    canLiveRescanBenchmark: true,
+    hasFullOvertakePlaybook: true,
+    canExportBenchmarkPdf: true,
   },
   agency: {
     displayName: 'Agency',
@@ -55,6 +67,10 @@ export const TIER_CONFIG: Record<UserTier, TierConfig> = {
     hasWhiteLabelReports: true,
     hasRawDataExport: false,
     hasWebhookAlerts: true,
+    maxBenchmarkDomains: 5,
+    canLiveRescanBenchmark: true,
+    hasFullOvertakePlaybook: true,
+    canExportBenchmarkPdf: true,
   },
   enterprise: {
     displayName: 'Enterprise',
@@ -66,6 +82,10 @@ export const TIER_CONFIG: Record<UserTier, TierConfig> = {
     hasWhiteLabelReports: true,
     hasRawDataExport: true,
     hasWebhookAlerts: true,
+    maxBenchmarkDomains: 5,
+    canLiveRescanBenchmark: true,
+    hasFullOvertakePlaybook: true,
+    canExportBenchmarkPdf: true,
   },
 };
 

@@ -128,7 +128,7 @@ export default function ApiSettingsModal({ isOpen, onClose }: ApiSettingsModalPr
 
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-xs font-bold shadow-md shadow-[rgba(5,173,152,0.25)] transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-xs font-bold shadow-md shadow-[rgba(5,173,152,0.25)] transition-colors cursor-pointer"
           >
             {isSaved ? (
               <>

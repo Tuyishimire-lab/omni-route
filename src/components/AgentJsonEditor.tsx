@@ -229,7 +229,7 @@ export default function AgentJsonEditor() {
               <button
                 onClick={generateWithAi}
                 disabled={aiGenerating}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-[#05AD98] to-emerald-600 text-white text-xs font-bold transition-all hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#05AD98] hover:bg-[#038a79] text-white text-xs font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0 cursor-pointer"
               >
                 {aiGenerating ? (
                   <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Analyzing site...</>

@@ -14,7 +14,8 @@ import {
   Cpu,
   BarChart3,
   Globe2,
-  CheckCircle2
+  CheckCircle2,
+  GitCompare,
 } from 'lucide-react';
 import MetricCard from '../components/MetricCard';
 import TrafficTelemetry from '../components/TrafficTelemetry';
@@ -61,7 +62,7 @@ export default function HomePage() {
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight sm:leading-tight">
           Capture Traffic from <br />
-          <span className="gradient-text">AI Engines & Autonomous Buyer Agents</span>
+          <span className="text-[#05AD98]">AI Engines & Autonomous Buyer Agents</span>
         </h1>
 
         <p className="text-base sm:text-lg text-[#BBBFBF] max-w-2xl mx-auto leading-relaxed">
@@ -85,7 +86,7 @@ export default function HomePage() {
           </div>
           <button
             type="submit"
-            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all"
+            className="px-6 py-3.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all cursor-pointer"
           >
             <span>Scan AI Visibility</span>
             <ArrowRight className="w-4 h-4" />
@@ -99,10 +100,38 @@ export default function HomePage() {
             <button
               key={d}
               onClick={() => router.push(`/audit?domain=${d}`)}
-              className="px-2.5 py-1 rounded-lg bg-[#111514] border border-[rgba(187,191,191,0.10)] hover:border-sky-500 text-[#BBBFBF] font-mono text-xs transition-colors"
+              className="px-2.5 py-1 rounded-lg bg-[#111514] border border-[#222A28] hover:border-[#05AD98] text-[#BBBFBF] font-mono text-xs transition-colors"
             >
               {d}
             </button>
+          ))}
+        </div>
+
+        {/* Competitor Benchmark Arena Trigger */}
+        <div className="pt-0.5 flex items-center justify-center">
+          <Link
+            href="/benchmark"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#111514] border border-[#222A28] hover:border-[#05AD98] text-[#BBBFBF] hover:text-white text-xs transition-all shadow-sm group"
+          >
+            <GitCompare className="w-3.5 h-3.5 text-[#05AD98]" />
+            <span>Comparing competitors?</span>
+            <span className="text-[#05AD98] font-semibold group-hover:underline flex items-center gap-1">
+              Launch Head-to-Head Benchmark Arena
+              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </Link>
+        </div>
+
+        {/* Solid Engine Coverage Strip */}
+        <div className="pt-2 flex items-center justify-center gap-2 flex-wrap text-xs text-[#878787]">
+          <span className="text-[#6E7373]">Live coverage across:</span>
+          {['OpenAI ChatGPT Search', 'Perplexity Sonar', 'Claude 3.5', 'Google Gemini'].map((engine) => (
+            <span
+              key={engine}
+              className="px-2.5 py-1 rounded-md bg-[#111514] border border-[#222A28] text-[#D4D8D8] text-[11px] font-medium"
+            >
+              {engine}
+            </span>
           ))}
         </div>
       </section>
@@ -112,7 +141,7 @@ export default function HomePage() {
         <MetricCard
           title="Domains Evaluated"
           value={liveStats.isLive ? `${liveStats.domainsRanked}+` : `${liveStats.domainsRanked}`}
-          change={liveStats.isLive ? 'Live Verified Index' : 'Updating count…'}
+          change={liveStats.isLive ? 'Live Verified Index' : 'Updating count...'}
           isPositive={true}
           subtitle="Actively monitored index"
           icon={Globe2}
@@ -137,11 +166,11 @@ export default function HomePage() {
           accentColor="emerald"
         />
         <MetricCard
-          title="Attested Routing Latency"
-          value="4.2 ms"
-          change="Sub-millisecond edge"
+          title="Edge Tracking Overhead"
+          value="< 5 ms"
+          change="Zero impact on page speed"
           isPositive={true}
-          subtitle="Global Edge Network"
+          subtitle="Serverless telemetry"
           icon={Cpu}
           accentColor="amber"
         />
@@ -157,43 +186,63 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="glass-card rounded-3xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98]">
-              <Info className="w-6 h-6" />
+          <div className="glass-card rounded-3xl p-6 border border-[#222A28] flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.2)] flex items-center justify-center text-[#05AD98]">
+                <Info className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">1. Generative Engine Optimization (GEO)</h3>
+              <p className="text-xs text-[#BBBFBF] leading-relaxed">
+                Injects dense vector anchors, primary empirical benchmarks, and disambiguated entity graphs so Perplexity, ChatGPT, and Claude prioritize your URL as the primary cited authority.
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-white">1. Generative Engine Optimization (GEO)</h3>
-            <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              Injects dense vector anchors, primary empirical benchmarks, and disambiguated entity graphs so Perplexity, ChatGPT, and Claude prioritize your URL as the primary cited authority.
-            </p>
-            <Link href="/audit" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
-              Run GEO Diagnostics <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="pt-6 mt-auto flex flex-wrap items-center gap-3">
+              <Link href="/audit" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
+                Run GEO Diagnostics <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <span className="text-[#3D4543] text-xs">|</span>
+              <Link href="/benchmark" className="inline-flex items-center gap-1.5 text-xs text-[#BBBFBF] hover:text-[#05AD98] transition-colors">
+                Compare Competitors <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          <div className="glass-card rounded-3xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.08)] border border-[rgba(5,173,152,0.20)] flex items-center justify-center text-[#05AD98]">
-              <Cpu className="w-6 h-6" />
+          <div className="glass-card rounded-3xl p-6 border border-[#222A28] flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.08)] border border-[rgba(5,173,152,0.20)] flex items-center justify-center text-[#05AD98]">
+                <Cpu className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">2. Machine-Readable Agent Protocols</h3>
+              <p className="text-xs text-[#BBBFBF] leading-relaxed">
+                Transforms any standard website into an autonomous machine-to-machine API. Personal AI buyer assistants can discover products, query pricing, and execute checkout orders in milliseconds.
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-white">2. Universal agent.json Protocol</h3>
-            <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              Transforms any standard website into an autonomous machine-to-machine API. Personal AI buyer assistants can discover products, query pricing, and execute checkout orders in milliseconds.
-            </p>
-            <Link href="/manifest" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
-              Build agent.json Manifest <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="pt-6 mt-auto flex flex-wrap items-center gap-3">
+              <Link href="/manifest" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
+                Build agent.json <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <span className="text-[#3D4543] text-xs">|</span>
+              <Link href="/tools/llms-txt-generator" className="inline-flex items-center gap-1.5 text-xs text-[#BBBFBF] hover:text-[#05AD98] transition-colors">
+                llms.txt Builder <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
 
-          <div className="glass-card rounded-3xl p-6 border border-[rgba(187,191,191,0.10)] space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] flex items-center justify-center text-[#05AD98]">
-              <CheckCircle2 className="w-6 h-6" />
+          <div className="glass-card rounded-3xl p-6 border border-[#222A28] flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[rgba(5,173,152,0.10)] border border-[rgba(5,173,152,0.20)] flex items-center justify-center text-[#05AD98]">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-white">3. Verified AI Traffic & Crawler Attribution</h3>
+              <p className="text-xs text-[#BBBFBF] leading-relaxed">
+                Direct telemetry snippets and edge middleware filters intercept 100% of headless AI crawlers (GPTBot, ClaudeBot, Perplexity) before page render, giving you actionable citation and referral analytics.
+              </p>
             </div>
-            <h3 className="text-lg font-bold text-white">3. Verified AI Traffic & Crawler Attribution</h3>
-            <p className="text-xs text-[#BBBFBF] leading-relaxed">
-              Direct telemetry snippets and edge middleware filters intercept 100% of headless AI crawlers (GPTBot, ClaudeBot, Perplexity) before page render, giving you actionable citation and referral analytics.
-            </p>
-            <Link href="/analytics" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
-              View Traffic Analytics <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="pt-6 mt-auto">
+              <Link href="/analytics" className="inline-flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
+                View Traffic Analytics <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>

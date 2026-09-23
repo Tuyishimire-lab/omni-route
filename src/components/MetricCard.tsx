@@ -21,11 +21,11 @@ export default function MetricCard({
   accentColor = 'sky'
 }: MetricCardProps) {
   const colorMap = {
-    sky: 'from-[#05AD98]/20 to-sky-500/0 text-[#05AD98] border-[rgba(5,173,152,0.3)]',
-    indigo: 'from-indigo-500/20 to-indigo-500/0 text-[#05AD98] border-[rgba(5,173,152,0.25)]',
-    emerald: 'from-[#05AD98]/20 to-emerald-500/0 text-[#05AD98] border-[rgba(5,173,152,0.25)]',
-    amber: 'from-amber-500/20 to-amber-500/0 text-[#B8A04A] border-amber-500/30',
-    purple: 'from-purple-500/20 to-purple-500/0 text-purple-400 border-purple-500/30'
+    sky: 'bg-[#05AD98]',
+    indigo: 'bg-[#05AD98]',
+    emerald: 'bg-[#05AD98]',
+    amber: 'bg-[#B8A04A]',
+    purple: 'bg-[#878787]'
   };
 
   const iconBgMap = {
@@ -38,8 +38,8 @@ export default function MetricCard({
 
   return (
     <div className="glass-card rounded-2xl p-5 relative overflow-hidden group">
-      {/* Subtle top gradient glow */}
-      <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${colorMap[accentColor]}`} />
+      {/* Subtle solid top accent border */}
+      <div className={`absolute top-0 left-0 right-0 h-0.5 ${colorMap[accentColor]}`} />
 
       <div className="flex items-start justify-between">
         <div>

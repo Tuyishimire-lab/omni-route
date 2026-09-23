@@ -148,7 +148,7 @@ export default function WatchlistManager() {
             )}
             <Link
               href="/audit"
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white text-xs font-semibold shadow-md shadow-[rgba(5,173,152,0.20)]"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white text-xs font-semibold shadow-md shadow-[rgba(5,173,152,0.20)] transition-colors"
             >
               <Search className="w-3.5 h-3.5" /> Scan New Domain
             </Link>
@@ -157,7 +157,7 @@ export default function WatchlistManager() {
 
         {/* Upgrade alert banner if limit hit */}
         {isLimitReached && (
-          <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-[rgba(184,160,74,0.10)] to-transparent border border-[rgba(184,160,74,0.25)] flex items-center justify-between gap-3 text-xs">
+          <div className="mt-4 p-3 rounded-xl bg-[#1A2020] border border-[rgba(184,160,74,0.25)] flex items-center justify-between gap-3 text-xs">
             <span className="text-[#BBBFBF]">
               You have reached your <strong className="text-white">{maxLimit} domain limit</strong> on the {tierConfig.displayName} plan. Upgrade to track more brands.
             </span>

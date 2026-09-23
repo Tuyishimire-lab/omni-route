@@ -41,6 +41,7 @@ import {
   Terminal,
   Search,
   Send,
+  Clock,
 } from 'lucide-react';
 import Sparkline from './Sparkline';
 
@@ -271,13 +272,24 @@ function ScoreHistoryPanel({ domain, isWhiteLabel }: { domain: string; isWhiteLa
   );
 }
 
+function formatCacheAge(ms?: number): string {
+  if (!ms || ms < 60000) return 'just now';
+  const mins = Math.floor(ms / 60000);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
+}
+
 interface AuditResultViewProps {
   report: GeoAuditReport;
   isVerified?: boolean;
   onRequireEmail?: () => void;
+  onRescan?: (bypassCache?: boolean) => void;
 }
 
-export default function AuditResultView({ report: initialReport, isVerified, onRequireEmail }: AuditResultViewProps) {
+export default function AuditResultView({ report: initialReport, isVerified, onRequireEmail, onRescan }: AuditResultViewProps) {
   const [report, setReport] = useState<GeoAuditReport>(initialReport);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [enhanceError, setEnhanceError] = useState<string | null>(null);
@@ -463,7 +475,7 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
 
   const activeEngines = probedEngines || displayedEngines;
 
-  const handleRunProbe = async (overrideQuery?: string) => {
+  const handleRunProbe = async (overrideQuery?: string, bypassCache = false) => {
     const queryToRun = (overrideQuery ?? customProbeQuery).trim();
     setIsProbing(true);
     setProbeError(null);
@@ -475,6 +487,7 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
         body: JSON.stringify({
           domain: cleanDomain,
           query: queryToRun || undefined,
+          bypassCache,
         }),
       });
 
@@ -586,7 +599,7 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
 
       {/* Top Action Bar (Print & Save) */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pb-1 print:hidden">
-        <div className="flex items-center justify-center sm:justify-start gap-2">
+        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
           {report.liveMetadata?.isLiveScanned ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(5,173,152,0.10)] text-[#05AD98] border border-[rgba(5,173,152,0.20)] text-xs font-semibold">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -598,9 +611,27 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
               Latent Semantic Model Estimation
             </span>
           )}
+
+          {report.isCached && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111514] text-[#BBBFBF] border border-[#222A28] text-xs font-medium">
+              <Clock className="w-3.5 h-3.5 text-[#05AD98]" />
+              <span>Cached ({formatCacheAge(report.cacheAgeMs)})</span>
+            </span>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+          {onRescan && (
+            <button
+              onClick={() => onRescan(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111514] hover:bg-[#1A2220] text-slate-200 border border-[#222A28] hover:border-[#05AD98] text-xs font-semibold transition-all active:scale-[0.98]"
+              title="Force a fresh live scan of this domain"
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-[#05AD98]" />
+              <span>Re-scan</span>
+            </button>
+          )}
+
           <button
             onClick={handleShareLink}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#111514] hover:bg-slate-850 text-slate-200 border border-[rgba(5,173,152,0.3)] hover:border-[#05AD98] text-xs font-semibold transition-all shadow-sm active:scale-[0.98]"
@@ -946,7 +977,7 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
 
       {/* ── CiteRoute Engine Intelligence Suite ── */}
       {report.aiInsights ? (
-        <div className="glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[rgba(5,173,152,0.30)] bg-gradient-to-br from-[rgba(5,173,152,0.06)] via-transparent to-[rgba(99,102,241,0.04)] relative overflow-hidden space-y-6 print-break-avoid">
+        <div className="glass-panel rounded-2xl sm:rounded-3xl p-5 sm:p-7 border border-[rgba(5,173,152,0.30)] bg-[#111514] relative overflow-hidden space-y-6 print-break-avoid">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[rgba(187,191,191,0.10)] pb-4">
             <div className="flex items-center gap-2.5">
@@ -1231,7 +1262,7 @@ export default function AuditResultView({ report: initialReport, isVerified, onR
         </div>
       ) : (
         /* CiteRoute Engine Activation Callout */
-        <div className="glass-panel rounded-2xl p-5 border border-[rgba(5,173,152,0.25)] bg-gradient-to-r from-[rgba(5,173,152,0.06)] to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden">
+        <div className="glass-panel rounded-2xl p-5 border border-[rgba(5,173,152,0.25)] bg-[#111514] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-[rgba(5,173,152,0.15)] flex items-center justify-center text-[#05AD98] shrink-0">
               <Cpu className="w-5 h-5" />

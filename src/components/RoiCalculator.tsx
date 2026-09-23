@@ -112,7 +112,7 @@ export default function RoiCalculator() {
 
           <Link
             href="/audit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-[rgba(5,173,152,0.20)] transition-all"
+            className="w-full py-2.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-[rgba(5,173,152,0.20)] transition-colors"
           >
             Run Free GEO Audit on Your Domain <ArrowRight className="w-4 h-4" />
           </Link>

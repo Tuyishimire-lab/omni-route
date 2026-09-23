@@ -113,6 +113,37 @@ function analyzeMarkdown(markdown: string, title: string, description: string): 
   };
 }
 
+/**
+ * Performs a fast, lightweight HEAD request to inspect whether the target page
+ * has been modified since the cached report was generated.
+ */
+async function hasPageChangedSince(url: string, cachedAtMs: number): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'CiteRouteBot/1.0 (+https://citeroute.com/bot)',
+      },
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) return false;
+
+    const lastModifiedHeader = res.headers.get('last-modified');
+    if (lastModifiedHeader) {
+      const lastModifiedTime = new Date(lastModifiedHeader).getTime();
+      if (!isNaN(lastModifiedTime) && lastModifiedTime > cachedAtMs) {
+        return true;
+      }
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export async function crawlAndAnalyzeUrl(
   targetInput: string,
   options: { bypassCache?: boolean } = {}
@@ -131,12 +162,20 @@ export async function crawlAndAnalyzeUrl(
   // cache is just a fast-path for warm instances.
   if (!options.bypassCache) {
     const dbCached = await getCachedScanReport(cleanDomain).catch(() => null);
-    if (dbCached) return dbCached; // engineBreakdown already cleared by getCachedScanReport
+    if (dbCached) {
+      const pageChanged = dbCached.cachedAt
+        ? await hasPageChangedSince(fullUrl, new Date(dbCached.cachedAt).getTime()).catch(() => false)
+        : false;
+
+      if (!pageChanged) {
+        return dbCached;
+      }
+      console.info(`[liveCrawler] Detected live content modification on ${cleanDomain}. Bypassing cache for fresh scan.`);
+    }
 
     const cached = scanReportCache.get(cleanDomain);
     if (cached) {
-      // Engine breakdown is a live enrichment - strip it from in-memory cache too
-      return { ...cached, engineBreakdown: [] };
+      return { ...cached, isCached: true };
     }
   }
 

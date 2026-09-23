@@ -216,7 +216,7 @@ export default function Navbar() {
                   className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all hover:bg-[rgba(187,191,191,0.06)]">
                   {user.avatarUrl
                     ? <Image src={user.avatarUrl} alt={user.name} width={28} height={28} className="w-7 h-7 rounded-full border border-[rgba(5,173,152,0.3)]" />
-                    : <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#05AD98] to-[#038a79] flex items-center justify-center text-[10px] font-bold text-white">{getInitials(user.name)}</div>
+                    : <div className="w-7 h-7 rounded-full bg-[#05AD98] flex items-center justify-center text-[10px] font-bold text-white">{getInitials(user.name)}</div>
                   }
                   <span className="hidden sm:block text-xs text-[#BBBFBF] font-medium max-w-[80px] truncate">{user.name.split(' ')[0]}</span>
                   <ChevronDown className="w-3 h-3 text-[#878787]" />
@@ -263,8 +263,8 @@ export default function Navbar() {
                 <Link href="/login" className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-[#BBBFBF] hover:text-white transition-colors">
                   <LogIn className="w-3.5 h-3.5" /> Sign In
                 </Link>
-                <Link href="/register" className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold"
-                  style={{ background: 'linear-gradient(135deg,#05AD98,#038a79)', color: '#fff', boxShadow: '0 2px 12px rgba(5,173,152,0.2)' }}>
+                <Link href="/register" className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#05AD98] hover:bg-[#038a79] text-white transition-colors"
+                  style={{ boxShadow: '0 2px 12px rgba(5,173,152,0.2)' }}>
                   Get Started
                 </Link>
               </div>
@@ -331,7 +331,7 @@ export default function Navbar() {
                   <div className="flex items-center gap-3 px-3 py-2.5">
                     {user.avatarUrl
                       ? <Image src={user.avatarUrl} alt={user.name} width={32} height={32} className="w-8 h-8 rounded-full border border-[rgba(5,173,152,0.3)]" />
-                      : <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#05AD98] to-[#038a79] flex items-center justify-center text-xs font-bold text-white">{getInitials(user.name)}</div>
+                      : <div className="w-8 h-8 rounded-full bg-[#05AD98] flex items-center justify-center text-xs font-bold text-white">{getInitials(user.name)}</div>
                     }
                     <div>
                       <p className="text-sm font-bold text-white">{user.name}</p>
@@ -364,8 +364,7 @@ export default function Navbar() {
                     <LogIn className="w-3.5 h-3.5" /> Sign In
                   </Link>
                   <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-center py-2.5 rounded-xl text-sm font-semibold"
-                    style={{ background: 'linear-gradient(135deg,#05AD98,#038a79)', color: '#fff' }}>
+                    className="flex items-center justify-center py-2.5 rounded-xl text-sm font-semibold bg-[#05AD98] hover:bg-[#038a79] text-white transition-colors">
                     Get Started
                   </Link>
                 </>

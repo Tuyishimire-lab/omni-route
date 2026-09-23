@@ -130,7 +130,7 @@ export default async function DomainAnalyticsPage({
                   <span className="w-44 shrink-0 truncate text-xs font-mono text-[#BBBFBF]">{hit.agentName}</span>
                   <div className="flex-1 h-5 rounded-lg bg-[#111514] overflow-hidden">
                     <div
-                      className="h-full rounded-lg bg-gradient-to-r from-[#05AD98]/60 to-[#05AD98]/25"
+                      className="h-full rounded-lg bg-[#05AD98]"
                       style={{ width: `${Math.max(6, (hit.hits / maxHits) * 100)}%` }}
                     />
                   </div>

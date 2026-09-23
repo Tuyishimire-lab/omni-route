@@ -225,7 +225,7 @@ export default function EmailGateModal({ open, onClose, onVerified, initialEmail
               <button
                 type="submit"
                 disabled={loading || !email.trim()}
-                className="mt-5 w-full px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#05AD98] to-[#038a79] hover:from-[#038a79] hover:to-[#05AD98] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                className="mt-5 w-full px-6 py-3.5 rounded-xl bg-[#05AD98] hover:bg-[#038a79] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-[rgba(5,173,152,0.25)] transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] cursor-pointer"
               >
                 {loading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

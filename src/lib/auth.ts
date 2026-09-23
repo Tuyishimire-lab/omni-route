@@ -145,7 +145,12 @@ export async function revokeAllUserSessions(userId: string): Promise<void> {
 }
 
 export async function getSession(): Promise<SessionPayload | null> {
-  const cookieStore = await cookies();
+  let cookieStore;
+  try {
+    cookieStore = await cookies();
+  } catch {
+    return null;
+  }
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
 

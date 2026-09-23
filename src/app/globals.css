@@ -71,50 +71,40 @@ body {
   transform: translateY(-2px);
 }
 
-/* ---- Primary gradient (buttons, CTAs) ---- */
+/* ---- Primary solid button (buttons, CTAs) ---- */
 .btn-primary {
-  background: linear-gradient(135deg, #05AD98 0%, #038a79 100%);
+  background-color: #05AD98;
   color: #ffffff;
-  transition: opacity 0.2s ease, transform 0.15s ease;
+  transition: opacity 0.2s ease, transform 0.15s ease, background-color 0.2s ease;
 }
-.btn-primary:hover { opacity: 0.88; }
+.btn-primary:hover { background-color: #038a79; }
 .btn-primary:active { transform: scale(0.98); }
 
-/* ---- Text gradient ---- */
+/* ---- Solid text accents (zero gradients) ---- */
 .text-gradient {
-  background: linear-gradient(135deg, #05AD98 0%, #BBBFBF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #05AD98;
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #05AD98 0%, #BBBFBF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #05AD98;
 }
 
-/* ---- Glows ---- */
+/* ---- Subtle Solid Borders / Shadows ---- */
 .glow-primary {
-  box-shadow: 0 0 32px -6px rgba(5, 173, 152, 0.35);
+  box-shadow: 0 0 16px rgba(5, 173, 152, 0.20);
 }
 
-/* ---- Background mesh ---- */
+/* ---- Background surfaces (solid, zero gradients) ---- */
 .bg-omni-mesh {
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 60% 40% at 10% 20%, rgba(5, 173, 152, 0.06) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 85% 75%, rgba(5, 173, 152, 0.04) 0%, transparent 60%);
 }
 
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(187, 191, 191, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-color: transparent;
 }
 
 .radial-glow {
-  background: radial-gradient(circle at 50% 50%, rgba(5, 173, 152, 0.10) 0%, transparent 65%);
+  background: transparent;
 }
 
 /* ---- Animations ---- */

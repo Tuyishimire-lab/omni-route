@@ -443,7 +443,7 @@ export default function EnterpriseDataSection() {
                 <div className="pt-2">
                   <button
                     onClick={handleCloseModal}
-                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#B8A04A] to-[#998235] text-black font-bold text-xs shadow-lg hover:opacity-95"
+                    className="px-6 py-2.5 rounded-xl bg-[#B8A04A] hover:bg-[#a68e3c] text-black font-bold text-xs shadow-lg transition-colors cursor-pointer"
                   >
                     Close
                   </button>
@@ -587,7 +587,7 @@ export default function EnterpriseDataSection() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#B8A04A] to-[#998235] hover:opacity-95 text-black font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-[rgba(184,160,74,0.25)] transition-all disabled:opacity-50"
+                      className="px-5 py-2.5 rounded-xl bg-[#B8A04A] hover:bg-[#a68e3c] text-black font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-[rgba(184,160,74,0.25)] transition-all disabled:opacity-50 cursor-pointer"
                     >
                       {isSubmitting ? (
                         <>

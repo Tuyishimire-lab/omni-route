@@ -1,15 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Check, X, Zap, Shield, Crown, ArrowRight, HelpCircle, Code2, Database, Building2, Users } from 'lucide-react';
+import { Check, X, Zap, Shield, Crown, ArrowRight, HelpCircle, Code2, Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Pricing | CiteRoute - GEO Optimization & AI Traffic Plans',
-  description: 'Simple, transparent pricing for GEO optimization. Free to start, $79/mo for Pro, $249/mo for agencies. API access from $0.01/call. Data subscriptions for enterprise.',
+  description: 'Simple, transparent pricing for GEO optimization. Free to start, $79/mo for Pro, $249/mo for agencies. API access from $0.01/call. Custom enterprise plans available.',
 };
 
 import PricingCards from '../../components/PricingCards';
-import EnterpriseDataSection from '../../components/EnterpriseDataSection';
 
 const FAQ_ITEMS = [
   {
@@ -18,7 +17,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'How does the tracking tag work?',
-    a: 'You add one script tag to your site. Every time a visitor loads a page, the tag fires a lightweight beacon to CiteRoute. We classify the visitor\'s user-agent against 13+ known AI crawler signatures and log the event to your private analytics dashboard - no personal data collected.',
+    a: 'You add one script tag to your site. Every time a visitor loads a page, the tag fires a lightweight beacon to CiteRoute. We classify the visitor\'s user-agent against 13+ known AI crawler signatures and log the event to your private analytics dashboard, with zero personal data collected.',
   },
   {
     q: 'Can I cancel or change my plan at any time?',
@@ -29,12 +28,12 @@ const FAQ_ITEMS = [
     a: 'The API lets you query GEO scores, verify agent.json files, and retrieve AI traffic data programmatically. Pro gets 500 req/day, Agency gets 10,000 req/day. Pricing is per-call for high-volume usage beyond these limits: $0.01-$0.05 per call depending on endpoint.',
   },
   {
-    q: 'What are Data Subscriptions for Enterprise?',
-    a: 'Enterprise customers can subscribe to a private data feed: which domains are winning AI citations in their vertical, how their competitors\' GEO scores trend over time, and raw AI crawler visit data. This is the same index that powers the public leaderboard, delivered as a private API or CSV export.',
+    q: 'Does CiteRoute sell or share my site traffic data?',
+    a: 'Never. Your website telemetry, bot crawler logs, and analytics are strictly private to your account. CiteRoute never sells, rents, or shares customer data with third parties, ad networks, or data brokers.',
   },
   {
     q: 'Do I need a Cloudflare account?',
-    a: 'No. The tracking tag is a simple JavaScript snippet that works on any website - Next.js, WordPress, Webflow, or plain HTML. The optional Cloudflare Edge Worker adds server-side bot detection for sites that need it, but it\'s not required.',
+    a: 'No. The tracking tag is a simple JavaScript snippet that works on any website (Next.js, WordPress, Webflow, or plain HTML). The optional Cloudflare Edge Worker adds server-side bot detection for sites that need it, but it is not required.',
   },
 ];
 
@@ -49,7 +48,7 @@ export default function PricingPage() {
           <span>Simple, Transparent Pricing</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Invest in your <span className="gradient-text">AI visibility</span>
+          Invest in your <span className="text-[#05AD98]">AI visibility</span>
         </h1>
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed">
           Start free. Upgrade when you need real data. Every plan includes the GEO scanner and agent.json studio.
@@ -70,10 +69,9 @@ export default function PricingPage() {
             <div className="flex items-center gap-2">
               <Code2 className="w-5 h-5 text-[#05AD98]" />
               <h2 className="text-xl font-bold text-white">API Pricing</h2>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-bold bg-[rgba(5,173,152,0.10)] text-[#05AD98] border border-[rgba(5,173,152,0.20)]">COMING SOON</span>
             </div>
             <p className="text-sm text-[#878787]">
-              Usage-based API billing is coming soon. Pro and Agency plans include generous daily API limits at no extra cost.
+              Programmatic access to CiteRoute GEO scores and crawler analytics. Pro and Agency plans include generous daily API limits, with flexible usage-based overage rates.
             </p>
           </div>
           <Link href="/docs" className="flex items-center gap-1.5 text-xs text-[#05AD98] font-semibold hover:underline">
@@ -83,7 +81,7 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { endpoint: '/api/v1/geo-score', price: '$0.02', unit: 'per call', desc: 'Full GEO audit of any domain - scores, citations, agent discoverability.' },
+            { endpoint: '/api/v1/geo-score', price: '$0.02', unit: 'per call', desc: 'Full GEO audit of any domain: scores, citations, agent discoverability.' },
             { endpoint: '/api/v1/verify', price: '$0.01', unit: 'per call', desc: 'Verify that a domain has a valid tracking tag or agent.json installed.' },
             { endpoint: '/api/v1/ai-traffic', price: '$0.05', unit: 'per call', desc: 'Return AI crawler visit volume and breakdown for a tracked domain.' },
           ].map((api) => (
@@ -99,12 +97,9 @@ export default function PricingPage() {
         </div>
 
         <p className="text-[11px] text-[#878787]">
-          All plan API keys work immediately. Overage calls beyond your daily limit are billed at the rates above at month end.
+          All plan API keys are active immediately. Requests beyond your daily plan limits are billed at standard usage rates.
         </p>
       </section>
-
-      {/* Enterprise Data Subscriptions */}
-      <EnterpriseDataSection />
 
       {/* FAQ */}
       <section className="max-w-3xl mx-auto space-y-6">
@@ -133,4 +128,5 @@ export default function PricingPage() {
     </div>
   );
 }
+
 

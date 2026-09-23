@@ -313,38 +313,167 @@ export async function probeSingleEngine(
   }
 }
 
+import { prisma } from './prisma';
+
+// 24-hour database and memory cache TTL for engine citation probes
+export const PROBE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+interface CachedProbeEntry {
+  engines: EngineScore[];
+  expiresAt: number;
+}
+
+const probeMemoryCache = new Map<string, CachedProbeEntry>();
+const inFlightProbes = new Map<string, Promise<EngineScore[]>>();
+
 /**
- * Execute live citation probes across all 4 foundation models in parallel.
+ * Retrieves cached engine probe results from memory or database if within 24 hours.
+ */
+export async function getCachedEngineProbes(
+  domain: string,
+  customQuery?: string
+): Promise<EngineScore[] | null> {
+  const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  const cacheKey = `${cleanDomain}::${customQuery || 'default'}`;
+
+  // 1. Check in-memory warm cache
+  const mem = probeMemoryCache.get(cacheKey);
+  if (mem && Date.now() < mem.expiresAt) {
+    return mem.engines.map((e) => ({ ...e, isCached: true }));
+  }
+
+  // 2. For default queries, check latest ScanEvent in DB
+  if (!customQuery) {
+    try {
+      const event = await prisma.scanEvent.findFirst({
+        where: { domain: cleanDomain, rawReport: { not: null } },
+        orderBy: { scannedAt: 'desc' },
+        select: { rawReport: true, scannedAt: true },
+      });
+
+      if (event && Date.now() - event.scannedAt.getTime() <= PROBE_CACHE_TTL_MS) {
+        const report = JSON.parse(event.rawReport!) as { engineBreakdown?: EngineScore[] };
+        if (Array.isArray(report.engineBreakdown) && report.engineBreakdown.some((e) => e.isLiveQuery)) {
+          const cachedEngines = report.engineBreakdown.map((e) => ({ ...e, isCached: true }));
+          probeMemoryCache.set(cacheKey, {
+            engines: cachedEngines,
+            expiresAt: event.scannedAt.getTime() + PROBE_CACHE_TTL_MS,
+          });
+          return cachedEngines;
+        }
+      }
+    } catch (e) {
+      console.warn('[citationProber] DB probe cache read error:', e);
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Saves engine probe results into in-memory cache and persists to DB.
+ */
+export async function saveEngineProbesToCache(
+  domain: string,
+  engines: EngineScore[],
+  customQuery?: string
+): Promise<void> {
+  const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  const cacheKey = `${cleanDomain}::${customQuery || 'default'}`;
+
+  probeMemoryCache.set(cacheKey, {
+    engines,
+    expiresAt: Date.now() + PROBE_CACHE_TTL_MS,
+  });
+
+  // If default probe query, update latest ScanEvent rawReport
+  if (!customQuery) {
+    try {
+      const event = await prisma.scanEvent.findFirst({
+        where: { domain: cleanDomain, rawReport: { not: null } },
+        orderBy: { scannedAt: 'desc' },
+        select: { id: true, rawReport: true },
+      });
+      if (event && event.rawReport) {
+        const report = JSON.parse(event.rawReport);
+        report.engineBreakdown = engines;
+        await prisma.scanEvent.update({
+          where: { id: event.id },
+          data: { rawReport: JSON.stringify(report) },
+        });
+      }
+    } catch (err) {
+      console.warn('[citationProber] Failed to update ScanEvent with engine probes:', err);
+    }
+  }
+}
+
+/**
+ * Execute live citation probes across all 4 foundation models in parallel
+ * with in-flight deduplication and 24-hour database caching.
  */
 export async function probeAllEngines(
   domain: string,
-  customQuery?: string
+  customQuery?: string,
+  options: { bypassCache?: boolean } = {}
 ): Promise<EngineScore[]> {
-  const tasks = TARGET_ENGINES.map((engine) =>
-    probeSingleEngine(domain, engine, customQuery)
-  );
+  const cleanDomain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  const cacheKey = `${cleanDomain}::${customQuery || 'default'}`;
 
-  const results = await Promise.allSettled(tasks);
-
-  return results.map((r, i) => {
-    if (r.status === 'fulfilled') {
-      return r.value;
+  // Check cache unless explicitly bypassed
+  if (!options.bypassCache) {
+    const cached = await getCachedEngineProbes(cleanDomain, customQuery);
+    if (cached) {
+      return cached;
     }
-    const engine = TARGET_ENGINES[i];
-    return {
-      engine: engine.id,
-      name: engine.name,
-      modelRole: engine.modelRole,
-      score: 40,
-      citationProbability: 35,
-      sentimentRating: 'Low / Excluded',
-      citationStatus: 'omitted',
-      isLiveQuery: false,
-      probeQuery: customQuery || buildDomainProbeQuery(domain),
-      isCited: false,
-      citationSnippet: `Direct citation not verified in ${engine.name} live context. Entity visibility evaluated from indexed web signals.`,
-      latencyMs: 0,
-      testedAt: new Date().toISOString(),
-    };
-  });
+  }
+
+  // Deduplicate in-flight requests (Thundering Herd protection)
+  const existingPromise = inFlightProbes.get(cacheKey);
+  if (existingPromise) {
+    return existingPromise;
+  }
+
+  const probePromise = (async () => {
+    const tasks = TARGET_ENGINES.map((engine) =>
+      probeSingleEngine(domain, engine, customQuery)
+    );
+
+    const results = await Promise.allSettled(tasks);
+
+    const mapped = results.map((r, i) => {
+      if (r.status === 'fulfilled') {
+        return r.value;
+      }
+      const engine = TARGET_ENGINES[i];
+      return {
+        engine: engine.id,
+        name: engine.name,
+        modelRole: engine.modelRole,
+        score: 40,
+        citationProbability: 35,
+        sentimentRating: 'Low / Excluded',
+        citationStatus: 'omitted',
+        isLiveQuery: false,
+        probeQuery: customQuery || buildDomainProbeQuery(domain),
+        isCited: false,
+        citationSnippet: `Direct citation not verified in ${engine.name} live context. Entity visibility evaluated from indexed web signals.`,
+        latencyMs: 0,
+        testedAt: new Date().toISOString(),
+      } satisfies EngineScore;
+    });
+
+    // Save to cache
+    await saveEngineProbesToCache(cleanDomain, mapped, customQuery);
+    return mapped;
+  })();
+
+  inFlightProbes.set(cacheKey, probePromise);
+
+  try {
+    return await probePromise;
+  } finally {
+    inFlightProbes.delete(cacheKey);
+  }
 }
+

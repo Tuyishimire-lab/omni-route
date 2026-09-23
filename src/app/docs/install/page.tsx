@@ -304,7 +304,7 @@ export default function InstallPage() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-          Install <span className="gradient-text">CiteRoute Telemetry</span>
+          Install <span className="text-[#05AD98]">CiteRoute Telemetry</span>
         </h1>
 
         <p className="text-sm sm:text-base text-[#BBBFBF] leading-relaxed max-w-3xl">
